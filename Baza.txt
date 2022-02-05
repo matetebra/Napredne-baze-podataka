@@ -1,0 +1,23 @@
+korisnici:
+			prijavljeni:
+				ime,prezime,adresa,email:ID,role,SALT,HASH,grad,telefon,List(omiljeniRestorani),List(Narudzbine)
+			radniciRestorana:
+				NazivRestorana,adresa,grad,email,role,salt,hash,telefon,opis,radnoVreme,List(kategorije),List(Komentari),List(Jela),prosecnaOcena,List(dodatak),vremeDostave,cenaDostava,limitDostave,KAPACITET,brojSlobodnih
+			administrator:
+				email,salt,hash,role
+			dostavljac:
+jelo:
+				blablablablablalbalbalba
+		Naziv,cena,List(stringNaziviNamirnica),kategorija,gramaza,opis,slika,
+dodatak:
+		naziv,cena
+porudzbina:
+		referencuNaKOrisnika,referencaJela,napomena,adresa,dostavljena,datum,dostavljac
+kategorija:
+		nazivKategorije
+komentari:
+		refKorisnik,refRestoran,tekst,brojLajkova
+lajkovanje:
+		refKorisnik,refKomentar
+rezervacijeMesta:
+		refKorsnik,refRestoran,brojMesta,vreme,datum,
