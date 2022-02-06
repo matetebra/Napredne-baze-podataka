@@ -5,7 +5,7 @@ restoran- opis/ radno vreme, tipovi kuhinje/vrsta hrane
 korisnik- kartica?
 
 porudzbina
-korisnik, restoran, jelo, adresa, telefon, opis/napomena
+korisnik, restoran, jelo, adresa, telefon, opis/napomena, datum i vreme
 
 jelo
 naziv, cena, lista sastojka/opis, dodatak, gramaza, vrsta hrane
@@ -24,5 +24,6 @@ restoran, korisnik, tekst
 
 sacuvane narudzbine
 korisnik, restoran, jelo, adresa, telefon, opis/napomena
+
 
 Web aplikacija za online narucivanje hrane. Korisnicima ce biti omoguceno narucivanje jela iz restorana u svom gradu. Korisnik ce imati mogucnoost komentarisanja jela koje je prethodno narucio kao i restorana iz kojih je narucivao. Korisnik takodje ima mogucnost pristupa omiljenim restoranima/jelima. 
