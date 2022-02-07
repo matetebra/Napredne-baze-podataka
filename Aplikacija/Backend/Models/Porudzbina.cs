@@ -9,13 +9,6 @@ public class Porudzbina
     public Boolean Dostavljena { get; set; }
     public DateTime Datum { get; set; }
     public String? Dostavljac { get; set; }
-    public List<ObjectId>? KorisnikPorudzbinaIdList { get; set; }
-    public List<ObjectId>? JeloIdList { get; set; }
-
-    public Porudzbina()
-    {
-        KorisnikPorudzbinaIdList = new List<ObjectId>();
-
-        JeloIdList = new List<ObjectId>();
-    }
+    public ObjectId KorisnikPorudzbinaIdList { get; set; }
+    public ObjectId JeloIdList { get; set; }
 }

@@ -21,3 +21,17 @@ lajkovanje:
 		refKorisnik,refKomentar
 rezervacijeMesta:
 		refKorsnik,refRestoran,brojMesta,vreme,datum,
+
+restoran + porudzbina + jelo + kategorija
+restoran + lajkovanje + komentari
+restoran + rezervacije
+
+
+
+Slavko: restoran + porudzbina + jelo + kategorija
+
+Mateja: restoran + porudzbina + jelo + kategorija
+
+Saskeee: restoran + lajkovanje + komentari
+
+Nahy: restoran + rezervacije 

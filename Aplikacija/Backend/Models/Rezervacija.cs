@@ -7,13 +7,6 @@ public class Rezervacija
     public String? BrojMesta { get; set; }
     public String? Vreme { get; set; }
     public DateTime Datum { get; set; }
-    public List<ObjectId>? KorisnikRezervacijaIdList { get; set; }
-    public List<ObjectId>? RestoranRezervacijaIdList { get; set; }
-
-    public Rezervacija()
-    {
-        KorisnikRezervacijaIdList = new List<ObjectId>();
-
-        RestoranRezervacijaIdList = new List<ObjectId>();
-    }
+    public ObjectId KorisnikRezervacijaId { get; set; }
+    public ObjectId RestoranRezervacijaId { get; set; }
 }

@@ -12,7 +12,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "DonesiBackend", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "DostaviBackend", Version = "v1" });
                 var securitySchema = new OpenApiSecurityScheme
                 {
                     Description = "Using the Authorization header with the Bearer scheme.",
