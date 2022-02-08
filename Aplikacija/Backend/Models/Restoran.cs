@@ -13,10 +13,10 @@ public class Restoran
     public String? RadnoVreme { get; set; }
     public float ProsecnaOcena { get; set; }
     public String? VremeDostave { get; set; }
-    public String? CenaDostave { get; set; }
-    public String? LimitDostave { get; set; }
-    public String? Kapacitet { get; set; }
-    public String? SlobodnaMesta { get; set; }
+    public int CenaDostave { get; set; }
+    public int LimitDostave { get; set; }
+    public int Kapacitet { get; set; }
+    public int SlobodnaMesta { get; set; }
     public List<ObjectId>? KategorijeIdList { get; set; }
     public List<ObjectId>? KomentariIdList { get; set; }
     public List<ObjectId>? JelaIdList { get; set; }

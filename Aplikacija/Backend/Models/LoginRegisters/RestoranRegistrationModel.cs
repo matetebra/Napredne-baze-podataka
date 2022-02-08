@@ -38,12 +38,12 @@ namespace Backend.Models.LoginRegisters
         public String? VremeDostave { get; set; }
 
         [Required(ErrorMessage = " CenaDostave is required")]
-        public String? CenaDostave { get; set; }
+        public int CenaDostave { get; set; }
 
         [Required(ErrorMessage = " LimitDostave is required")]
-        public String? LimitDostave { get; set; }
+        public int LimitDostave { get; set; }
 
         [Required(ErrorMessage = " Kapacitet is required")]
-        public String? Kapacitet { get; set; }
+        public int Kapacitet { get; set; }
     }
 }

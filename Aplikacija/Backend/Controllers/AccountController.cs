@@ -7,14 +7,15 @@ using Backend.Models.LoginRegisters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Builders;
+using MongoDB.Bson.Serialization.Attributes;
 
-namespace E_Student.Controllers;
+namespace Backend.Controllers;
 
 [ApiController]
 [Route("[controller]")]
+[BsonIgnoreExtraElements]
 public class AccountController : ControllerBase
 {
     private readonly IConfiguration Configuration;
@@ -39,7 +40,7 @@ public class AccountController : ControllerBase
             LoginRegister account = new LoginRegister();
             var collection = database.GetCollection<LoginRegister>("login_register");
             var query = Query.EQ("Email", model.Email);
-            account = collection.Find(query).First();
+            account = collection.Find(query).FirstOrDefault();
 
             //LoginRegister account = mapper.FirstOrDefault<LoginRegister>("WHERE email=?", model.Email);
             var hash = HashPassword(model.Password!, account.Salt!, 10101, 70);
@@ -65,67 +66,74 @@ public class AccountController : ControllerBase
             claims: authClaims,
             signingCredentials: new SigningCredentials(authSiginKey, SecurityAlgorithms.HmacSha256Signature)
             );
-            var student = localSession.Execute("SELECT odobren FROM student WHERE email='" + model.Email + "'");
-            bool test = false;
-            foreach (var i in student)
-            {
-                test = i.GetValue<bool>("odobren");
-                break;
-            }
+            
             return Ok(new
             {
                 token = new JwtSecurityTokenHandler().WriteToken(token),
                 ValidTo = token.ValidTo.ToString("yyyy-MM-ddThh:mm:ss"),
-                role = account.Role,
-                odobren = test
-
+                role = account.Role
             });
         }
         return Unauthorized();
     }
+    /*[HttpPost]
+    [Route("AddRegister")]
+    public ActionResult CreateUser([FromBody] LoginRegister reg)
+    {
+        //MongoClient client = new MongoClient("mongodb+srv://mongo:sifra123@cluster0.ewwnh.mongodb.net/test");
+        //var server = MongoServer.Create(client);
+        MongoClient client = new MongoClient("mongodb+srv://mongo:sifra123@cluster0.ewwnh.mongodb.net/test");
+       // MongoServer server = client.GetServer();
+        var database = client.GetDatabase("Dostavi");
+
+        var collection = database.GetCollection<LoginRegister>("login_register");
+        collection.InsertOne(reg);
+        return Ok();
+    }*/
+
     [HttpPost]
     [AllowAnonymous]
-    [Route("registerStudent")]
+    [Route("registerKorisnik")]
     public object Registration(RegistrationModel model)
     {
         if (ModelState.IsValid)
         {
-            Cluster cluster = Cluster.Builder().AddContactPoint("127.0.0.1").Build();
+            MongoClient client = new MongoClient("mongodb+srv://mongo:sifra123@cluster0.ewwnh.mongodb.net/test");
+            MongoServer server = client.GetServer();
+            var database = server.GetDatabase("Dostavi");
 
-            var student = new Student()
+            var korisnik = new Korisnik()
             {
                 Email = model.Email,
-                GodinaUpisa = model.GodinaUpisa,
                 Ime = model.Ime,
-                Indeks = model.Indeks,
-                Odobren = false,
                 Prezime = model.Prezime,
-                Semestar = model.Semestar,
-                Smer = model.Smer,
-                Dugovanje = "0"
+                Adresa = model.Adresa,
+                Grad = model.Grad,
+                Telefon = model.Telefon
             };
             var salt = GenerateSalt(70);
             var hashPass = HashPassword(model.Password!, salt, 10101, 70);
             var register = new LoginRegister()
             {
                 Email = model.Email,
-                Role = "Student",
+                Role = "Korisnik",
                 Password_Hash = hashPass,
                 Salt = salt
             };
 
             try
-            {
-                Cassandra.ISession localSession = cluster.Connect("test");
-                IMapper mapper = new Mapper(localSession);
-                var check = mapper.FirstOrDefault<LoginRegister>("WHERE email=?", register.Email);
+            {              
+                var collection = database.GetCollection<LoginRegister>("login_register");
+                var collection2 = database.GetCollection<Korisnik>("korisnik");
+                var query = Query.EQ("Email", model.Email);
+                var check = collection.Find(query).FirstOrDefault();
 
                 if (check != null)
                 {
                     return BadRequest("Postoji osoba sa tim emailom");
                 }
-                mapper.InsertIfNotExists<Student>(student);
-                mapper.InsertIfNotExists<LoginRegister>(register);
+                collection.Insert(register);
+                collection2.Insert(korisnik);
                 return Ok();
             }
             catch (Exception ex)
@@ -133,66 +141,67 @@ public class AccountController : ControllerBase
 
                 return BadRequest(ex.Message);
             }
-            finally
-            {
-                cluster.Shutdown();
-            }
         }
         else
         {
             return BadRequest();
         }
     }
-    [Authorize(Roles = "Administrator")]
     [HttpPost]
     [AllowAnonymous]
-    [Route("registerProfesor")]
-    public object ProfesorRegistration(ProfesorRegistrationModel model)
+    [Route("registerRestoran")]
+    public object RestoranRegistration(RestoranRegistrationModel model)
     {
         if (ModelState.IsValid)
         {
-            Cluster cluster = Cluster.Builder().AddContactPoint("127.0.0.1").Build();
+            MongoClient client = new MongoClient("mongodb+srv://mongo:sifra123@cluster0.ewwnh.mongodb.net/test");
+            MongoServer server = client.GetServer();
+            var database = server.GetDatabase("Dostavi");
 
-            var profesor = new Profesor()
+            var restoran = new Restoran()
             {
                 Email = model.Email,
-                Ime = model.Ime,
-                Prezime = model.Prezime,
-                Br_telefona = model.Br_telefona,
-                Kancelarija = model.Kancelarija
+                Naziv = model.Naziv,
+                Adresa = model.Adresa,
+                Grad = model.Grad,
+                Telefon = model.Telefon,
+                Opis = model.Opis,
+                RadnoVreme = model.RadnoVreme,
+                VremeDostave = model.VremeDostave,
+                CenaDostave = model.CenaDostave,
+                LimitDostave = model.LimitDostave,
+                SlobodnaMesta = 0,
+                ProsecnaOcena = 0,
+                Kapacitet = 0
             };
             var salt = GenerateSalt(70);
             var hashPass = HashPassword(model.Password!, salt, 10101, 70);
             var register = new LoginRegister()
             {
                 Email = model.Email,
-                Role = "Profesor",
+                Role = "Restoran",
                 Password_Hash = hashPass,
                 Salt = salt
             };
 
             try
             {
-                Cassandra.ISession localSession = cluster.Connect("test");
-                IMapper mapper = new Mapper(localSession);
-                var check = mapper.FirstOrDefault<LoginRegister>("WHERE email=?", register.Email);
+                var collection = database.GetCollection<LoginRegister>("login_register");
+                var collection2 = database.GetCollection<Restoran>("restoran");
+                var query = Query.EQ("Email", model.Email);
+                var check = collection.Find(query).FirstOrDefault();
 
                 if (check != null)
                 {
                     return BadRequest("Postoji osoba sa tim emailom");
                 }
-                mapper.InsertIfNotExists<Profesor>(profesor);
-                mapper.InsertIfNotExists<LoginRegister>(register);
+                collection.Insert(register);
+                collection2.Insert(restoran);
                 return Ok();
             }
             catch (Exception ex)
             {
-
                 throw ex;
-            }
-            finally
-            {
-                cluster.Shutdown();
             }
         }
         else
