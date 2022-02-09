@@ -103,19 +103,13 @@ public class RestoranController : ControllerBase
         Kategorija kat = new Kategorija();
         kat.Naziv = naziv;
         var collection = database.GetCollection<Kategorija>("kategorija");
-        collection.Insert(kat);
-
-        return Ok();
-    }
-
-    [HttpPut]
-    [Route("UpdateRestoran/{naziv}")]
-    public ActionResult UpdateRestoran(string naziv)
-    {
+        var query = Query.EQ("Naziv", naziv);    
+        var check = collection.Find(query).FirstOrDefault();
+        if (check == null)
+        {
+            collection.Insert(kat);
+        }
         
-        MongoClient client = new MongoClient("mongodb+srv://mongo:sifra123@cluster0.ewwnh.mongodb.net/test");
-        MongoServer server = client.GetServer();
-        var database = server.GetDatabase("Dostavi");
         return Ok();
     }
 
@@ -128,19 +122,42 @@ public class RestoranController : ControllerBase
         var database = server.GetDatabase("Dostavi");
 
         var collection = database.GetCollection<Jela>("jela");
-        collection.Insert(jelo);
         var query1 = Query.EQ("Naziv", jelo.Naziv);
-        var s = collection.Find(query1).First();
-        AddKategorija(jelo.Kategorija);
+        var s = collection.Find(query1).FirstOrDefault();
+        if (s == null)
+        {
+            collection.Insert(jelo);
+            s = collection.Find(query1).FirstOrDefault();
+        }
+        
+        AddKategorija(jelo.Kategorija); // dodajemo kategoriju u kolekciji ako vec ne postoji
 
         var collection2 = database.GetCollection<Kategorija>("kategorija");
         var query = Query.EQ("Naziv", jelo.Kategorija);    
-        var p = collection2.Find(query).First();
+        var p = collection2.Find(query).FirstOrDefault();
 
         var collection3 = database.GetCollection<Restoran>("restoran");
         var query2 = Query.EQ("Naziv", naziv);
-        var update = Update.PushWrapped("KategorijeIdList", p.Id);
-        collection3.Update(query2, update);
+        var provera = collection3.Find(Query.EQ("KategorijeIdList", p.Id)); // moramo da proverimo da se vec ta kategorija ne nalazi u listi da se ne bi dupliralo
+        var provera2 = collection3.Find(Query.EQ("JelaIdList", s.Id));
+        bool flag = false;
+        if (provera.Count() == 0)
+        {
+            var update3 = Update.PushWrapped("KategorijeIdList", p.Id);
+            collection3.Update(query2, update3);
+            flag = true;
+        }      
+        if (provera2.Count() == 0)
+        {
+            var update2 = Update.PushWrapped("JelaIdList", s.Id); // upisujemo id jela u listu kod restorana     
+            collection3.Update(query2,update2); // azuriramo
+            flag = true;
+        }
+        if (flag == false)
+        {
+            return BadRequest("Ne mozete dodati isto jelo/kategoriju");
+        }
+
         return Ok();
     }
 
