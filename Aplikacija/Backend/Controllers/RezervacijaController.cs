@@ -14,7 +14,7 @@ public class RezervacijaController : ControllerBase
     [Route("GetReservations")]
     public List<Rezervacija> GetReservations()
     {
-  
+
         MongoClient client = new MongoClient("mongodb+srv://mongo:sifra123@cluster0.ewwnh.mongodb.net/test");
         MongoServer server = client.GetServer();
         var database = server.GetDatabase("Dostavi");
@@ -40,11 +40,11 @@ public class RezervacijaController : ControllerBase
 
         //user.Ime = imeKorisnik;
         var collection = database.GetCollection<Korisnik>("korisnik");
-        var query = Query.EQ("Ime", imeKorisnik);      
+        var query = Query.EQ("Ime", imeKorisnik);
         user = collection.Find(query).First();
 
         var collection2 = database.GetCollection<Restoran>("restoran");
-        var query2 = Query.EQ("Naziv", imeRestoran);      
+        var query2 = Query.EQ("Naziv", imeRestoran);
         restoran = collection2.Find(query2).First();
 
         var collection3 = database.GetCollection<Rezervacija>("rezervacija");
