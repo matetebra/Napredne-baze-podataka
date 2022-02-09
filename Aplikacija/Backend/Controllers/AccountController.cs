@@ -36,7 +36,7 @@ public class AccountController : ControllerBase
             MongoServer server = client.GetServer();
             var database = server.GetDatabase("Dostavi");
 
-            
+
             LoginRegister account = new LoginRegister();
             var collection = database.GetCollection<LoginRegister>("login_register");
             var query = Query.EQ("Email", model.Email);
@@ -52,7 +52,7 @@ public class AccountController : ControllerBase
             }
             var authClaims = new List<Claim>
                             {
-                               new Claim(ClaimTypes.Name,account.Email!),
+                               new Claim(ClaimTypes.Name,model.Email!),
                                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                                new Claim(ClaimTypes.Role, account.Role!)
                             };
@@ -64,7 +64,7 @@ public class AccountController : ControllerBase
             claims: authClaims,
             signingCredentials: new SigningCredentials(authSiginKey, SecurityAlgorithms.HmacSha256Signature)
             );
-            
+
             return Ok(new
             {
                 token = new JwtSecurityTokenHandler().WriteToken(token),
@@ -106,7 +106,7 @@ public class AccountController : ControllerBase
             };
 
             try
-            {              
+            {
                 var collection = database.GetCollection<LoginRegister>("login_register");
                 var collection2 = database.GetCollection<Korisnik>("korisnik");
                 var query = Query.EQ("Email", model.Email);

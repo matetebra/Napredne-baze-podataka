@@ -1,4 +1,5 @@
 using MongoDB.Bson;
+using MongoDB.Driver;
 
 namespace Backend.Models;
 
@@ -11,13 +12,13 @@ public class Korisnik
     public String? Adresa { get; set; }
     public String? Grad { get; set; }
     public String? Telefon { get; set; }
-    public List<ObjectId>? RestoranKorisnikIdList { get; set; }
-    public List<ObjectId>? PorudzbinaKorisnikIdList { get; set; }
+    public List<MongoDBRef>? RestoranKorisnikIdList { get; set; }
+    public List<MongoDBRef>? PorudzbinaKorisnikIdList { get; set; }
 
     public Korisnik()
     {
-        RestoranKorisnikIdList = new List<ObjectId>();
+        RestoranKorisnikIdList = new List<MongoDBRef>();
 
-        PorudzbinaKorisnikIdList = new List<ObjectId>();
+        PorudzbinaKorisnikIdList = new List<MongoDBRef>();
     }
 }
