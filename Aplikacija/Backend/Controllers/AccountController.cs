@@ -41,8 +41,6 @@ public class AccountController : ControllerBase
             var collection = database.GetCollection<LoginRegister>("login_register");
             var query = Query.EQ("Email", model.Email);
             account = collection.Find(query).FirstOrDefault();
-
-            //LoginRegister account = mapper.FirstOrDefault<LoginRegister>("WHERE email=?", model.Email);
             var hash = HashPassword(model.Password!, account.Salt!, 10101, 70);
             if (account == null)
             {
@@ -76,20 +74,6 @@ public class AccountController : ControllerBase
         }
         return Unauthorized();
     }
-    /*[HttpPost]
-    [Route("AddRegister")]
-    public ActionResult CreateUser([FromBody] LoginRegister reg)
-    {
-        //MongoClient client = new MongoClient("mongodb+srv://mongo:sifra123@cluster0.ewwnh.mongodb.net/test");
-        //var server = MongoServer.Create(client);
-        MongoClient client = new MongoClient("mongodb+srv://mongo:sifra123@cluster0.ewwnh.mongodb.net/test");
-       // MongoServer server = client.GetServer();
-        var database = client.GetDatabase("Dostavi");
-
-        var collection = database.GetCollection<LoginRegister>("login_register");
-        collection.InsertOne(reg);
-        return Ok();
-    }*/
 
     [HttpPost]
     [AllowAnonymous]
@@ -138,7 +122,6 @@ public class AccountController : ControllerBase
             }
             catch (Exception ex)
             {
-
                 return BadRequest(ex.Message);
             }
         }
@@ -201,7 +184,7 @@ public class AccountController : ControllerBase
             }
             catch (Exception ex)
             {
-                throw ex;
+                return BadRequest(ex.Message);
             }
         }
         else

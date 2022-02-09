@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>Backend</RootNamespace>
+    <NoWarn>0618;8600;8602;0023</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

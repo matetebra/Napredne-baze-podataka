@@ -3,6 +3,13 @@ using Backend.Models;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Builders;
+using Microsoft.AspNetCore.Authorization;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Text;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace Backend.Controllers;
 
@@ -10,7 +17,10 @@ namespace Backend.Controllers;
 [Route("[controller]")]
 public class KorisnikController : ControllerBase
 {
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(Roles = "Restoran")]
     [HttpGet]
+    
     [Route("GetUsers")]
     public List<Korisnik> GetUsers()
     {
@@ -77,16 +87,34 @@ public class KorisnikController : ControllerBase
     }
 
     [HttpDelete]
-    public ActionResult DeleteUser(string userId)
+    [Route("DeleteAccKorisnik")]
+    public ActionResult DeleteAccKorisnik(string email)
+    {
+        MongoClient client = new MongoClient("mongodb+srv://mongo:sifra123@cluster0.ewwnh.mongodb.net/test");
+        MongoServer server = client.GetServer();
+        var database = server.GetDatabase("Dostavi");
+
+        var collection = database.GetCollection<LoginRegister>("login_register");
+
+        var query = Query.EQ("Email", email);
+
+        collection.Remove(query);
+
+        return Ok();
+    }
+
+    [HttpDelete]
+    [Route("DeleteUser/{email}")]
+    public ActionResult DeleteUser(string email)
     {
         MongoClient client = new MongoClient("mongodb+srv://mongo:sifra123@cluster0.ewwnh.mongodb.net/test");
         MongoServer server = client.GetServer();
         var database = server.GetDatabase("Dostavi");
 
         var collection = database.GetCollection<Korisnik>("korisnik");
-
-        var query = Query.EQ("_id", new ObjectId(userId));
-
+        
+        var query = Query.EQ("Email", email);
+        DeleteAccKorisnik(email);
         collection.Remove(query);
 
         return Ok();

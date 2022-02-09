@@ -9,6 +9,6 @@ public class Porudzbina
     public Boolean Dostavljena { get; set; }
     public DateTime Datum { get; set; }
     public String? Dostavljac { get; set; }
-    public ObjectId KorisnikPorudzbinaIdList { get; set; }
+    public ObjectId KorisnikPorudzbinaId { get; set; }
     public ObjectId JeloIdList { get; set; }
 }

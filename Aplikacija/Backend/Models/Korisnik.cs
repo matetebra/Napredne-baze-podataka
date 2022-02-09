@@ -1,5 +1,6 @@
-namespace Backend.Models;
 using MongoDB.Bson;
+
+namespace Backend.Models;
 
 public class Korisnik
 {
