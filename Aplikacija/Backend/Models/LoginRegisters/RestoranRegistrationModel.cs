@@ -32,7 +32,9 @@ namespace Backend.Models.LoginRegisters
         public String? Opis { get; set; }
 
         [Required(ErrorMessage = " RadnoVreme is required")]
-        public String? RadnoVreme { get; set; }
+        public int? pocetakRV { get; set; }
+        [Required(ErrorMessage = " RadnoVreme is required")]
+        public int? krajRV { get; set; }
 
         [Required(ErrorMessage = " VremeDostave is required")]
         public String? VremeDostave { get; set; }
