@@ -3,11 +3,13 @@ using Backend.Models;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Builders;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace Backend.Controllers;
 
 [ApiController]
 [Route("[controller]")]
+[BsonIgnoreExtraElements]
 public class RezervacijaController : ControllerBase
 {
     [HttpGet]
@@ -28,12 +30,13 @@ public class RezervacijaController : ControllerBase
 
     [HttpPost]
     [Route("AddReservation/{imeRestoran}")]
-    public ActionResult AddReservation([FromBody] Rezervacija rezervacija, string imeRestoran)
-    {
-        Korisnik user = new Korisnik();
-        Restoran restoran = new Restoran();
+    public ActionResult AddReservation(string imeRestoran)
+    { 
         MongoClient client = new MongoClient("mongodb+srv://mongo:sifra123@cluster0.ewwnh.mongodb.net/test");
         MongoServer server = client.GetServer();
+        Rezervacija rezervacija = new Rezervacija();
+        Korisnik user = new Korisnik();
+        Restoran restoran = new Restoran();
         var database = server.GetDatabase("Dostavi");
         var email = HttpContext.User.Identity!.Name;
 
