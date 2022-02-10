@@ -68,26 +68,25 @@ public class SlavkoController : ControllerBase
 
         if (HttpContext.User.Identity.Name == null)
         {
-            var allRestaunats = (from restoran in restaurantsCollection.FindAll().SetLimit(6).AsQueryable<Restoran>()
+            var allRestaunats = (from restoran in restaurantsCollection.FindAll().SetLimit(12).AsQueryable<Restoran>()
                                  where restoran.pocetakRV < localtime
                                  where restoran.krajRV > localtime
-                                 select new { restoran.Naziv, restoran.Adresa, restoran.Telefon }).ToList();
+                                 select new { Id = restoran.Id.ToString(), restoran.Naziv, restoran.Adresa, restoran.Telefon }).ToList();
             return Ok(allRestaunats);
         }
         else
         {
             var usersCollection = database.GetCollection<Korisnik>("korisnik");
 
-            var userGrad = (from korisnik in usersCollection.FindAll().SetLimit(6).AsQueryable<Korisnik>()
+            var userGrad = (from korisnik in usersCollection.AsQueryable<Korisnik>()
                             where korisnik.Email == HttpContext.User.Identity.Name
                             select korisnik.Grad).FirstOrDefault();
             var allRestaunats = (from restoran in restaurantsCollection.AsQueryable<Restoran>()
                                  where restoran.Grad == userGrad
                                  where restoran.pocetakRV < localtime
                                  where restoran.krajRV > localtime
-                                 select new { restoran.Naziv, restoran.Adresa, restoran.Telefon }).ToList();
+                                 select new { Id = restoran.Id.ToString(), restoran.Naziv, restoran.Adresa, restoran.Telefon }).ToList();
             return Ok(allRestaunats);
         }
     }
-
 }
