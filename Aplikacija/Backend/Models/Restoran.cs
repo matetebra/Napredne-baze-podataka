@@ -2,7 +2,7 @@ namespace Backend.Models;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
-public class Restoran 
+public class Restoran
 {
     public ObjectId Id { get; set; }
     public String? Email { get; set; }
@@ -11,7 +11,8 @@ public class Restoran
     public String? Grad { get; set; }
     public String? Telefon { get; set; }
     public String? Opis { get; set; }
-    public String? RadnoVreme { get; set; }
+    public int? pocetakRV { get; set; }
+    public int? krajRV { get; set; }
     public float ProsecnaOcena { get; set; }
     public String? VremeDostave { get; set; }
     public int CenaDostave { get; set; }
@@ -30,7 +31,7 @@ public class Restoran
         KomentariIdList = new List<MongoDBRef>();
 
         JelaIdList = new List<MongoDBRef>();
-        
+
         DodatakIdList = new List<MongoDBRef>();
     }
 }
