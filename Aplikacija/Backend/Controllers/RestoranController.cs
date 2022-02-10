@@ -5,16 +5,14 @@ using MongoDB.Driver;
 using MongoDB.Driver.Builders;
 using Microsoft.AspNetCore.Authorization;
 using MongoDB.Driver.Linq;
-using MongoDB.Bson.Serialization.Attributes;
 
 namespace Backend.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-[BsonIgnoreExtraElements]
 public class RestoranController : ControllerBase
 {
-    [HttpGet]
+    /*[HttpGet]
     [Route("GetRestaurants")]
     public IActionResult GetRestaurants()
     {
@@ -37,7 +35,7 @@ public class RestoranController : ControllerBase
                                select jela).FirstOrDefault();
                 svaJela.Add(query12!);
             }
-        }*/}
+        }}
         return Ok(new
         {
             Naziv = "Cezar",
@@ -46,7 +44,7 @@ public class RestoranController : ControllerBase
 
 
         //return Ok(svaJela);
-    }
+    }*/
 
     [HttpGet]
     [Route("GetRestaurantByName/{name}")]
@@ -182,16 +180,12 @@ public class RestoranController : ControllerBase
             {
                 brojac2++;
             }
-        }
-       // var provera = Query.EQ("KategorijeIdList", p.Id); // moramo da proverimo da se vec ta kategorija ne nalazi u listi da se ne bi dupliralo
-       // var provera2 = restoranCollection.Find(Query.EQ("JelaIdList", s.Id));       
+        }     
         if (brojac1 == 0)
         {
-            //rest.KategorijeIdList.Add(new MongoDBRef("kategorija", p.Id));
             var upit = Query.EQ("_id", rest.Id);
             var update = Update.PushWrapped("KategorijeIdList", new MongoDBRef("kategorija", p.Id));
             restoranCollection.Update(upit,update);
-            //restoranCollection.Save(rest);
             flag = true;
         }
         if (brojac2 == 0)
@@ -199,7 +193,6 @@ public class RestoranController : ControllerBase
             var upit = Query.EQ("_id", rest.Id);
             var update = Update.PushWrapped("JelaIdList", new MongoDBRef("jela", s.Id));
             restoranCollection.Update(upit,update);
-            //restoranCollection.Save(rest); // azuriramo
             flag = true;
         }
         if (flag == false)

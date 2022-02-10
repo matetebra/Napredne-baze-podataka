@@ -3,17 +3,11 @@ using Backend.Models;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Builders;
-<<<<<<< HEAD
-using MongoDB.Bson.Serialization.Attributes;
-=======
 using Backend.Models.DTO;
->>>>>>> b2027b2779b6c2b5d02f870e7c48984500f5dd12
-
 namespace Backend.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-[BsonIgnoreExtraElements]
 public class RezervacijaController : ControllerBase
 {
     [HttpGet]
@@ -33,31 +27,23 @@ public class RezervacijaController : ControllerBase
 
 
     [HttpPost]
-    [Route("AddReservation/{imeRestoran}")]
-<<<<<<< HEAD
-    public ActionResult AddReservation(string imeRestoran)
-    { 
-=======
-    public IActionResult AddReservation([FromBody] RezervacijaDTO rez, string imeRestoran)
+    [Route("AddReservation/{emailRestoran}")]
+    public IActionResult AddReservation([FromBody] RezervacijaDTO rez, string emailRestoran)
     {
         Restoran restoran = new Restoran();
         Korisnik user = new Korisnik();
->>>>>>> b2027b2779b6c2b5d02f870e7c48984500f5dd12
         MongoClient client = new MongoClient("mongodb+srv://mongo:sifra123@cluster0.ewwnh.mongodb.net/test");
         MongoServer server = client.GetServer();
-        Rezervacija rezervacija = new Rezervacija();
-        Korisnik user = new Korisnik();
-        Restoran restoran = new Restoran();
         var database = server.GetDatabase("Dostavi");
         var email = HttpContext.User.Identity!.Name;
 
         var collection = database.GetCollection<Korisnik>("korisnik");
         var query = Query.EQ("Email", email);
-        user = collection.Find(query).First();
+        user = collection.Find(query).FirstOrDefault();
 
         var collection2 = database.GetCollection<Restoran>("restoran");
-        var query2 = Query.EQ("Naziv", imeRestoran);
-        restoran = collection2.Find(query2).First();
+        var query2 = Query.EQ("Email", emailRestoran);
+        restoran = collection2.Find(query2).FirstOrDefault();
 
         Rezervacija rezervacija = new Rezervacija();
 
