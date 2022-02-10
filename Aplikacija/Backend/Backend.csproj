@@ -4,10 +4,18 @@
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>Backend</RootNamespace>
+    <NoWarn>0618;8600;8602;0023</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="JWT" Version="8.9.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.1" />
+    <PackageReference Include="mongocsharpdriver" Version="2.14.1" />
+    <PackageReference Include="MongoDB.Bson" Version="2.14.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.15.1" />
   </ItemGroup>
 
 </Project>
