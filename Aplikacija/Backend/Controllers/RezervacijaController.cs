@@ -48,8 +48,8 @@ public class RezervacijaController : ControllerBase
         restoran = collection2.Find(query2).First();
 
         var collection3 = database.GetCollection<Rezervacija>("rezervacija");
-        rezervacija.KorisnikRezervacijaId = user.Id;
-        rezervacija.RestoranRezervacijaId = restoran.Id;
+        //rezervacija.KorisnikRezervacijaId = user.Id;
+        //rezervacija.RestoranRezervacijaId = restoran.Id;
         collection3.Insert(rezervacija);
 
         return Ok();

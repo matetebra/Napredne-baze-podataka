@@ -1,5 +1,6 @@
 namespace Backend.Models;
 using MongoDB.Bson;
+using MongoDB.Driver;
 
 public class Rezervacija
 {
@@ -7,6 +8,6 @@ public class Rezervacija
     public String? BrojMesta { get; set; }
     public String? Vreme { get; set; }
     public DateTime Datum { get; set; }
-    public ObjectId KorisnikRezervacijaId { get; set; }
-    public ObjectId RestoranRezervacijaId { get; set; }
+    public MongoDBRef? KorisnikRezervacijaId { get; set; }
+    public MongoDBRef? RestoranRezervacijaId { get; set; }
 }

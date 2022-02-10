@@ -75,10 +75,7 @@ public class KorisnikController : ControllerBase
     [Route("AddUsers")]
     public ActionResult CreateUser([FromBody] Korisnik korisnik)
     {
-        //MongoClient client = new MongoClient("mongodb+srv://mongo:sifra123@cluster0.ewwnh.mongodb.net/test");
-        //var server = MongoServer.Create(client);
         MongoClient client = new MongoClient("mongodb+srv://mongo:sifra123@cluster0.ewwnh.mongodb.net/test");
-       // MongoServer server = client.GetServer();
         var database = client.GetDatabase("Dostavi");
 
         var collection = database.GetCollection<Korisnik>("korisnik");

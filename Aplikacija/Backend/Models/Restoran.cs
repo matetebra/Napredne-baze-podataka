@@ -1,5 +1,6 @@
 namespace Backend.Models;
 using MongoDB.Bson;
+using MongoDB.Driver;
 
 public class Restoran 
 {
@@ -17,19 +18,19 @@ public class Restoran
     public int LimitDostave { get; set; }
     public int Kapacitet { get; set; }
     public int SlobodnaMesta { get; set; }
-    public List<ObjectId>? KategorijeIdList { get; set; }
-    public List<ObjectId>? KomentariIdList { get; set; }
-    public List<ObjectId>? JelaIdList { get; set; }
-    public List<ObjectId>? DodatakIdList { get; set; }
+    public List<MongoDBRef>? KategorijeIdList { get; set; }
+    public List<MongoDBRef>? KomentariIdList { get; set; }
+    public List<MongoDBRef>? JelaIdList { get; set; }
+    public List<MongoDBRef>? DodatakIdList { get; set; }
 
     public Restoran()
     {
-        KategorijeIdList = new List<ObjectId>();
+        KategorijeIdList = new List<MongoDBRef>();
 
-        KomentariIdList = new List<ObjectId>();
+        KomentariIdList = new List<MongoDBRef>();
 
-        JelaIdList = new List<ObjectId>();
+        JelaIdList = new List<MongoDBRef>();
         
-        DodatakIdList = new List<ObjectId>();
+        DodatakIdList = new List<MongoDBRef>();
     }
 }

@@ -5,11 +5,13 @@ using MongoDB.Driver;
 using MongoDB.Driver.Builders;
 using Microsoft.AspNetCore.Authorization;
 using MongoDB.Driver.Linq;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace Backend.Controllers;
 
 [ApiController]
 [Route("[controller]")]
+[BsonIgnoreExtraElements]
 public class RestoranController : ControllerBase
 {
     [HttpGet]
@@ -28,14 +30,14 @@ public class RestoranController : ControllerBase
         MongoCursor<Restoran> restorani = collection.FindAll();
         foreach (Restoran r in restorani)
         {
-            foreach (ObjectId jeloID in r.JelaIdList)
+      /*      foreach (ObjectId jeloID in r.JelaIdList)
             {
                 var query12 = (from jela in kolekcijaJela.AsQueryable<Jela>()
                                where jela.Id == jeloID
                                select jela).FirstOrDefault();
                 svaJela.Add(query12!);
             }
-        }
+        }*/}
         return Ok(new
         {
             Naziv = "Cezar",
@@ -68,10 +70,7 @@ public class RestoranController : ControllerBase
     [Route("AddRestaurants")]
     public ActionResult CreateRestaurants([FromBody] Restoran restoran)
     {
-        //MongoClient client = new MongoClient("mongodb+srv://mongo:sifra123@cluster0.ewwnh.mongodb.net/test");
-        //var server = MongoServer.Create(client);
         MongoClient client = new MongoClient("mongodb+srv://mongo:sifra123@cluster0.ewwnh.mongodb.net/test");
-        // MongoServer server = client.GetServer();
         var database = client.GetDatabase("Dostavi");
 
         var collection = database.GetCollection<Restoran>("restoran");
@@ -140,42 +139,67 @@ public class RestoranController : ControllerBase
     public ActionResult CreateMeal([FromBody] Jela jelo)
     {
 
-        string restoran = HttpContext.User.Identity!.Name;
+        string email = HttpContext.User.Identity!.Name;
 
         MongoClient client = new MongoClient("mongodb+srv://mongo:sifra123@cluster0.ewwnh.mongodb.net/test");
         MongoServer server = client.GetServer();
         var database = server.GetDatabase("Dostavi");
 
-        var collection = database.GetCollection<Jela>("jela");
+        var jeloCollection = database.GetCollection<Jela>("jela");
+        var collection2 = database.GetCollection<Kategorija>("kategorija");
+        var restoranCollection = database.GetCollection<Restoran>("restoran");
+        
+        
         var query1 = Query.EQ("Naziv", jelo.Naziv);
-        var s = collection.Find(query1).FirstOrDefault();
+        var s = jeloCollection.Find(query1).FirstOrDefault();
         if (s == null)
         {
-            collection.Insert(jelo);
-            s = collection.Find(query1).FirstOrDefault();
+            jeloCollection.Insert(jelo);
+            s = jeloCollection.Find(query1).FirstOrDefault();
         }
 
         AddKategorija(jelo.Kategorija); // dodajemo kategoriju u kolekciji ako vec ne postoji
 
-        var collection2 = database.GetCollection<Kategorija>("kategorija");
+        
         var query = Query.EQ("Naziv", jelo.Kategorija);
         var p = collection2.Find(query).FirstOrDefault();
-
-        var collection3 = database.GetCollection<Restoran>("restoran");
-        var query2 = Query.EQ("Email", restoran);
-        var provera = collection3.Find(Query.EQ("KategorijeIdList", p.Id)); // moramo da proverimo da se vec ta kategorija ne nalazi u listi da se ne bi dupliralo
-        var provera2 = collection3.Find(Query.EQ("JelaIdList", s.Id));
+        var rest = (from restoran in restoranCollection.AsQueryable<Restoran>()
+                        where restoran.Email == email
+                        select restoran).FirstOrDefault();
+        int brojac1 = 0;
+        int brojac2 = 0;
         bool flag = false;
-        if (provera.Count() == 0)
+        foreach (MongoDBRef mdb in rest.KategorijeIdList)
         {
-            var update3 = Update.PushWrapped("KategorijeIdList", p.Id);
-            collection3.Update(query2, update3);
+            if (mdb.Id == p.Id)
+            {
+                brojac1++;
+            }
+        }
+        foreach (MongoDBRef mdb in rest.JelaIdList)
+        {
+            if (mdb.Id == s.Id)
+            {
+                brojac2++;
+            }
+        }
+       // var provera = Query.EQ("KategorijeIdList", p.Id); // moramo da proverimo da se vec ta kategorija ne nalazi u listi da se ne bi dupliralo
+       // var provera2 = restoranCollection.Find(Query.EQ("JelaIdList", s.Id));       
+        if (brojac1 == 0)
+        {
+            //rest.KategorijeIdList.Add(new MongoDBRef("kategorija", p.Id));
+            var upit = Query.EQ("_id", rest.Id);
+            var update = Update.PushWrapped("KategorijeIdList", new MongoDBRef("kategorija", p.Id));
+            restoranCollection.Update(upit,update);
+            //restoranCollection.Save(rest);
             flag = true;
         }
-        if (provera2.Count() == 0)
+        if (brojac2 == 0)
         {
-            var update2 = Update.PushWrapped("JelaIdList", s.Id); // upisujemo id jela u listu kod restorana     
-            collection3.Update(query2, update2); // azuriramo
+            var upit = Query.EQ("_id", rest.Id);
+            var update = Update.PushWrapped("JelaIdList", new MongoDBRef("jela", s.Id));
+            restoranCollection.Update(upit,update);
+            //restoranCollection.Save(rest); // azuriramo
             flag = true;
         }
         if (flag == false)
