@@ -1,4 +1,3 @@
-
 export class restoran{
     constructor(naziv, adresa, grad, email, telefon, opis, radnoVreme, vremeDostave, cenaDostave, limitDostave, kapacitet, brSlobodnih ){
         this.naziv=naziv;
@@ -70,7 +69,14 @@ export class restoran{
         pogled.classList.add("btn-a");
         pogled.innerHTML = "Pogledaj";
         pom.appendChild(pogled);
+    }
+    crtajNeodobrene(){
         
-        
+    }
+    preuzmiZaCrtanje(){
+
+    }
+    preuzmiNeodobrene(){
+
     }
 }

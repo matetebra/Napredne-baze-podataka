@@ -17,7 +17,6 @@
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Muli:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
 
   <!-- Vendor CSS Files -->
-  <link href="assets/vendor/animate.css/animate.min.css" rel="stylesheet">
   <link href="assets/vendor/aos/aos.css" rel="stylesheet">
   <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
   <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
@@ -36,7 +35,6 @@
     <div class="container d-flex justify-content-center justify-content-md-between">
       <div class="contact-info d-flex align-items-center">
         <i id="mail" class="bi bi-envelope d-flex align-items-center"><a>contact@example.com</a></i>
-        <i id="phone" class="bi bi-phone d-flex align-items-center ms-4"><span>+1 5589 55488 55</span></i>
       </div>
     </div>
   </section>
@@ -46,7 +44,7 @@
     <div class="container d-flex justify-content-between">
 
       <div class="logo">
-        <h1 id="ime" class="text-light"><a href="restoran.html">Restoran</a></h1>
+        <h1 id="ime" class="text-light"><a href="admin.html">Administrator</a></h1>
         <!-- Uncomment below if you prefer to use an image logo -->
         <!-- <a href="index.html"><img src="assets/img/logo.png" alt="" class="img-fluid"></a>-->
       </div>
@@ -69,25 +67,17 @@
   <!-- ======= Hero Section ======= -->
   <section id="hero">
     <div id="heroCarousel" data-bs-interval="5000" class="carousel slide carousel-fade" data-bs-ride="carousel">
+
       <div class="carousel-inner" role="listbox">
-        <div class="container ">
-        <button type="submit" class="btn btn-danger"id="btnOdjaviSe">Odjavi se</button>
-        <div class="title-box-d">
-          <h3 class="title-d">Adresa: <span id="adresa" class="color-text-a usernameStyle"> </span> </h3>
-        </div>
-      <div class="agent-content mb-3">
-        <h3 class="title-d">Opis: <span id="opis" class="color-text-a usernameStyle"> </span></h3>
-        <div class="info-agents color-a">
-          <h3 class="title-d">Kapacitet: <span id="kapacitet" class="color-text-a usernameStyle"> </span></h3>
-        </div>
-        <div class="info-agents color-a">
-          <h3 class="title-d">Cena dostave: <span id="cenaDostave" class="color-text-a usernameStyle"> </span></h3>
-        </div>
-        <div class="info-agents color-a">
-          <h3 class="title-d">Vreme dostave: <span id="vremeDostave" class="color-text-a usernameStyle"> </span></h3>
-        </div>
-        <div class="info-agents color-a">
-          <h3 class="title-d">Limit dostave: <span id="limitDostave" class="color-text-a usernameStyle"> </span></h3>
+        <div class="container">
+        <button type="submit" style="margin-bottom: 5px; "class="btn btn-danger"id="btnOdjaviSe">Odjavi se</button>
+      </div>
+        
+      <div class="container">
+        <button id="odobri" class="btn btn-danger">Odobri restoran</button>
+        <button id="obrisi" class="btn btn-danger">Obriši restoran</button>
+        <div id="radiSeOvde" class="container">
+          
         </div>
       </div>
       </div>
@@ -127,6 +117,7 @@
 
   <!-- Template Main JS File -->
   <script src="assets/js/main.js"></script>
+  <script type="module" src="assets/js/admin.js"></script>
 
 </body>
 
