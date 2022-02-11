@@ -175,5 +175,69 @@ public class SlavkoController : ControllerBase
                              select new { restoran.Email, restoran.Naziv, restoran.Adresa, restoran.Telefon }).ToList();
         return Ok(allRestaunats);
     }
+    [HttpGet]
+    [Route("GetBookmarked")]
+    public IActionResult getBookmarked()
+    {
+        MongoClient client = new MongoClient("mongodb+srv://mongo:sifra123@cluster0.ewwnh.mongodb.net/test");
+        MongoServer server = client.GetServer();
+        var database = server.GetDatabase("Dostavi");
 
+        var email = HttpContext.User.Identity.Name;
+
+        var usersCollection = database.GetCollection<Korisnik>("korisnik");
+
+        var bookMarked = (from korisnik in usersCollection.AsQueryable<Korisnik>()
+                          where korisnik.Email == email
+                          select korisnik.RestoranKorisnikIdList).FirstOrDefault();
+
+        List<Restoran> sviRestorani = new List<Restoran>();
+        foreach (MongoDBRef r in bookMarked)
+        {
+            sviRestorani.Add(database.FetchDBRefAs<Restoran>(r));
+        }
+        return Ok(sviRestorani);
+    }
+    [HttpGet]
+    [Route("PrethodnePorudzbine")]
+    public IActionResult prethodnePorudzbine()//MOZDA NE RADI NE MOGU SAD TRENUTNO DA PROVERIM
+    {
+        MongoClient client = new MongoClient("mongodb+srv://mongo:sifra123@cluster0.ewwnh.mongodb.net/test");
+        MongoServer server = client.GetServer();
+        var database = server.GetDatabase("Dostavi");
+
+        var email = HttpContext.User.Identity.Name;
+
+        var usersCollection = database.GetCollection<Korisnik>("korisnik");
+
+        var porudzbine = (from korisnik in usersCollection.AsQueryable<Korisnik>()
+                          where korisnik.Email == email
+                          select korisnik.PorudzbinaKorisnikIdList).FirstOrDefault();
+
+        List<Porudzbina> porudzbinas = new List<Porudzbina>();
+        foreach (MongoDBRef r in porudzbine)
+        {
+            porudzbinas.Add(database.FetchDBRefAs<Porudzbina>(r));
+        }
+        List<object> toReturn = new List<object>();
+
+        List<Dodatak> dodaci = new List<Dodatak>();
+
+        foreach (Porudzbina p in porudzbinas)
+        {
+            dodaci.Clear();
+            foreach (MongoDBRef r in p.Dodaci)
+            {
+                dodaci.Add(database.FetchDBRefAs<Dodatak>(r));
+            }
+            toReturn.Add(new
+            {
+                Jela = database.FetchDBRefAs<Jela>(p.JeloIdList),
+                Dodaci = dodaci,
+                Naziv = database.FetchDBRefAs<Restoran>(p.Restoran).Naziv,
+                Cena = p.UkupnaCena
+            });
+        }
+        return Ok(toReturn);
+    }
 }
