@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-  <title>Dostavi PrijaviSe</title>
+  <title>Dostavi Registrujr estoran</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
 
@@ -38,13 +38,14 @@
     <div class="container d-flex align-items-center">
 
       <h1 class="logo me-auto"><a href="index.html">Dostavi</a></h1>
-
+      <!-- Uncomment below if you prefer to use an image logo -->
+      <!-- <a href="index.html" class="logo me-auto"><img src="assets/img/logo.png" alt="" class="img-fluid"></a>-->
 
       <nav id="navbar" class="navbar order-last order-lg-0">
         <ul>
           <li><a href="index.html">Pocetna strana</a></li>
 
-          <li><a href="registrujRestoran.html">Registruj restoran</a></li>
+          <li><a href="registrujSe.html">Registruj se</a></li>
 
         </ul>
 
@@ -62,49 +63,35 @@
           <div class="container">
             <div class="row">
 
-              <div class="col-lg-6 col-sm-6 mb-6">
-                <p></p>
-                <h2>Prijavi se</h2>
-                <div class="hide" id="loginSpecifikacije">
-                  <form ng-controller="logCtrl" name="logForm" ng-submit="addPerson(logForm) " novalidate>
-                    <p style="color: black;">Email: *</p>
-                    <input id="usernameLogin" type="text" name="korisnickoIme" class="form-control"
-                      ng-model="korisnickoIme" required>
-                    
-                    </p>
-                    <p style="color: black;">Šifra: *</p>
-                    <input id="passwordLogin" type="password" name="lozinka" class="form-control" minlength="6"
-                      ng-model="lozinka" required>
-                      <p></p>
-                      <p><button style="border: 2px solid #f03c02; color:#fd541e;" id="login" class="btn" type="button">Prijavi se</button></p>
-                    <div style="color: black;">* Obavezna polja</div>
-                  </form>
-                </div>
-              </div>
+              
 
               <div class="col-lg-6 col-sm-6 mb-6">
                 <p></p>
-                <h2>Registruj se</h2>
+                <h2>Registruj restoran</h2>
                 <div>
                   <p style="color: black;">Email: *</p>
                   <input id="emailRegister" type="email" name="Adresa" class="form-control" ng-model="adresa" required>
                   </p>
-                  <p style="color: black;">Ime: *
+                  <p style="color: black;">Naziv: *
                   <p>
-                    <input id="imeRegister" type="text" name="Name" class="form-control" ng-model="ime" required>
-                  </p>
-                  <p style="color: black;">Prezime: *</p>
-                  <input id="prezimeRegister" type="text" name="Prezime" class="form-control" ng-model="prezime"
-                    required>
+                    <input id="Naziv" type="text" name="Naziv" class="form-control" ng-model="ime" required>
                   </p>
                   <p style="color: black;">Adresa: *</p>
-                  <input id="adresa" type="text" name="Adresa" class="form-control" ng-model="brInedeks" required>
+                  <input id="AdresaRes" type="text" name="AdresaRes" class="form-control" ng-model="prezime"
+                    required>
+                  </p>
+                  <p style="color: black;">Telefon: *</p>
+                  <input id="TelefonRes" type="text" name="TelefonRes" class="form-control" ng-model="brInedeks" required>
                   </p>
                   <p style="color: black;">Grad: *</p>
                   <input id="grad" type="text" name="Grad" class="form-control" ng-model="godUpisa" required>
                   </p>
-                  <p style="color: black;">Telefon: *</p>
-                  <input id="telefon" type="text" name="Telefon" class="form-control" ng-model="Smer" required>
+                  <p style="color: black;">Opis: *</p>
+                  <input id="Opis" type="text" name="Opis" class="form-control" ng-model="Smer" required>
+                 
+                  <p style="color: black;">Kapacitet: *</p>
+                  <input id="Kapacitet" type="text" name="Kapacitet" class="form-control" ng-model="Smer" required>
+                  
                   
                   <p style="color: black;">Šifra: *</p>
                   <input id="passwordRegister" type="password" name="sifra" class="form-control" minlength="6"
@@ -115,7 +102,7 @@
                   <input id="confirmLReg" type="password" compare-with="sifra" name="confirmR" class="form-control"
                     minlength="6" ng-model="confirmR" required>
                     <p></p>
-                  <p><button  style="border: 2px solid #f03c02; color:#fd541e;" id="registrujSe" class="btn">Registruj se</button></p>
+                  <p><button  id="registrujSe" style="border: 2px solid #f03c02; color:#fd541e;"class="btn ">Registruj se</button></p>
 
                   <div style="color: black;">* Obavezna polja</div>
 
