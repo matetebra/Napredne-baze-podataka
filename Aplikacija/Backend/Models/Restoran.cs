@@ -13,6 +13,7 @@ public class Restoran
     public String? Opis { get; set; }
     public int? pocetakRV { get; set; }
     public int? krajRV { get; set; }
+    public bool odobren { get; set; }
     public float ProsecnaOcena { get; set; }
     public String? VremeDostave { get; set; }
     public int CenaDostave { get; set; }

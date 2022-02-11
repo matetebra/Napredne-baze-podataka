@@ -154,9 +154,10 @@ public class AccountController : ControllerBase
                 VremeDostave = model.VremeDostave,
                 CenaDostave = model.CenaDostave,
                 LimitDostave = model.LimitDostave,
+                odobren = false,
                 SlobodnaMesta = 0,
                 ProsecnaOcena = 0,
-                Kapacitet = 0
+                Kapacitet = model.Kapacitet
             };
             var salt = GenerateSalt(70);
             var hashPass = HashPassword(model.Password!, salt, 10101, 70);
