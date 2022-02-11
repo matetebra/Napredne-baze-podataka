@@ -68,7 +68,12 @@ export class restoran{
         pogled.classList.add("btn");
         pogled.classList.add("btn-a");
         pogled.innerHTML = "Pogledaj";
+        pogled.id=this.email;
         pom.appendChild(pogled);
+        pogled.addEventListener("click",function(){
+          sessionStorage.setItem("restoran")=pogled.id;
+          location.href="restoran.html";
+        });
     }
     crtajNeodobreniRestoran(host){
         if (!host) throw new Error("Greska u hostu");
