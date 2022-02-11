@@ -23,8 +23,8 @@ export class restoran{
        
         if (!host) throw new Error("Greska u hostu");
         const pom = document.createElement("div");
-        pom.classList.add("col-md-4");
-        pom.classList.add("col-lg-4");
+        pom.classList.add("col-md-3");
+        pom.classList.add("col-lg-3");
         pom.classList.add("d-md-flex");
         pom.classList.add("align-items-md-stretch");
         //pom.classList.add("col-sm-6");
