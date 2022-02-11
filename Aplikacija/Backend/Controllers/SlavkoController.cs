@@ -55,6 +55,78 @@ public class SlavkoController : ControllerBase
         return Ok("Uspesno bookmarkovanje");
     }
     [HttpGet]
+    [Route("GetAllRestourantInformations/{email}")]
+    public IActionResult getAllRestourantInformations(string email)
+    {
+        try
+        {
+            MongoClient client = new MongoClient("mongodb+srv://mongo:sifra123@cluster0.ewwnh.mongodb.net/test");
+            MongoServer server = client.GetServer();
+            var database = server.GetDatabase("Dostavi");
+
+            var restaurantsCollection = database.GetCollection<Restoran>("restoran");
+            int localtime = DateTime.Now.Hour;
+
+            var exactRestoran = (from restoran in restaurantsCollection.AsQueryable<Restoran>()
+                                 where restoran.Email == email
+                                 select restoran).FirstOrDefault();
+            if (exactRestoran.pocetakRV > localtime && exactRestoran.krajRV < localtime)
+            {
+                return BadRequest("Restoran trenutno ne radi!");
+            }
+
+            List<Jela> svaJela = new List<Jela>();
+            foreach (MongoDBRef jela in exactRestoran.JelaIdList)
+            {
+                svaJela.Add(database.FetchDBRefAs<Jela>(jela));
+            }
+
+            List<Kategorija> sveKategorije = new List<Kategorija>();
+            foreach (MongoDBRef k in exactRestoran.KategorijeIdList)
+            {
+                sveKategorije.Add(database.FetchDBRefAs<Kategorija>(k));
+            }
+
+            List<Komentar> sviKomentari = new List<Komentar>();
+            foreach (MongoDBRef k in exactRestoran.KomentariIdList)
+            {
+                sviKomentari.Add(database.FetchDBRefAs<Komentar>(k));
+            }
+
+            List<Dodatak> sviDodaci = new List<Dodatak>();
+            foreach (MongoDBRef k in exactRestoran.DodatakIdList)
+            {
+                sviDodaci.Add(database.FetchDBRefAs<Dodatak>(k));
+            }
+            return Ok(new
+            {
+                Id = exactRestoran.Id.ToString(),
+                Email = exactRestoran.Email,
+                Naziv = exactRestoran.Naziv,
+                Adresa = exactRestoran.Adresa,
+                Grad = exactRestoran.Grad,
+                Telefon = exactRestoran.Telefon,
+                Opis = exactRestoran.Opis,
+                PocetakRV = exactRestoran.pocetakRV,
+                KrajRv = exactRestoran.krajRV,
+                ProsecnaOcena = exactRestoran.ProsecnaOcena,
+                VremeDostave = exactRestoran.VremeDostave,
+                CenaDostave = exactRestoran.CenaDostave,
+                LimitDostave = exactRestoran.LimitDostave,
+                Kapacitet = exactRestoran.Kapacitet,
+                SlobodnaMesta = exactRestoran.SlobodnaMesta,
+                Kategorije = sveKategorije,
+                Komentari = sviKomentari,
+                Jela = svaJela,
+                Dodaci = sviDodaci
+            });
+        }
+        catch (Exception exc)
+        {
+            return BadRequest(exc.Message);
+        }
+    }
+    [HttpGet]
     [Route("GetRestourants")]
     public IActionResult getRestourants()// Vraca naziv adresu i telefon prvih 6  restorana, ukoliko je registrovan onda samo restorane za taj grad
     {
@@ -71,7 +143,7 @@ public class SlavkoController : ControllerBase
             var allRestaunats = (from restoran in restaurantsCollection.FindAll().SetLimit(12).AsQueryable<Restoran>()
                                  where restoran.pocetakRV < localtime
                                  where restoran.krajRV > localtime
-                                 select new { Id = restoran.Id.ToString(), restoran.Naziv, restoran.Adresa, restoran.Telefon }).ToList();
+                                 select new { restoran.Email, restoran.Naziv, restoran.Adresa, restoran.Telefon }).ToList();
             return Ok(allRestaunats);
         }
         else
@@ -85,7 +157,7 @@ public class SlavkoController : ControllerBase
                                  where restoran.Grad == userGrad
                                  where restoran.pocetakRV < localtime
                                  where restoran.krajRV > localtime
-                                 select new { Id = restoran.Id.ToString(), restoran.Naziv, restoran.Adresa, restoran.Telefon }).ToList();
+                                 select new { restoran.Email, restoran.Naziv, restoran.Adresa, restoran.Telefon }).ToList();
             return Ok(allRestaunats);
         }
     }
