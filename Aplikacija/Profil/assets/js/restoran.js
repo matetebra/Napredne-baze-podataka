@@ -71,12 +71,9 @@ export class restoran{
         pom.appendChild(pogled);
     }
     crtajNeodobrene(){
-        
-    }
-    preuzmiZaCrtanje(){
 
     }
-    preuzmiNeodobrene(){
+    preuzmiZaCrtanje(){
 
     }
 }
