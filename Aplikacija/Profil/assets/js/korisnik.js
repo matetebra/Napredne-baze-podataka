@@ -14,8 +14,6 @@ export class korisnik{
     }
     crtajInformacije(){
         var inf=document.getElementById("informacije");
-        var pom=document.getElementById("div");
-        
         var ime=document.createElement("h1");
         ime.innerHTML=this.ime+" "+this.prezime;
         ime.classList.add("text-light");
