@@ -54,7 +54,8 @@ function obrisi(){
 function obrisiRes()
 {
         var e = document.getElementById("email").value;
-        console.log(email);
+        if(e==null)
+          return;
         fetch("https://localhost:7284/Restoran/DeleteRestoran/" + e, {
             method: "DELETE",
             headers: {
