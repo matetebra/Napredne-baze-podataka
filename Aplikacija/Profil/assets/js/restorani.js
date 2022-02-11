@@ -4,8 +4,7 @@ import { korisnik } from "./korisnik.js";
 export class restorani{
     constructor(){
       this.restorani=[];
-    }
-    
+    }   
 ucitajRestorane(){
   fetch("https://localhost:7284/Slavko/GetRestourants").then((p) => {
       p.json().then((data) => {
@@ -28,7 +27,13 @@ crtajsveRestorane(){
       rest.crtajRestoran(host)
   });
 }
-    preuzmiNeodobrene(){
+crtajNeodobrene(){
+  const host=document.getElementById("radiSeOvde");
+  this.restorani.forEach((rest)=>{
+    rest.crtajNeodobreniRestoran(host);
+});
+}
+preuzmiNeodobrene(){
         fetch("https://localhost:7284/Slavko/GetRestourantsNeodobreni", {
             method: "GET",
             headers: {
@@ -47,9 +52,9 @@ crtajsveRestorane(){
                   p1.naziv=element.naziv;
                   p1.telefon=element.telefon;
                   p1.adresa=element.adresa;
-                  this.dodajRestoran(p1);
+                  this.restorani.push(p1);
                 });
-                this.crtajNeodobrene(document.getElementById("crtajPredmeteprofesora"));
+                this.crtajNeodobrene();
               }
             })
     }

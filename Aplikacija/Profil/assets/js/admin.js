@@ -1,6 +1,6 @@
-import { restoran } from "./restoran.js";
-var r=new restoran();
-/*if ( sessionStorage.getItem("token") == null || sessionStorage.getItem("token") == "")  
+import { restorani } from "./restorani.js";
+var r=new restorani();
+if ( sessionStorage.getItem("token") == null || sessionStorage.getItem("token") == "")  
 {
   alert("Niste prijavljeni");
   location.href = "index.html";
@@ -8,8 +8,8 @@ var r=new restoran();
 else 
 {
     if(sessionStorage.getItem("role")=="Admin")
-    {*/
-        r.email=sessionStorage.getItem("username");
+    {
+        //r.email=sessionStorage.getItem("username");
         var d1 = document.getElementById("odobri");
         var d2 = document.getElementById("obrisi");
         d1.addEventListener("click",odobri); 
@@ -20,18 +20,17 @@ else
         sessionStorage.clear();
         location.href ="index.html"
         });
-   /* }
+    }
     else
     {
         alert("Nemate privilegiju");
         location.href = "index.html";
     }
-}*/
+}
 function odobri(){
     var d3 = document.getElementById("radiSeOvde");
     d3.innerHTML="";
-    restoran.preuzmiNeodobrene();
-    restoran.crtajNeodobrene();
+    r.preuzmiNeodobrene();
 }
 function obrisi(){
     var d3 = document.getElementById("radiSeOvde");
@@ -47,12 +46,16 @@ function obrisi(){
     d3.appendChild(input);
     var dugme= document.createElement("button");
     d3.appendChild(dugme);
-    dugme.innerHTML="Obriši restoran"
+    dugme.innerHTML="Obriši"
     dugme.style=" margin: 5px";
     dugme.classList="btn btn-danger";
-    dugme.addEventListener("click",function(){
-        var email = document.getElementById("email").innerHTML;
-        fetch("https://localhost:7284/Restoran/DeleteRestoran/" + email, {
+    dugme.addEventListener("click",obrisiRes);
+}
+function obrisiRes()
+{
+        var e = document.getElementById("email").value;
+        console.log(email);
+        fetch("https://localhost:7284/Restoran/DeleteRestoran/" + e, {
             method: "DELETE",
             headers: {
               "Content-Type": "application/json",
@@ -63,7 +66,7 @@ function obrisi(){
             .then((p) => {
               if (p.ok) {
                 alert("Restoran uspesno obrisan");
-                location.href = "administrator.html";
+                location.href = "admin.html";
               } else {
                 alert("Greska kod brisanja");
               }
@@ -71,5 +74,5 @@ function obrisi(){
             .catch((p) => {
               alert("Greška sa konekcijom.");
             });
-      });
 }
+
