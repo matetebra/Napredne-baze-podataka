@@ -16,6 +16,7 @@ export class restoran{
         this.kategorije=[];
         this.jela=[];
         this.dodatak=[];
+        this.id=null;
         this.kontRestoran=null;
     }
     crtajRestoran(host){
@@ -71,7 +72,7 @@ export class restoran{
         pogled.id=this.email;
         pom.appendChild(pogled);
         pogled.addEventListener("click",function(){
-          sessionStorage.setItem("restoran")=pogled.id;
+          sessionStorage.setItem("restoran",pogled.id);
           location.href="restoran.html";
         });
     }
@@ -140,5 +141,63 @@ export class restoran{
                   alert("Greška sa konekcijom.");
                 });
         })
+    }
+    Osvezi(){
+      var d1 = document.getElementById("adresa").innerHTML=this.adresa;
+      d1 = document.getElementById("opis").innerHTML=this.opis;
+      d1 = document.getElementById("kapacitet").innerHTML=this.kapacitet;
+      d1 = document.getElementById("cenaDostave").innerHTML=this.cenaDostave;
+      d1 = document.getElementById("vremeDostave").innerHTML=this.vremeDostave;
+      d1 = document.getElementById("limitDostave").innerHTML=this.limitDostave;
+      d1 = document.getElementById("mail").innerHTML=this.email;
+      d1 = document.getElementById("phone").innerHTML=this.telefon;
+    }
+    crtajJela(){
+
+    }
+    crtajKomentari()
+    {
+
+    }
+    preuzmiPodatke(emails){
+      fetch("https://localhost:7284/Slavko/GetAllRestourantInformations/"+emails, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + sessionStorage.getItem("token")
+      }
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.title == "Unauthorized")
+          alert("Greska.");
+        else {
+        this.naziv=data.naziv;
+        this.id=data.id;
+        this.adresa= data.adresa;
+        this.grad= data.grad;
+        this.email= data.email;
+        this.telefon= data.telefon;
+        this.opis= data.opis;
+        this.radnoVrem= data.radnoVreme;
+        this.vremeDostave= data.vremeDostave;
+        this.cenaDostave= data.cenaDostave;
+        this.limitDostave= data.limitDostave;
+        this.kapacitet= data.kapacitet;
+        this.brSlobodnih= data.slobodnaMesta;
+        this.komentari=data.komentari;
+        this.kategorije=data.kategorije;
+        this.jela=data.jela;
+        this.dodatak=data.dodaci;
+        this.Osvezi();
+        }
+      })
+      .catch((error) => console.error("Greska", error));
+    }
+    postaviKomentar(){
+
+    }
+    oceniRestoran(){
+
     }
 }
