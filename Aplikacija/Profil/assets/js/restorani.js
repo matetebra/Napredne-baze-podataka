@@ -4,6 +4,7 @@ import { korisnik } from "./korisnik.js";
 export class restorani{
     constructor(){
       this.restorani=[];
+      this.bukmarkovani=[];
     }   
 ucitajRestorane(){
   fetch("https://localhost:7284/Slavko/GetRestourants", {
@@ -66,4 +67,37 @@ preuzmiNeodobrene(){
               }
             })
     }
+  
+  ucitajBukmarkovaneRestorane(){
+    
+    fetch("https://localhost:7284/Slavko/GetRestourants", {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: "Bearer " + sessionStorage.getItem("token"),
+            },
+          })
+                  
+      .then((p) => {
+      p.json().then((data) => {
+        data.forEach((element) => {
+          var r = new restoran();
+          r.naziv=element.naziv;
+          r.adresa=element.adresa;
+          r.email=element.email;
+          r.telefon=element.telefon;
+          this.bukmarkovani.push(r);
+        });
+        this.crtajBukmarkovane();
+      });
+    });
+
   }
+crtajBukmarkovane(){
+  const host=document.getElementById("restorani");
+    host.innerHTML=null;
+    this.bukmarkovani.forEach((rest)=>{
+      rest.crtajRestoran(host)
+  });
+}
+}

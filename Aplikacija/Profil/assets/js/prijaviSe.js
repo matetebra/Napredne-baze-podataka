@@ -78,9 +78,6 @@ if (
     let adresa = document.getElementById("adresa").value;
   let grad = document.getElementById("grad").value;
     let telefon = document.getElementById("telefon").value;
-    
-    console.log(pass);
-    console.log(confPass);
     if (pass != confPass) {
       alert("Sifre se ne slazu!");
       return;
