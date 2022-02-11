@@ -6,7 +6,15 @@ export class restorani{
       this.restorani=[];
     }   
 ucitajRestorane(){
-  fetch("https://localhost:7284/Slavko/GetRestourants").then((p) => {
+  fetch("https://localhost:7284/Slavko/GetRestourants", {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: "Bearer " + sessionStorage.getItem("token"),
+            },
+          })
+                  
+      .then((p) => {
       p.json().then((data) => {
         data.forEach((element) => {
           var r = new restoran();
@@ -58,4 +66,4 @@ preuzmiNeodobrene(){
               }
             })
     }
-}
+  }

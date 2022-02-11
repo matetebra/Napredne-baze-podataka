@@ -149,15 +149,15 @@ public class AccountController : ControllerBase
                 Grad = model.Grad,
                 Telefon = model.Telefon,
                 Opis = model.Opis,
-                pocetakRV = model.pocetakRV,
-                krajRV = model.krajRV,
-                VremeDostave = model.VremeDostave,
-                CenaDostave = model.CenaDostave,
-                LimitDostave = model.LimitDostave,
+                Kapacitet = model.Kapacitet,
+                pocetakRV = 0,
+                krajRV = 0,
+                VremeDostave = "min",
+                CenaDostave = 30,
+                LimitDostave = 500,
                 odobren = false,
                 SlobodnaMesta = 0,
-                ProsecnaOcena = 0,
-                Kapacitet = model.Kapacitet
+                ProsecnaOcena = 0
             };
             var salt = GenerateSalt(70);
             var hashPass = HashPassword(model.Password!, salt, 10101, 70);

@@ -31,20 +31,6 @@ namespace Backend.Models.LoginRegisters
         [Required(ErrorMessage = " Opis is required")]
         public String? Opis { get; set; }
 
-        [Required(ErrorMessage = " RadnoVreme is required")]
-        public int? pocetakRV { get; set; }
-        [Required(ErrorMessage = " RadnoVreme is required")]
-        public int? krajRV { get; set; }
-
-        [Required(ErrorMessage = " VremeDostave is required")]
-        public String? VremeDostave { get; set; }
-
-        [Required(ErrorMessage = " CenaDostave is required")]
-        public int CenaDostave { get; set; }
-
-        [Required(ErrorMessage = " LimitDostave is required")]
-        public int LimitDostave { get; set; }
-
         [Required(ErrorMessage = " Kapacitet is required")]
         public int Kapacitet { get; set; }
     }
