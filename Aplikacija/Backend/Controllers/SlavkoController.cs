@@ -77,6 +77,20 @@ public class SlavkoController : ControllerBase
             {
                 svaJela.Add(database.FetchDBRefAs<Jela>(jela));
             }
+            List<object> jelaToReturn = new List<object>();
+            foreach (Jela j in svaJela)
+            {
+                jelaToReturn.Add(new
+                {
+                    Id = j.Id.ToString(),
+                    Naziv = j.Naziv,
+                    Kategorija = j.Kategorija,
+                    Gramaza = j.Gramaza,
+                    Opis = j.Opis,
+                    Slika = j.Slika,
+                    NazivNamirnica = j.NazivNamirnica
+                });
+            }
 
             List<Kategorija> sveKategorije = new List<Kategorija>();
             foreach (MongoDBRef k in exactRestoran.KategorijeIdList)
@@ -114,7 +128,7 @@ public class SlavkoController : ControllerBase
                 SlobodnaMesta = exactRestoran.SlobodnaMesta,
                 Kategorije = sveKategorije,
                 Komentari = sviKomentari,
-                Jela = svaJela,
+                Jela = jelaToReturn,
                 Dodaci = sviDodaci
             });
         }
@@ -201,6 +215,7 @@ public class SlavkoController : ControllerBase
     [HttpGet]
     [Route("PrethodnePorudzbine")]
     public IActionResult prethodnePorudzbine()//MOZDA NE RADI NE MOGU SAD TRENUTNO DA PROVERIM
+    //DODAJ NEKOME IZ NISA NESTO IZ CEZAR NIS I TESTIRAJ
     {
         MongoClient client = new MongoClient("mongodb+srv://mongo:sifra123@cluster0.ewwnh.mongodb.net/test");
         MongoServer server = client.GetServer();
@@ -222,22 +237,35 @@ public class SlavkoController : ControllerBase
         List<object> toReturn = new List<object>();
 
         List<Dodatak> dodaci = new List<Dodatak>();
+        List<Jela> jelo = new List<Jela>();
 
         foreach (Porudzbina p in porudzbinas)
         {
-            dodaci.Clear();
+            foreach (MongoDBRef r in p.JeloIdList)
+            {
+                jelo.Add(database.FetchDBRefAs<Jela>(r));
+            }
             foreach (MongoDBRef r in p.Dodaci)
             {
                 dodaci.Add(database.FetchDBRefAs<Dodatak>(r));
             }
             toReturn.Add(new
             {
-                Jela = database.FetchDBRefAs<Jela>(p.JeloIdList),
+                Jela = jelo,
                 Dodaci = dodaci,
                 Naziv = database.FetchDBRefAs<Restoran>(p.Restoran).Naziv,
                 Cena = p.UkupnaCena
             });
+            dodaci.Clear();
+            jelo.Clear();
         }
         return Ok(toReturn);
     }
+    [HttpPost]
+    [Route("dodajNarudzbinu")]
+    public IActionResult dodajNarudzbinu()
+    {
+        return Ok();
+    }
+
 }
