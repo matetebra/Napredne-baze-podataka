@@ -14,8 +14,8 @@ namespace Backend.Controllers;
 public class SlavkoController : ControllerBase
 {
     [HttpPost]
-    [Route("BookMarkRestaurant/{naziv}")]
-    public IActionResult BookMarkRestaurant(string naziv)
+    [Route("BookMarkRestaurant/{email}")]
+    public IActionResult BookMarkRestaurant(string email)
     {
         try
         {
@@ -27,17 +27,16 @@ public class SlavkoController : ControllerBase
             var restoranCollection = database.GetCollection<Restoran>("restoran");
             var usersCollection = database.GetCollection<Korisnik>("korisnik");
 
-            var email = HttpContext.User.Identity.Name;
+            var userEmail = HttpContext.User.Identity.Name;
 
             var user = (from korisnik in usersCollection.AsQueryable<Korisnik>()
-                        where korisnik.Email == email
+                        where korisnik.Email == userEmail
                         select korisnik).FirstOrDefault();
 
 
 
             var getRestaurantQuery = (from restoran in restoranCollection.AsQueryable<Restoran>()
-                                      where restoran.Grad == user.Grad
-                                      where restoran.Naziv == naziv
+                                      where restoran.Email == email
                                       select restoran.Id).FirstOrDefault();
 
             if (getRestaurantQuery.ToString() == "000000000000000000000000")

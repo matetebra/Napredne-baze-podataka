@@ -4,6 +4,8 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Builders;
 using Backend.Models.DTO;
+using MongoDB.Driver.Linq;
+
 namespace Backend.Controllers;
 
 [ApiController]
@@ -27,35 +29,73 @@ public class RezervacijaController : ControllerBase
 
 
     [HttpPost]
-    [Route("AddReservation/{emailRestoran}")]
-    public IActionResult AddReservation([FromBody] RezervacijaDTO rez, string emailRestoran)
+    [Route("AddReservation/{email}")]
+    public IActionResult AddReservation([FromBody] RezervacijaDTO rez, string email)
     {
-        Restoran restoran = new Restoran();
-        Korisnik user = new Korisnik();
         MongoClient client = new MongoClient("mongodb+srv://mongo:sifra123@cluster0.ewwnh.mongodb.net/test");
         MongoServer server = client.GetServer();
         var database = server.GetDatabase("Dostavi");
-        var email = HttpContext.User.Identity!.Name;
+        var restoranCollection = database.GetCollection<Restoran>("restoran");
 
-        var collection = database.GetCollection<Korisnik>("korisnik");
-        var query = Query.EQ("Email", email);
-        user = collection.Find(query).FirstOrDefault();
+        var restourant = (from restoran in restoranCollection.AsQueryable<Restoran>()
+                          where restoran.Email == email
+                          select restoran).FirstOrDefault();
+        if (restourant == null)
+        {
+            return BadRequest("Greskica");
+        }
 
-        var collection2 = database.GetCollection<Restoran>("restoran");
-        var query2 = Query.EQ("Email", emailRestoran);
-        restoran = collection2.Find(query2).FirstOrDefault();
+        var userCollection = database.GetCollection<Korisnik>("korisnik");
 
-        Rezervacija rezervacija = new Rezervacija();
+        var userEmail = HttpContext.User.Identity.Name;
 
-        rezervacija.BrojMesta = rez.BrojMesta;
-        rezervacija.Datum = rez.Datum;
-        rezervacija.Vreme = rez.Vreme;
+        var user = (from korisnik in userCollection.AsQueryable<Korisnik>()
+                    where korisnik.Email == userEmail
+                    select korisnik).FirstOrDefault();
 
-        var collection3 = database.GetCollection<Rezervacija>("rezervacija");
-        rezervacija.KorisnikRezervacijaId = new MongoDBRef("korisnik", user.Id);
-        rezervacija.RestoranRezervacijaId = new MongoDBRef("restoran", restoran.Id);
-        collection3.Insert(rezervacija);
+        var rezervacijaCollection = database.GetCollection<Rezervacija>("rezervacija");
 
-        return Ok();
+        var provera = (from rezervacija in rezervacijaCollection.AsQueryable<Rezervacija>()
+                       where rezervacija.KorisnikRezervacijaId.Id == user.Id
+                       where rezervacija.Datum == rez.Datum
+                       where rezervacija.RestoranRezervacijaId.Id == restourant.Id
+                       select rezervacija).FirstOrDefault();
+
+        if (provera != null)
+        {
+            return BadRequest("Vec ste napravili rezervaciju za dati restoran");
+        }
+
+        var test = (from rezervacija in rezervacijaCollection.AsQueryable<Rezervacija>()
+                    where rezervacija.Datum == rez.Datum
+                    select rezervacija.BrojMesta).ToList();
+        var ukupno = 0;
+
+        foreach (string i in test)
+        {
+            ukupno += Int32.Parse(i);
+        }
+        if ((ukupno + Int32.Parse(rez.BrojMesta!)) > restourant.Kapacitet)
+        {
+            return BadRequest("Nemamo slobodnih mesta trenutno!");
+        }
+        //proveriti da li ima mesta!!!
+        Rezervacija r = new Rezervacija();
+
+        r.BrojMesta = rez.BrojMesta;
+        r.Datum = rez.Datum;
+        r.Vreme = rez.Vreme;
+        r.KorisnikRezervacijaId = new MongoDBRef("korisnik", user.Id);
+        r.RestoranRezervacijaId = new MongoDBRef("restoran", restourant.Id);
+
+        rezervacijaCollection.Save(r);
+
+        return Ok("Uspesna rezervacija! ");
     }
+
+
+
+
+
+
 }

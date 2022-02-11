@@ -146,8 +146,8 @@ public class RestoranController : ControllerBase
         var jeloCollection = database.GetCollection<Jela>("jela");
         var collection2 = database.GetCollection<Kategorija>("kategorija");
         var restoranCollection = database.GetCollection<Restoran>("restoran");
-        
-        
+
+
         var query1 = Query.EQ("Naziv", jelo.Naziv);
         var s = jeloCollection.Find(query1).FirstOrDefault();
         if (s == null)
@@ -158,12 +158,12 @@ public class RestoranController : ControllerBase
 
         AddKategorija(jelo.Kategorija); // dodajemo kategoriju u kolekciji ako vec ne postoji
 
-        
+
         var query = Query.EQ("Naziv", jelo.Kategorija);
         var p = collection2.Find(query).FirstOrDefault();
         var rest = (from restoran in restoranCollection.AsQueryable<Restoran>()
-                        where restoran.Email == email
-                        select restoran).FirstOrDefault();
+                    where restoran.Email == email
+                    select restoran).FirstOrDefault();
         int brojac1 = 0;
         int brojac2 = 0;
         bool flag = false;
@@ -180,19 +180,19 @@ public class RestoranController : ControllerBase
             {
                 brojac2++;
             }
-        }     
+        }
         if (brojac1 == 0)
         {
             var upit = Query.EQ("_id", rest.Id);
             var update = Update.PushWrapped("KategorijeIdList", new MongoDBRef("kategorija", p.Id));
-            restoranCollection.Update(upit,update);
+            restoranCollection.Update(upit, update);
             flag = true;
         }
         if (brojac2 == 0)
         {
             var upit = Query.EQ("_id", rest.Id);
             var update = Update.PushWrapped("JelaIdList", new MongoDBRef("jela", s.Id));
-            restoranCollection.Update(upit,update);
+            restoranCollection.Update(upit, update);
             flag = true;
         }
         if (flag == false)
@@ -247,6 +247,24 @@ public class RestoranController : ControllerBase
         var query = Query.EQ("Naziv", naziv);
         collection.Remove(query);
 
+        return Ok();
+    }
+
+    [HttpPut]
+    [Route("OdobriRestoran/{email}")]
+    public ActionResult OdobriRestoran(string email)
+    {
+        MongoClient client = new MongoClient("mongodb+srv://mongo:sifra123@cluster0.ewwnh.mongodb.net/test");
+        MongoServer server = client.GetServer();
+        var database = server.GetDatabase("Dostavi");
+
+        var restoranCollection = database.GetCollection<Restoran>("restoran");
+        var rest = (from restoran in restoranCollection.AsQueryable<Restoran>()
+                    where restoran.Email == email
+                    select restoran).FirstOrDefault();
+
+        rest.odobren = true;
+        restoranCollection.Save(rest);
         return Ok();
     }
 
