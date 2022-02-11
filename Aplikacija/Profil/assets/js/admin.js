@@ -52,7 +52,7 @@ function obrisi(){
     dugme.classList="btn btn-danger";
     dugme.addEventListener("click",function(){
         var email = document.getElementById("email").innerHTML;
-        fetch("https://localhost:7078/Restoran/deleteRestoran/" + email, {
+        fetch("https://localhost:7284/Restoran/DeleteRestoran/" + email, {
             method: "DELETE",
             headers: {
               "Content-Type": "application/json",
