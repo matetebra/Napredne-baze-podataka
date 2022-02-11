@@ -68,3 +68,52 @@ if (
     alert("Vec ste prijavljeni");
     location.href = "administrator.html";
   }
+
+  function registerKorisnik() {
+    let ime = document.getElementById("imeRegister").value;
+    let prezime = document.getElementById("prezimeRegister").value;
+    let email = document.getElementById("emailRegister").value;
+    let pass = document.getElementById("passwordRegister").value;
+    let confPass = document.getElementById("confirmLReg").value;
+    let adresa = document.getElementById("adresa").value;
+  let grad = document.getElementById("grad").value;
+    let telefon = document.getElementById("telefon").value;
+    
+    console.log(pass);
+    console.log(confPass);
+    if (pass != confPass) {
+      alert("Sifre se ne slazu!");
+      return;
+    }
+    fetch("https://localhost:7284/Account/registerKorisnik", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: email,
+        password: pass,
+        confirmPassword: confPass,
+        adresa: adresa,
+        ime: ime,
+        grad: grad,
+        prezime: prezime,
+        telefon: telefon,
+        
+      }),
+    })
+      .then((p) => {
+        if (p.ok) {
+          alert("Korisnik uspesno registrovan");
+        } else {
+          alert("Postoji korisnik sa takvim emailom");
+        }
+      })
+      .catch(() => {
+        alert("Greska sa konekcijom");
+      });
+  }
+  let btn = document.getElementById("registrujSe");
+btn.addEventListener("click", function () {
+  registerKorisnik();
+});
