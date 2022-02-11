@@ -250,6 +250,7 @@ public class RestoranController : ControllerBase
         return Ok();
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPut]
     [Route("OdobriRestoran/{email}")]
     public ActionResult OdobriRestoran(string email)
