@@ -19,8 +19,6 @@ public class SlavkoController : ControllerBase
     {
         try
         {
-
-
             MongoClient client = new MongoClient("mongodb+srv://mongo:sifra123@cluster0.ewwnh.mongodb.net/test");
             MongoServer server = client.GetServer();
             var database = server.GetDatabase("Dostavi");
@@ -142,6 +140,7 @@ public class SlavkoController : ControllerBase
             var allRestaunats = (from restoran in restaurantsCollection.FindAll().SetLimit(12).AsQueryable<Restoran>()
                                  where restoran.pocetakRV < localtime
                                  where restoran.krajRV > localtime
+                                 where restoran.odobren == true
                                  select new { restoran.Email, restoran.Naziv, restoran.Adresa, restoran.Telefon }).ToList();
             return Ok(allRestaunats);
         }
@@ -156,8 +155,25 @@ public class SlavkoController : ControllerBase
                                  where restoran.Grad == userGrad
                                  where restoran.pocetakRV < localtime
                                  where restoran.krajRV > localtime
+                                 where restoran.odobren == true
                                  select new { restoran.Email, restoran.Naziv, restoran.Adresa, restoran.Telefon }).ToList();
             return Ok(allRestaunats);
         }
     }
+    [HttpGet]
+    [Route("GetRestourantsNeodobreni")]
+    public IActionResult getRestourantsNeodobreni()
+    {
+        MongoClient client = new MongoClient("mongodb+srv://mongo:sifra123@cluster0.ewwnh.mongodb.net/test");
+        MongoServer server = client.GetServer();
+        var database = server.GetDatabase("Dostavi");
+
+        var restaurantsCollection = database.GetCollection<Restoran>("restoran");
+
+        var allRestaunats = (from restoran in restaurantsCollection.AsQueryable<Restoran>()
+                             where restoran.odobren == false
+                             select new { restoran.Email, restoran.Naziv, restoran.Adresa, restoran.Telefon }).ToList();
+        return Ok(allRestaunats);
+    }
+
 }
