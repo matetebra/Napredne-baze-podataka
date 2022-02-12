@@ -13,6 +13,14 @@ if(sessionStorage.getItem("token")==null || sessionStorage.getItem("token")=="")
     pom2.hidden=true;
     var pom3=document.getElementById("slika");
     pom3.hidden=true;
+    var pom4=document.getElementById("sortingOptionID");
+    pom4.hidden=true;
+    var pom5=document.getElementById("SortirajPoKategoriji");
+    pom5.hidden=true;
+    var pom6=document.getElementById("kategorijaInput");
+    pom6.hidden=true;
+    var pom7=document.getElementById("kategorijalbl");
+    pom7.hidden=true;
 }
 else{ 
       //var sort=document.getElementById("sortingOptionID").style.visibility="revert"
@@ -21,7 +29,14 @@ else{
     pom.hidden=false;
     var pom3=document.getElementById("prijava");
     pom3.hidden=true;
-
+    var pom4=document.getElementById("sortingOptionID");
+    pom4.hidden=false;
+    var pom5=document.getElementById("SortirajPoKategoriji");
+    pom5.hidden=false;
+    var pom6=document.getElementById("kategorijaInput");
+    pom6.hidden=false;
+    var pom7=document.getElementById("kategorijalbl");
+    pom7.hidden=false;
     pom.addEventListener("click",function(){
         var inf=document.getElementById("informacije");
         inf.innerHTML="";

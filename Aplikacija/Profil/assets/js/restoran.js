@@ -515,13 +515,14 @@ export class restoran {
         .then((p) => {
           if (p.ok) {
             alert("Uspesno dodavanje jela");
+            location.reload();
             komentari();
           } else {
             alert("Vec ste ocenili");
           }
         })
         .catch(() => {
-          alert("Greska sa konekcijom");
+          //alert("Greska sa konekcijom");
         });
       //}
     });
@@ -632,13 +633,14 @@ export class restoran {
         .then((p) => {
           if (p.ok) {
             alert("Uspesno dodavanje jela");
-            komentari();
+            location.reload();
+            
           } else {
             alert("Ne mozete komentarisati.");
           }
         })
         .catch(() => {
-          alert("Greska sa konekcijom");
+          //alert("Greska sa konekcijom");
         });
       //}
     });
@@ -713,14 +715,13 @@ export class jelo {
         .then((p) => {
           if (p.ok) {
             alert("Jelo je uspesno obrisan");
-            var g=getElementById("informacije");
-            g.innerHTML=""
+            location.reload();
           } else {
             alert("Greska kod brisanja");
           }
         })
         .catch((p) => {
-          alert("Greška sa konekcijom.");
+          //alert("Greška sa konekcijom.");
         });
     });
   }
@@ -763,6 +764,7 @@ export class dodatak {
           if (p.ok) {
             console.log(this.naziv)
             alert("Dodatak je uspesno obrisan");
+            location.reload();
             var g=getElementById("informacije");
             g.innerHTML=""
           } else {
@@ -770,7 +772,7 @@ export class dodatak {
           }
         })
         .catch((p) => {
-          alert("Greška sa konekcijom.");
+          //alert("Greška sa konekcijom.");
         });
     });
   }
@@ -818,12 +820,13 @@ export class rezervacija {
         .then((p) => {
           if (p.ok) {
             alert("Jelo je uspesno obrisan");
+            location.reload();
           } else {
             alert("Greska kod brisanja");
           }
         })
         .catch((p) => {
-          alert("Greška sa konekcijom.");
+          //alert("Greška sa konekcijom.");
         });
     });
   }
@@ -872,14 +875,13 @@ export class porudzbina {
         .then((p) => {
           if (p.ok) {
             alert("Porudzbina je uspesno obrisan");
-            var g=getElementById("informacije");
-            g.innerHTML=""
+            location.reload();
           } else {
             alert("Greska kod brisanja");
           }
         })
         .catch((p) => {
-          alert("Greška sa konekcijom.");
+         // alert("Greška sa konekcijom.");
         });
     });
   }
