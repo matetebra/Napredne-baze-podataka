@@ -6,6 +6,7 @@ using MongoDB.Driver.Builders;
 using MongoDB.Driver.Linq;
 using MongoDB.Bson.Serialization.Attributes;
 using Backend.Models.DTO;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Backend.Controllers;
 
@@ -348,22 +349,84 @@ public class SlavkoController : ControllerBase
         return Ok();
     }
     [HttpGet]
-    [Route("VratiRezervacije")]//reseni bugovi zavrsiti sutra mrtvu funkciju sa mrtvim mongodbref
-    //napraviti fucnkiju gde vraca info korisnika kao sto su email telefon ime prezime grad adresa
+    [Authorize(Roles = "Restoran")]
+    [Route("VratiRezervacije")]
     public IActionResult returnReservation()
     {
         MongoClient client = new MongoClient("mongodb+srv://mongo:sifra123@cluster0.ewwnh.mongodb.net/test");
         MongoServer server = client.GetServer();
         var database = server.GetDatabase("Dostavi");
+        var email = HttpContext.User.Identity.Name;
 
+        var restoranCollection = database.GetCollection<Restoran>("restoran");
+        var rezervacijaCollection = database.GetCollection<Rezervacija>("rezervacija");
+        var korisnikCollection = database.GetCollection<Korisnik>("korisnik");
+
+        var restourant = (from restoran in restoranCollection.AsQueryable<Restoran>()
+                          where restoran.Email == email
+                          select restoran).FirstOrDefault();
+
+        var todayDate = DateTime.UtcNow.Date;
+
+        var rez = (from rezervacija in rezervacijaCollection.AsQueryable<Rezervacija>()
+                   where rezervacija.RestoranRezervacijaId == restourant.Id
+                   where rezervacija.Datum == todayDate
+                   select rezervacija).ToList();
+
+        List<object> toReturn = new List<object>();
+        foreach (Rezervacija r in rez)
+        {
+            var emailTelefonKorisnika = (from korisnik in korisnikCollection.AsQueryable<Korisnik>()
+                                         where korisnik.Id == r.KorisnikRezervacijaId
+                                         select new { korisnik.Email, korisnik.Telefon }).FirstOrDefault();
+            toReturn.Add(new
+            {
+                IDRezervacije = r.Id.ToString(),
+                EmailKorisnika = emailTelefonKorisnika.Email,
+                TelefonKorisnika = emailTelefonKorisnika.Telefon,
+                Vreme = r.Vreme,
+                BrojMesta = r.BrojMesta,
+            });
+        }
+        return Ok(toReturn);
+    }
+    [HttpDelete]
+    // [Authorize(Roles = "Admin")]
+    [Route("obrisiRezervaciju/{id}")]
+    public IActionResult deleteReservation(string id)
+    {
+        MongoClient client = new MongoClient("mongodb+srv://mongo:sifra123@cluster0.ewwnh.mongodb.net/test");
+        MongoServer server = client.GetServer();
+        var database = server.GetDatabase("Dostavi");
 
         var rezervacijaCollection = database.GetCollection<Rezervacija>("rezervacija");
 
+        var deleteFilter = Query.EQ("_id", MongoDB.Bson.ObjectId.Parse(id));
+        rezervacijaCollection.Remove(deleteFilter);
 
-        var rez = (from rezervacija in rezervacijaCollection.AsQueryable<Rezervacija>()
-                   select rezervacija).ToList();
-
-
-        return Ok(rez);
+        return Ok();
     }
+    [HttpGet]
+    [Route("getUserInformaiton")]
+    public IActionResult getUserInformation()
+    {
+        MongoClient client = new MongoClient("mongodb+srv://mongo:sifra123@cluster0.ewwnh.mongodb.net/test");
+        MongoServer server = client.GetServer();
+        var database = server.GetDatabase("Dostavi");
+
+        var korisnikCollection = database.GetCollection<Korisnik>("korisnik");
+
+        var toReturn = (from korisnik in korisnikCollection.AsQueryable<Korisnik>()
+                        where korisnik.Email == HttpContext.User.Identity.Name
+                        select new
+                        {
+                            Ime = korisnik.Ime,
+                            Prezime = korisnik.Prezime,
+                            Telefon = korisnik.Telefon,
+                            Email = korisnik.Email
+                        }).FirstOrDefault();
+        return Ok(toReturn);
+    }
+
+
 }

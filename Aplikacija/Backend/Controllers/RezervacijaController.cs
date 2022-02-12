@@ -41,7 +41,7 @@ public class RezervacijaController : ControllerBase
 
         var provera = (from rezervacija in rezervacijaCollection.AsQueryable<Rezervacija>()
                        where rezervacija.KorisnikRezervacijaId == user.Id
-                       where rezervacija.Datum == rez.Datum
+                       where rezervacija.Datum == rez.Datum.Date
                        where rezervacija.RestoranRezervacijaId == restourant.Id
                        select rezervacija).FirstOrDefault();
 
@@ -51,7 +51,7 @@ public class RezervacijaController : ControllerBase
         }
 
         var test = (from rezervacija in rezervacijaCollection.AsQueryable<Rezervacija>()
-                    where rezervacija.Datum == rez.Datum
+                    where rezervacija.Datum == rez.Datum.Date
                     select rezervacija.BrojMesta).ToList();
         var ukupno = 0;
 
@@ -69,7 +69,7 @@ public class RezervacijaController : ControllerBase
 
         r.Id = testss;
         r.BrojMesta = rez.BrojMesta;
-        r.Datum = rez.Datum;
+        r.Datum = rez.Datum.Date;
         r.Vreme = rez.Vreme;
         r.KorisnikRezervacijaId = user.Id;
         r.RestoranRezervacijaId = restourant.Id;
