@@ -5,9 +5,10 @@ using MongoDB.Driver;
 using MongoDB.Driver.Builders;
 using Microsoft.AspNetCore.Authorization;
 using MongoDB.Driver.Linq;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace Backend.Controllers;
-
+[BsonIgnoreExtraElements]
 [ApiController]
 [Route("[controller]")]
 public class RestoranController : ControllerBase
