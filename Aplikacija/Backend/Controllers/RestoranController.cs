@@ -50,18 +50,100 @@ public class RestoranController : ControllerBase
     [Route("GetRestaurantByName/{name}")]
     public ActionResult GetRestaurantByName(string name)
     {
-        Restoran restoran = new Restoran();
+        try 
+        {
+            MongoClient client = new MongoClient("mongodb+srv://mongo:sifra123@cluster0.ewwnh.mongodb.net/test");
+            MongoServer server = client.GetServer();
+            var database = server.GetDatabase("Dostavi");
 
-        MongoClient client = new MongoClient("mongodb+srv://mongo:sifra123@cluster0.ewwnh.mongodb.net/test");
-        MongoServer server = client.GetServer();
-        var database = server.GetDatabase("Dostavi");
+            var collection = database.GetCollection<Restoran>("restoran");
+            var collectionKorisnik = database.GetCollection<Korisnik>("korisnik");
+            var user = HttpContext.User.Identity.Name;
 
-        var collection = database.GetCollection<Restoran>("restoran");
+            var kor = (from korisnik in collectionKorisnik.AsQueryable<Korisnik>()
+                                where korisnik.Email == user
+                                select korisnik).FirstOrDefault();
+            
+            var exactRestoran = (from restoran in collection.AsQueryable<Restoran>()
+                                where restoran.Grad == kor.Grad
+                                where restoran.Naziv == name
+                                select restoran).FirstOrDefault();
 
-        var query = Query.EQ("Naziv", name);
-        restoran = collection.Find(query).First();
+            List<Jela> svaJela = new List<Jela>();
+                foreach (MongoDBRef jela in exactRestoran.JelaIdList)
+                {
+                    svaJela.Add(database.FetchDBRefAs<Jela>(jela));
+                }
+                List<object> jelaToReturn = new List<object>();
+                foreach (Jela j in svaJela)
+                {
+                    jelaToReturn.Add(new
+                    {
+                        Id = j.Id.ToString(),
+                        Naziv = j.Naziv,
+                        Kategorija = j.Kategorija,
+                        Gramaza = j.Gramaza,
+                        Cena = j.Cena,
+                        Opis = j.Opis,
+                        Slika = j.Slika,
+                        NazivNamirnica = j.NazivNamirnica
+                    });
+                }
 
-        return Ok(restoran);
+                List<Kategorija> sveKategorije = new List<Kategorija>();
+                foreach (MongoDBRef k in exactRestoran.KategorijeIdList)
+                {
+                    sveKategorije.Add(database.FetchDBRefAs<Kategorija>(k));
+                }
+
+                List<Komentar> sviKomentari = new List<Komentar>();
+                foreach (MongoDBRef k in exactRestoran.KomentariIdList)
+                {
+                    sviKomentari.Add(database.FetchDBRefAs<Komentar>(k));
+                }
+
+                List<Dodatak> sviDodaci = new List<Dodatak>();
+                foreach (MongoDBRef k in exactRestoran.DodatakIdList)
+                {
+                    sviDodaci.Add(database.FetchDBRefAs<Dodatak>(k));
+                }
+                List<object> dodaciToReturn = new List<object>();
+                foreach (Dodatak d in sviDodaci)
+                {
+                    jelaToReturn.Add(new
+                    {
+                        Id = d.Id.ToString(),
+                        Naziv = d.Naziv,
+                        Cena = d.Cena
+                    });
+                }
+                return Ok(new
+                {
+                    Id = exactRestoran.Id.ToString(),
+                    Email = exactRestoran.Email,
+                    Naziv = exactRestoran.Naziv,
+                    Adresa = exactRestoran.Adresa,
+                    Grad = exactRestoran.Grad,
+                    Telefon = exactRestoran.Telefon,
+                    Opis = exactRestoran.Opis,
+                    PocetakRV = exactRestoran.pocetakRV,
+                    KrajRv = exactRestoran.krajRV,
+                    ProsecnaOcena = exactRestoran.ProsecnaOcena,
+                    VremeDostave = exactRestoran.VremeDostave,
+                    CenaDostave = exactRestoran.CenaDostave,
+                    LimitDostave = exactRestoran.LimitDostave,
+                    Kapacitet = exactRestoran.Kapacitet,
+                    SlobodnaMesta = exactRestoran.SlobodnaMesta,
+                    Kategorije = sveKategorije,
+                    Komentari = sviKomentari,
+                    Jela = jelaToReturn,
+                    Dodaci = dodaciToReturn
+                });
+        }
+        catch (Exception)
+        {
+            return BadRequest("Nema rezultata pretrage");
+        }
     }
 
     [HttpPost]
@@ -72,7 +154,6 @@ public class RestoranController : ControllerBase
         var database = client.GetDatabase("Dostavi");
 
         var collection = database.GetCollection<Restoran>("restoran");
-        //restoran.DodatakIdList = restoran.JelaIdList = restoran.KategorijeIdList = restoran.KomentariIdList = null;
         collection.InsertOne(restoran);
         return Ok();
     }
@@ -310,17 +391,13 @@ public class RestoranController : ControllerBase
         var ocene = (from ocena in ocenaCollection.AsQueryable<Ocena>()
                      where ocena.OcenaRestoranId.Id == rest.Id
                      select ocena).ToList();
-        int brojac = 0;
-        float prosecnaOc = 0;
-        foreach (var o in ocene)
-        {
-            prosecnaOc += o.Oceni;
-            brojac++;
-        }
-        prosecnaOc /= brojac;
-        rest.ProsecnaOcena = (float)Math.Round(prosecnaOc * 100f) / 100f; 
+
+        float novaProsecnaOcena = (rest.ProsecnaOcena * (ocene.Count()-1) + ocenica) / ocene.Count();
+        rest.ProsecnaOcena = (float)Math.Round(novaProsecnaOcena * 100f) / 100f; 
         restoranCollection.Save(rest);
-        return Ok();
+        return Ok("Uspesno ste ocenili");
     }
+
+
 
 }
