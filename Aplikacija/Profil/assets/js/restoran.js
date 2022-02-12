@@ -92,8 +92,8 @@ export class restoran {
     var pogled = document.createElement("button");
     pogled.classList.add("btn");
     pogled.classList.add("btn-a");
-    pogled.classList.add("col-md-1");
-    pogled.innerHTML = "Pogledaj";
+    pogled.classList.add("col-md-2");
+    pogled.innerHTML = "Otvori";
     pogled.id = this.email;
     host.appendChild(pogled);
     pogled.addEventListener("click", function () {
