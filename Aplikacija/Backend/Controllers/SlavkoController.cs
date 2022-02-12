@@ -581,9 +581,9 @@ public class SlavkoController : ControllerBase
                 ID = t.ID,
                 Napomena = t.Napomena,
                 Datum = t.Datum,
-                Email = (from korisnik in userCollection.AsQueryable<Korisnik>()
-                         where korisnik.Id == MongoDB.Bson.ObjectId.Parse(t.Korisnik)
-                         select korisnik.Email).FirstOrDefault(),
+                Adresa = (from korisnik in userCollection.AsQueryable<Korisnik>()
+                          where korisnik.Id == MongoDB.Bson.ObjectId.Parse(t.Korisnik)
+                          select korisnik.Adresa).FirstOrDefault(),
                 NaziviJela = naziviJela,
                 DodaciJela = dodaciJela
             });

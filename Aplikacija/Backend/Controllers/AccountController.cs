@@ -143,6 +143,9 @@ public class AccountController : ControllerBase
 
             var restoran = new Restoran()
             {
+                //nismo imali vremna da zavrsimo sve pa su neke vrednosti hardkadirane
+                //losa organizacija i problemi sa MongoDBRef ://////
+
                 Email = model.Email,
                 Naziv = model.Naziv,
                 Adresa = model.Adresa,
@@ -151,12 +154,12 @@ public class AccountController : ControllerBase
                 Opis = model.Opis,
                 Kapacitet = model.Kapacitet,
                 pocetakRV = 0,
-                krajRV = 0,
-                VremeDostave = "min",
-                CenaDostave = 30,
+                krajRV = 24,
+                VremeDostave = "45min",
+                CenaDostave = 50,
                 LimitDostave = 500,
                 odobren = false,
-                SlobodnaMesta = 0,
+                SlobodnaMesta = 20,
                 ProsecnaOcena = 0
             };
             var salt = GenerateSalt(70);
