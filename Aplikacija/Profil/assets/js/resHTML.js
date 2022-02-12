@@ -15,6 +15,7 @@ else
         var d1 = document.getElementById("btnSacuvaj");
         var d2 = document.getElementById("jela");
         var d3 = document.getElementById("komentari");
+        var d3 = document.getElementById("rezervisi");
         d1.addEventListener("click",sacuvaj); 
         d2.addEventListener("click",jela);  
         d3.addEventListener("click",komentari); 
