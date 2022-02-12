@@ -15,7 +15,8 @@ if(sessionStorage.getItem("token")==null || sessionStorage.getItem("token")=="")
     pom3.hidden=true;
 }
 else{ 
-    
+      //var sort=document.getElementById("sortingOptionID").style.visibility="revert"
+     
     var pom=document.getElementById("odjavi");
     pom.hidden=false;
     var pom3=document.getElementById("prijava");

@@ -11,10 +11,52 @@ dugm.hidden=true;
 //res.ucitajBukmarkovaneRestorane();
 if(sessionStorage.getItem("token")!=null && sessionStorage.getItem("token")!="")
 {
-    var dugme=document.getElementById("omiljeniRes");  
+    /*var dugme=document.getElementById("omiljeniRes");  
     dugme.addEventListener('click',bukmarkovani);
     var dugme1=document.getElementById("sacuvaneNar");  
     dugme1.addEventListener('click',sacuvani);
+
+    
+    var sortL=document.getElementById("sortingOptionID");
+    var L=document.getElementById("sortingOptionID").options[0].selected = true; 
+   
+    console.log(sortL);//.options[sortL.selectedIndex].text);
+    var v=sortL.value;
+    sortL.addEventListener('click',sort(v));*/
+    /*sortL.addEventListener('change',function(){
+        console.log("ovde");
+    const host=document.getElementById("restorani");
+    host.innerHTML="";
+    res.sortirajPoNajnizoj();
+    var dugm=document.getElementById("homebtn");
+    dugm.hidden=false;
+    dugm.addEventListener('click',vrati);
+    });*/
+    //var sortH=document.getElementById("sortirajPoNajvecoj")
+    //sortH.addEventListener('click',sortNajv);
+}
+document.getElementById("sortingOptionID").options[0].selected = true; 
+
+
+export function sortNajm(){
+    console.log("sdv");
+    const host=document.getElementById("restorani");
+    host.innerHTML="";
+        res.sortirajPoNajnizoj();
+    
+    res.sortirajPoNajnizoj();
+    var dugm=document.getElementById("homebtn");
+    dugm.hidden=false;
+    dugm.addEventListener('click',vrati);
+}
+export function sortNajv(){
+    console.log("sdvsdfsdf");
+    const host=document.getElementById("restorani");
+    host.innerHTML="";
+    res.sortirajPoNajvisoj();
+    var dugm=document.getElementById("homebtn");
+    dugm.hidden=false;
+    dugm.addEventListener('click',vrati);
 }
 function bukmarkovani(){
     const host=document.getElementById("restorani");

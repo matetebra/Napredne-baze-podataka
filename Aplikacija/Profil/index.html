@@ -81,7 +81,31 @@
 
     <!-- ======= About Section ======= -->
     <section>
-      <button  class="dgme"id="sacuvaneNar"href="" class="nav-link scrollto">Sortiraj restorane po oceni</button>
+      <!--<style="visibility: hidden;"button  style="visibility:hidden;"class="dgme"id="sortiranje"href="" class="nav-link scrollto">Sortiraj restorane po oceni</button>-->
+      <section class="recepti grid">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="grid-option">
+                <form>
+                  <select class="custom-select" id="sortingOptionID">
+                    <option selected disabled hidden>Sortiraj</option>
+                    <option id="sortirajPoNajmanjoj" value="1">Po oceni najmanjoj</option>
+                    <option id="sortirajPoNajvecoj" value="2">Po oceni najvecoj</option>
+                  </select>
+                  <p></p>
+                </form>
+              </div>
+            </div>
+            <div id="receptiRecepti">
+              <div class="row novo">
+                <div id="receptRecepti" class="col-md-4">
+             
+                
+              </div>
+            </div>
+          </div>
+      </section>
       <div class="row" id="restorani">
         
       </div>
@@ -124,6 +148,15 @@
   <!-- Template Main JS File -->
   <script type="module" src="assets/js/korisnikHTML.js"></script>
   <script type="module" src="assets/js/restoranHTML.js"></script>
+  <script type="module">
+    import {sortNajm} from './assets/js/restoranHTML.js'
+    document.querySelector('#sortirajPoNajmanjoj').addEventListener('click',sortNajm);
+   </script>
+   <script type="module">
+    import {sortNajv} from './assets/js/restoranHTML.js'
+    document.querySelector('#sortirajPoNajvecoj').addEventListener('click',sortNajv);
+   </script>
+   
 </body>
 
 </html>

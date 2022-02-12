@@ -33,6 +33,7 @@ export class restorani{
 
 crtajsveRestorane(){
   const host=document.getElementById("restorani");
+  host.innerHTML="";
   this.restorani.forEach((rest)=>{
       rest.crtajRestoran(host)
   });
@@ -132,6 +133,10 @@ ucitajPrethodnePorudzbine(){
       });
   
     }
+  osveziRestorane(){
+    this.restorani.splice(0,this.restorani.length);
+    this.crtajsveRestorane();
+  }
   crtajPorudzbine(){
     const host=document.getElementById("restorani");
     host.innerHTML="";
@@ -139,4 +144,51 @@ ucitajPrethodnePorudzbine(){
         rest.crtajNarudzbinu(host);
     });
   }
-}
+ sortirajPoNajnizoj(){
+  this.restorani.splice(0,this.restorani.length);
+  fetch("https://localhost:7284/Restoran/SoryByLowest", {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: "Bearer " + sessionStorage.getItem("token"),
+            },
+          })
+      .then((p) => {
+      p.json().then((data) => {
+        data.forEach((element) => {
+          var r = new restoran();
+          r.naziv=element.naziv;
+          r.adresa=element.adresa;
+          r.email=element.email;
+          r.telefon=element.telefon;
+          this.restorani.push(r);
+        });
+        this.crtajsveRestorane();
+      });
+    });
+  }
+  
+  sortirajPoNajvisoj(){
+    this.restorani.splice(0,this.restorani.length);
+  fetch("https://localhost:7284/Restoran/SoryByGreatest", {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: "Bearer " + sessionStorage.getItem("token"),
+            },
+          })
+      .then((p) => {
+      p.json().then((data) => {
+        data.forEach((element) => {
+          var r = new restoran();
+          r.naziv=element.naziv;
+          r.adresa=element.adresa;
+          r.email=element.email;
+          r.telefon=element.telefon;
+          this.restorani.push(r);
+        });
+        this.crtajsveRestorane();
+      });
+    });
+  }
+} 

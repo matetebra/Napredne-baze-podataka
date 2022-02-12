@@ -60,6 +60,7 @@ if (
        );
     };
   } else if (sessionStorage.getItem("role") == "Korisnik") {
+  
     location.href = "index.html";
   } else if (sessionStorage.getItem("role") == "Restoran") {
     location.href = "restoranUser.html";

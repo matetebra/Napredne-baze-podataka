@@ -34,7 +34,7 @@ export class korisnik{
         this.email="";
         this.grad="";
         this.telefon="";
-      fetch("https://localhost:7284/Slavko/GetRestourants", {
+      fetch("https://localhost:7284/Slavko/getUserInformaiton", {
                 method: "GET",
                 headers: {
                   "Content-Type": "application/json",
@@ -43,14 +43,14 @@ export class korisnik{
               })
           .then((p) => {
           p.json().then((data) => {
-            data.forEach((element) => {
-              this.ime=element.ime;
-              this.prezime=element.prezime;
-              this.email=element.email;
-              this.grad=element.grad;
-              this.telefon=element.telefon;
+           
+              this.ime=data.ime;
+              this.prezime=data.prezime;
+              this.email=data.email;
+              this.grad=data.grad;
+              this.telefon=data.telefon;
               
-            });
+           
             this.crtajInformacije();
           });
         });

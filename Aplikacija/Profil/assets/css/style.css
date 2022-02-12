@@ -1145,3 +1145,34 @@ section {
   margin-left: 2rem;
   margin-right: 2rem;
 }
+.property-grid .grid-option {
+  text-align: right;
+  margin-bottom: 2rem;
+}
+
+
+.custom-select:hover, .custom-select:active, .custom-select:focus {
+  border-color: #313131;
+}
+ .custom-select option {
+  border-color: #313131;
+}
+
+  .grid {
+    margin-bottom: 2.5rem;
+  }
+
+   .custom-select {
+    border-radius: 0;
+    width: 50%;
+    border-color: #313131;
+  }
+  
+  .property-grid .grid-option .custom-select:hover, .property-grid .grid-option .custom-select:active, .property-grid .grid-option .custom-select:focus {
+    border-color: #313131;
+  }
+  
+  .property-grid .grid-option .custom-select option {
+    border-color: #313131;
+  }
+  
