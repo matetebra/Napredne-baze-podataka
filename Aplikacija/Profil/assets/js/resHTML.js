@@ -1,6 +1,5 @@
 import { restoran} from "./restoran.js";
-var r=new restoran("ime");
-console.log(r);
+var r=new restoran();
 if ( sessionStorage.getItem("token") == null || sessionStorage.getItem("token") == "")  
 {
   alert("Niste prijavljeni");
