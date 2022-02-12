@@ -40,6 +40,7 @@ export class restoran {
     this.jelapom = [];
     this.dodatakpom = [];
     this.rezervacijepom = [];
+    this.porudzbinepom = [];
   }
   crtajRestoran(host) {
     if (!host) throw new Error("Greska u hostu");
@@ -257,17 +258,17 @@ export class restoran {
       });
     });
   }
-  crtajPorudzbine(host){
+  crtajPorudzbine(host) {
     if (!host) throw new Error("Greska u hostu");
     const pom = document.createElement("div");
     this.dodajNamirniceIDodatke();
   }
-  dodajNamirniceIDodatke(){
-    var labJ=document.getElementById("jelaNam").value;
-    var labD=document.getElementById("dodNam").value;
+  dodajNamirniceIDodatke() {
+    var labJ = document.getElementById("jelaNam").value;
+    var labD = document.getElementById("dodNam").value;
     console.log(labJ);
-    var labJela=labJ.split(",");
-    var labDod=labD.split(",");
+    var labJela = labJ.split(",");
+    var labDod = labD.split(",");
     console.log(labJ);
     console.log(labDod);
   }
@@ -365,9 +366,9 @@ export class restoran {
   oceniRestoran(ocena) {
     fetch(
       "https://localhost:7284/Restoran/OceniRestoran/" +
-        this.email +
-        "/" +
-        ocena,
+      this.email +
+      "/" +
+      ocena,
       {
         method: "POST",
         headers: {
@@ -453,7 +454,7 @@ export class restoran {
     label.style = " margin: 5px";
     d5.appendChild(label);
     var input = document.createElement("input");
-    input.type="number"
+    input.type = "number"
     input.style = " margin: 5px";
     input.id = "cena";
     d5.appendChild(input);
@@ -607,7 +608,7 @@ export class restoran {
     label.style = " margin: 5px";
     d1.appendChild(label);
     var input = document.createElement("input");
-    input.type="number"
+    input.type = "number"
     input.style = " margin: 5px";
     input.id = "cena";
     d1.appendChild(input);
@@ -637,7 +638,7 @@ export class restoran {
           if (p.ok) {
             alert("Uspesno dodavanje dodatka");
             location.reload();
-            
+
           } else {
             alert("Ne mozete dodati taj dodatak.");
           }
@@ -677,10 +678,9 @@ export class restoran {
       j.crtajRezervaciju(host);
     });
   }
-  prihvatiPorudzbinu(host)
-  {
-   /* this.rezervacijepom.splice(0, this.rezervacijepom.length);
-    fetch("https://localhost:7284/Slavko/VratiRezervacije", {
+  prihvatiPorudzbinu(host) {
+    this.porudzbinepom.splice(0, this.porudzbinepom.length);
+    fetch("https://localhost:7284/Slavko/vratiNeisporucene", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -689,18 +689,28 @@ export class restoran {
     }).then((p) => {
       p.json().then((data) => {
         data.forEach((element) => {
-          var j = new rezervacija();
-          j.id = element.idRezervacije;
-          j.email = element.emailKorisnika;
-          j.telefon = element.telefonKorisnika;
-          j.vreme = element.vreme;
-          j.brojMesta = element.brojMesta;
-          this.rezervacijepom.push(j);
-          console.log(j)
+          var j = new porudzbina();
+          j.id = element.id;
+          j.napomena = element.napomena;
+          j.datum = element.datum;
+          j.adresa = element.adresa;
+          console.log(element.naziviJela);
+          element.naziviJela.forEach(el => {
+            var e=new jelo(el.naziv,el.kategorija,el.gramaza,el.opis,el.slika,el.cena);
+            j.dodajPor(el);
+          })
+          this.porudzbinepom.push(j)
         });
-        this.crtajsveRezervacije(host);
+        this.crtajSvePorudzbine(host);
       });
-    });*/
+    });
+  }
+
+  crtajSvePorudzbine(host) {
+
+    this.porudzbinepom.forEach((j) => {
+      j.crtajPorudzbinu(host);
+    });
   }
 }
 export class jelo {
@@ -753,6 +763,7 @@ export class jelo {
         });
     });
   }
+  
 }
 export class dodatak {
   constructor(naziv, cena) {
@@ -778,7 +789,7 @@ export class dodatak {
     dugme.id = this.naziv;
     dugme.style = " margin: 5px";
     dugme.classList = "btn btn-danger";
-  
+
     dugme.addEventListener("click", function () {
       fetch("https://localhost:7284/Restoran/obrisiDodatak/" + this.id, {
         method: "DELETE",
@@ -793,8 +804,8 @@ export class dodatak {
             console.log(this.naziv)
             alert("Dodatak je uspesno obrisan");
             location.reload();
-            var g=getElementById("informacije");
-            g.innerHTML=""
+            var g = getElementById("informacije");
+            g.innerHTML = ""
           } else {
             alert("Greska kod brisanja");
           }
@@ -813,6 +824,7 @@ export class rezervacija {
     this.vreme = vreme;
     this.telefon = telefon;
   }
+
   crtajRezervaciju(host) {
     var d = document.createElement("div");
     host.appendChild(d);
@@ -826,7 +838,7 @@ export class rezervacija {
     label1.style = " margin: 5px";
     d.appendChild(label1);
     var label2 = document.createElement("label");
-    label2.innerHTML = "  " + this.vreme+"h";
+    label2.innerHTML = "  " + this.vreme + "h";
     label2.style = " margin: 5px";
     d.appendChild(label2);
 
@@ -861,56 +873,86 @@ export class rezervacija {
 }
 
 export class porudzbina {
-  constructor(id, email, brojMesta, vreme, telefon) {
+  constructor(id, napomena, datum, adresa, naziv) {
     this.id = id;
-    this.email = email;
-    this.brojMesta = brojMesta;
-    this.vreme = vreme;
-    this.telefon = telefon;
+    this.napomena = napomena;
+    this.datum = datum;
+    this.adresa = adresa;
+    this.naziv = naziv;
+    this.dodaciJela = [];
   }
-  crtajPorudzbinu() {
+  dodajPor(p) {
+    this.dodaciJela.push(p);
+  }
+  crtajPorudzbinu(host) {
+
+
+
     var d = document.createElement("div");
     host.appendChild(d);
-
     var label = document.createElement("label");
-    label.innerHTML = this.email;
+    label.innerHTML = "Napomena: " + this.napomena;
     label.style = " margin: 5px";
     d.appendChild(label);
-    var label1 = document.createElement("label");
-    label1.innerHTML = "  " + this.telefon;
-    label1.style = " margin: 5px";
-    d.appendChild(label1);
-    var label2 = document.createElement("label");
-    label2.innerHTML = "  " + this.vreme;
-    label2.style = " margin: 5px";
-    d.appendChild(label2);
+
+    var d = document.createElement("div");
+    host.appendChild(d);
+    var label = document.createElement("label");
+    label.innerHTML = "Datum: " + this.datum.slice(0, 10);
+    label.style = " margin: 5px";
+    d.appendChild(label);
+
+    var d = document.createElement("div");
+    host.appendChild(d);
+    var label = document.createElement("label");
+    label.innerHTML = "Adresa: " + this.adresa;
+    label.style = " margin: 5px";
+    d.appendChild(label);
+
+    var d = document.createElement("div");
+    host.appendChild(d);
+    this.dodaciJela.forEach(el => {
+      this.crtajJelo123(d,el);
+    });
+
 
     var dugme = document.createElement("button");
     d.appendChild(dugme);
-    dugme.innerHTML = "Obrisi rezervaciju";
-    dugme.id = this.naziv;
+    dugme.innerHTML = "Prihvati porudzbinu";
+    dugme.id = this.id;
     dugme.style = " margin: 5px";
     dugme.classList = "btn btn-danger";
+
     dugme.addEventListener("click", function () {
-      fetch("https://localhost:7284/Slavko/obrisiRezervaciju/" + this.id, {
-        method: "DELETE",
+      fetch("https://localhost:7284/Slavko/isporuciPorudzbinu/" + this.id, {
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
           Authorization: "Bearer " + sessionStorage.getItem("token"),
         },
-        body: JSON.stringify({}),
       })
         .then((p) => {
           if (p.ok) {
-            alert("Porudzbina je uspesno obrisan");
+            alert("Porudzbina je uspesno potvrdjena");
             location.reload();
           } else {
-            alert("Greska kod brisanja");
+            alert("Greska kod potvrdjivanja");
           }
         })
         .catch((p) => {
-         // alert("Greška sa konekcijom.");
+          // alert("Greška sa konekcijom.");
         });
     });
+  }
+  crtajJelo123(host,n) {
+    var d = document.createElement("div");
+    host.appendChild(d);
+
+    var label = document.createElement("label");
+    label.innerHTML = n;
+    label.style = " margin: 5px";
+    d.appendChild(label);
+
+
   }
 }
