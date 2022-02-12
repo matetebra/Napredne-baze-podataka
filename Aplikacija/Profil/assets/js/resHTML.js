@@ -107,13 +107,13 @@ function jela() {
   });
 }
 function posaljiPorudzbinu() {
-  var napomena = document.getElementById("Napomena");
+  var napomena1 = document.getElementById("Napomena").value;
   var e = r.email;
-  var jela = new Array();
+  var jela = [];
   r.jelaNar.forEach((el) => {
     jela.push(el.id);
   });
-  var dodaci = new Array();
+  var dodaci = [];
   r.dodNar.forEach((el) => {
     dodaci.push(el.id);
   });
@@ -127,17 +127,17 @@ function posaljiPorudzbinu() {
         Authorization: "Bearer " + sessionStorage.getItem("token"),
       },
       body: JSON.stringify({
-        napomena: napomena,
-        jelaID: ["62056cd30d2f45c63c35d7f4"],
-        emailRestoran: "cezar@nis.rs",
-        dodaciID: [],
+        napomena: napomena1,
+        jelaID: jela,
+        emailRestoran: e,
+        dodaciID: dodaci,
       }),
     })
       .then((p) => {
         if (p.ok) {
-          alert("Uspesno rezervisano: " + mesta + " mesta.");
+          alert("Uspesno narucivanje");
         } else {
-          alert("Ne mozete rezervisati.");
+          alert("Ne mozete trenutno naruciti.");
         }
       })
       .catch(() => {

@@ -302,7 +302,7 @@ public class RestoranController : ControllerBase
 
         return Ok(jelo);
     }
-
+    [Authorize(Roles = "Restoran")]
     [HttpDelete]
     [Route("DeleteJelo/{naziv}")]
     public ActionResult DeleteJelo(string naziv)
@@ -352,7 +352,7 @@ public class RestoranController : ControllerBase
         restoranCollection.Save(rest);
         return Ok();
     }
-
+    [Authorize(Roles = "Korisnik")]
     [HttpPost]
     [Route("OceniRestoran/{email}/{ocenica}")]
     public ActionResult OceniRestoran(string email, int ocenica)
@@ -451,7 +451,7 @@ public class RestoranController : ControllerBase
 
         return Ok(rest);
     }
-
+    [Authorize(Roles = "Restoran")]
     [HttpPost]
     [Route("AddDodatak")]
     public ActionResult AddDodatak([FromBody] Dodatak doda)
@@ -480,7 +480,7 @@ public class RestoranController : ControllerBase
     }
 
     [HttpDelete]
-    // [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Restoran")]
     [Route("obrisiDodatak/{naziv}")]
     public IActionResult deleteReservation(string naziv)
     {

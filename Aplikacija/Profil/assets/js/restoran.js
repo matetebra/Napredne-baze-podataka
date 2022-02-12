@@ -92,8 +92,8 @@ export class restoran {
     var pogled = document.createElement("button");
     pogled.classList.add("btn");
     pogled.classList.add("btn-a");
-    pogled.classList.add("col-md-1");
-    pogled.innerHTML = "Pogledaj";
+    pogled.classList.add("col-md-2");
+    pogled.innerHTML = "Otvori";
     pogled.id = this.email;
     host.appendChild(pogled);
     pogled.addEventListener("click", function () {
@@ -289,7 +289,7 @@ export class restoran {
       kol.innerHTML=count;
       kol.id="kol"+e.id;
       di.appendChild(kol);
-      const dug=document.createElement("button");
+      /*const dug=document.createElement("button");
       dug.innerHTML="-";
       dug.classList="btn btn-danger";
       di.appendChild(dug);
@@ -322,7 +322,7 @@ export class restoran {
       var label= document.getElementById("KonacnaCena");
       label.innerHTML="Konacna cena je: " +count +" dinara.";
       });
-      di.appendChild(dug);
+      di.appendChild(dug);*/
       nacrtanoJelo.push(e);
       count=0;
     }
@@ -352,7 +352,7 @@ export class restoran {
      kol.innerHTML=count;
      kol.id="kol2"+e.id;
      di2.appendChild(kol);
-     var d=document.createElement("button");
+     /*var d=document.createElement("button");
      d.innerHTML="-";
      d.classList="btn btn-danger";
      di2.appendChild(d);
@@ -375,7 +375,7 @@ export class restoran {
      });
         var label= document.getElementById("KonacnaCena");
         label.innerHTML="Konacna cena je: " +count +" dinara.";
-     });
+     });*/
      nacrtaniDodatak.push(e);
      count=0;
     }
@@ -579,7 +579,7 @@ export class restoran {
     input.id = "opiss";
     d3.appendChild(input);
 
-    var d4 = document.createElement("div");
+    /*var d4 = document.createElement("div");
     host.appendChild(d4);
     var label = document.createElement("label");
     label.innerHTML = "Slika: ";
@@ -588,7 +588,7 @@ export class restoran {
     var input = document.createElement("input");
     input.style = " margin: 5px";
     input.id = "slika";
-    d4.appendChild(input);
+    d4.appendChild(input);*/
 
     var d5 = document.createElement("div");
     host.appendChild(d5);

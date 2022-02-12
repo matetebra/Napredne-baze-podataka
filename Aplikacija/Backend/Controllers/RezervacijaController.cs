@@ -5,6 +5,7 @@ using MongoDB.Driver;
 using MongoDB.Driver.Builders;
 using Backend.Models.DTO;
 using MongoDB.Driver.Linq;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Backend.Controllers;
 
@@ -12,6 +13,7 @@ namespace Backend.Controllers;
 [Route("[controller]")]
 public class RezervacijaController : ControllerBase
 {
+    [Authorize(Roles = "Korisnik")]
     [HttpPost]
     [Route("AddReservation/{email}")]
     public IActionResult AddReservation([FromBody] RezervacijaDTO rez, string email)
