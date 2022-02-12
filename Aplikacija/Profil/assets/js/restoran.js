@@ -397,16 +397,6 @@ export class restoran {
       var label= document.getElementById("KonacnaCena");
       label.innerHTML="Konacna cena je: " +count +" dinara.";
   }
-<<<<<<< HEAD
-  dodajNamirniceIDodatke() {
-    var labJ = document.getElementById("jelaNam").value;
-    var labD = document.getElementById("dodNam").value;
-    console.log(labJ);
-    var labJela = labJ.split(",");
-    var labDod = labD.split(",");
-    console.log(labJ);
-    console.log(labDod);
-=======
   dodajNamirniceIDodatke(){
     var labJ = document.getElementById("jelaNam").innerHTML;
     var labD=document.getElementById("dodNam").innerHTML;
@@ -424,7 +414,6 @@ export class restoran {
            this.dodNar.push(element);
       });
     });
->>>>>>> 9eb6ea956e3209b8e4657edc20232b4c19afa31f
   }
   crtajKomentari(host) {
     if (!host) throw new Error("Greska u hostu");
