@@ -97,10 +97,10 @@ function komentari(){
     pogled.style="width:100px; margin-top:5px; margin-bottom:5px;"
     d4.appendChild(pogled);
     pogled.addEventListener("click",dodajKomentar);
-    r.crtajKomentari(sve);
+    r.crtajKomentari(d4);
 }
 function dodajKomentar(){
-  var komentar=document.createElement("komentarText");
+  var komentar=document.getElementById("komentarText").value;
   if(komentar==null)
   {
     alert("Unesite tekst");

@@ -472,8 +472,7 @@ public class SlavkoController : ControllerBase
 
         komentarCollection.Insert(komentar);
 
-        restourant.KomentariIdList.Add(new MongoDBRef("komentar", komentar.Id));
-        restourantCollection.Save(restourant);
+
 
 
         return Ok();
