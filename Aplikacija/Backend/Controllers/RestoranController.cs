@@ -398,6 +398,53 @@ public class RestoranController : ControllerBase
         return Ok("Uspesno ste ocenili");
     }
 
+    [HttpGet]
+    [Route("SoryByLowest")]
+    public ActionResult SoryByLowest()
+    {
+        MongoClient client = new MongoClient("mongodb+srv://mongo:sifra123@cluster0.ewwnh.mongodb.net/test");
+        MongoServer server = client.GetServer();
+        var database = server.GetDatabase("Dostavi");
 
+        var restoranCollection = database.GetCollection<Restoran>("restoran");
+        var korisnikCollection = database.GetCollection<Korisnik>("korisnik");
 
+        var userEmail = HttpContext.User.Identity.Name;
+
+        var kor = (from korisnik in korisnikCollection.AsQueryable<Korisnik>()
+                    where korisnik.Email == userEmail
+                    select korisnik).FirstOrDefault();
+
+        var rest = (from restoran in restoranCollection.AsQueryable<Restoran>()
+                    where restoran.Grad == kor.Grad
+                    orderby restoran.ProsecnaOcena descending
+                    select new { restoran.Email, restoran.Naziv, restoran.Adresa, restoran.Telefon, restoran.ProsecnaOcena}).ToList();
+        rest.Reverse();
+        return Ok(rest);
+    }
+
+    [HttpGet]
+    [Route("SoryByGreatest")]
+    public ActionResult SoryByGreatest()
+    {
+        MongoClient client = new MongoClient("mongodb+srv://mongo:sifra123@cluster0.ewwnh.mongodb.net/test");
+        MongoServer server = client.GetServer();
+        var database = server.GetDatabase("Dostavi");
+
+        var restoranCollection = database.GetCollection<Restoran>("restoran");
+        var korisnikCollection = database.GetCollection<Korisnik>("korisnik");
+
+        var userEmail = HttpContext.User.Identity.Name;
+
+        var kor = (from korisnik in korisnikCollection.AsQueryable<Korisnik>()
+                    where korisnik.Email == userEmail
+                    select korisnik).FirstOrDefault();
+
+        var rest = (from restoran in restoranCollection.AsQueryable<Restoran>()
+                    where restoran.Grad == kor.Grad
+                    orderby restoran.ProsecnaOcena descending
+                    select new { restoran.Email, restoran.Naziv, restoran.Adresa, restoran.Telefon, restoran.ProsecnaOcena}).ToList();
+
+        return Ok(rest);
+    }
 }
