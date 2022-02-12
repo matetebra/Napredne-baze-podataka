@@ -45,7 +45,7 @@
     <div class="container d-flex justify-content-between">
 
       <div class="logo">
-        <h1 id="ime" class="text-light"><a href="restoran.html">Restoran</a></h1>
+        <h1 id="ime" class="text"><a href="restoran.html">Restoran</a></h1>
         <!-- Uncomment below if you prefer to use an image logo -->
         <!-- <a href="index.html"><img src="assets/img/logo.png" alt="" class="img-fluid"></a>-->
       </div>
@@ -70,7 +70,17 @@
     <div id="heroCarousel" data-bs-interval="5000" class="carousel slide carousel-fade" data-bs-ride="carousel">
       <div class="carousel-inner" role="listbox">
         <div class="container ">
-        <button type="submit" class="btn btn-danger"id="btnSacuvaj">Bookmark</button>
+        <div style="display:flex; flex-direction: row;">
+          <div>
+        <button type="submit" class="btn btn-danger"id="btnSacuvaj" style=" margin-bottom:5px; margin-right: 5px; margin-top:5px; display: flex; flex-wrap: wrap;">Bookmark</button></div>
+        <div style="display: flex; flex-direction: row; flex-wrap: wrap;">
+          <button class="oceni btn btn-outline-warning" style=" margin-bottom:5px; margin-right: 5px; margin-top:5px; display: flex; flex-wrap: wrap;"> 1 </button>
+          <button class="oceni btn btn-outline-warning" style="margin-bottom:5px; margin-right: 5px; margin-top:5px; display: flex; flex-wrap: wrap;"> 2 </button>
+          <button class="oceni btn btn-outline-warning" style="margin-bottom:5px; margin-right: 5px;margin-top:5px; display: flex; flex-wrap: wrap;"> 3 </button>
+          <button class="oceni btn btn-outline-warning" style="margin-bottom:5px;margin-right: 5px; margin-top:5px; display: flex; flex-wrap: wrap;"> 4 </button>
+          <button class="oceni btn btn-outline-warning" style=" margin-bottom:5px; margin-right: 5px; margin-top:5px; display: flex; flex-wrap: wrap;"> 5 </button>
+        </div>
+        </div>
         <div class="title-box-d">
           <h3 class="title-d">Adresa: <span id="adresa" class="color-text-a usernameStyle"> </span> </h3>
         </div>
@@ -88,6 +98,9 @@
         <div class="info-agents color-a">
           <h3 class="title-d">Limit dostave: <span id="limitDostave" class="color-text-a usernameStyle"> </span></h3>
         </div>
+        <div class="info-agents color-a">
+          <h3 class="title-d">Ocena: <span id="prosecnaOcena" class="color-text-a usernameStyle"> </span></h3>
+        </div>
         <div class="row"> <button class="btn btn-danger col-md-3" style="margin-right: 5px; margin-bottom: 5px" id="jela">Jela </button> 
           <button class="btn btn-danger col-md-3" style="margin-right: 5px; margin-bottom: 5px" id="komentari">Komentari i ocena</button>
           <button class="btn btn-danger col-md-3" id="rezervisi" style="margin-bottom: 5px">Rezerviši</button>
@@ -99,6 +112,7 @@
           <div id="ovdeSeRadiD" class="red"></div>
           <label id="dodNam" hidden="true"></label>
           <div id="ovdeSeRadiB" class="red"></div>
+          <div id="ovdeSeRadiK" class="red"></div>
         </div>
         </div>
       </div>

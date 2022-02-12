@@ -1,5 +1,5 @@
 export class restoran{
-    constructor(naziv, adresa, grad, email, telefon, opis, radnoVreme, vremeDostave, cenaDostave, limitDostave, kapacitet, brSlobodnih, cena ){
+    constructor(naziv, adresa, grad, email, telefon, opis, radnoVreme, vremeDostave, cenaDostave, limitDostave, kapacitet, brSlobodnih, cena,o ){
         this.naziv=naziv;
         this.adresa= adresa;
         this.grad= grad;
@@ -13,6 +13,7 @@ export class restoran{
         this.kapacitet= kapacitet;
         this.brSlobodnih= brSlobodnih;
         this.cena=cena;
+        this.prosecnaOcena=o;
         this.komentari=[];
         this.kategorije=[];
         this.jela=[];
@@ -155,6 +156,8 @@ export class restoran{
       d1 = document.getElementById("limitDostave").innerHTML=this.limitDostave;
       d1 = document.getElementById("mail").innerHTML=this.email;
       d1 = document.getElementById("phone").innerHTML=this.telefon;
+      d1 = document.getElementById("ime").innerHTML=this.naziv;
+      d1 = document.getElementById("prosecnaOcena").innerHTML=this.prosecnaOcena;
     }
     crtajJela(host){
       //<div class="pic"><img src="assets/img/team/team-1.jpg" class="img-fluid" alt=""></div> //za sliku
@@ -219,6 +222,7 @@ export class restoran{
         d3.appendChild(d4);
         var d5= document.createElement("h6");
         d5.innerHTML="Cena: " + e.cena;
+        d3.appendChild(d5);
         var pogled = document.createElement("button");
         pogled.classList.add("btn");
         pogled.classList.add("btn-danger");
@@ -232,9 +236,23 @@ export class restoran{
         });
       });
     }
-    crtajKomentari()
+    crtajKomentari(host)
     {
-
+      if (!host) throw new Error("Greska u hostu");
+      this.komentari.forEach(e => {
+        var d1= document.createElement("div");
+        d1.className="col-lg-12 member";
+        host.appendChild(d1);
+        var d2= document.createElement("div");
+        d2.classList="d-flex align-items-start";
+        d1.appendChild(d2);
+        var d3= document.createElement("div");
+        d3.className="member-info";
+        d2.appendChild(d3);
+        var d4= document.createElement("h5");
+        d4.innerHTML=e.korisnik;
+        d3.appendChild(d4);
+      });
     }
     preuzmiPodatke(emails){
       fetch("https://localhost:7284/Slavko/GetAllRestourantInformations/"+emails, {
@@ -264,6 +282,7 @@ export class restoran{
         this.brSlobodnih= data.slobodnaMesta;
         this.komentari=data.komentari;
         this.kategorije=data.kategorije;
+        this.prosecnaOcena=data.prosecnaOcena;
         this.jela=data.jela;
         this.dodatak=data.dodaci;
         this.Osvezi();
@@ -271,10 +290,23 @@ export class restoran{
       })
       .catch((error) => console.error("Greska", error));
     }
-    postaviKomentar(){
-
-    }
-    oceniRestoran(){
-
+    oceniRestoran(ocena){
+      fetch("https://localhost:7284/Restoran/OceniRestoran/"+ r.email+"/"+ocena, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + sessionStorage.getItem("token")
+        }
+      })
+        .then((p) => {
+          if (p.ok) {
+            alert("Uspesno ocenjivanje");
+          } else {
+            alert("Greska kod ocenjivanja");
+          }
+        })
+        .catch((p) => {
+          alert("Greška sa konekcijom.");
+        });
     }
 }

@@ -1,6 +1,6 @@
 import { restoran} from "./restoran.js";
 var r=new restoran();
-/*if ( sessionStorage.getItem("token") == null || sessionStorage.getItem("token") == "")  
+if ( sessionStorage.getItem("token") == null || sessionStorage.getItem("token") == "")  
 {
   alert("Niste prijavljeni");
   location.href = "index.html";
@@ -8,31 +8,38 @@ var r=new restoran();
 else 
 {
     if(sessionStorage.getItem("role")=="Korisnik")
-    {*/
-        r.preuzmiPodatke("cezar@nis.rs");
-        //r.preuzmiPodatke(sessionStorage.getItem("restoran"));
+    {
+        //r.preuzmiPodatke("cezar@nis.rs");
+        r.preuzmiPodatke(sessionStorage.getItem("restoran"));
         //r.email=sessionStorage.getItem("username");
         var d1 = document.getElementById("btnSacuvaj");
         var d2 = document.getElementById("jela");
         var d3 = document.getElementById("komentari");
         var d4 = document.getElementById("rezervisi");
+        var d5 = document.getElementsByClassName("oceni");
         d1.addEventListener("click",sacuvaj); 
         d2.addEventListener("click",jela);  
         d3.addEventListener("click",komentari); 
         d4.addEventListener("click",rezervisi); 
-    /*}
+        for(let i=0; i<5; i++)
+        {
+          d5[i].addEventListener("click", function(){
+             r.oceniRestoran(d5[i].innerHTML);
+          }); 
+        }
+    }
     else
     {
         alert("Nemate privilegiju");
         location.href = "index.html";
     }
-}*/
+}
 function sacuvaj(){
   fetch("https://localhost:7284/Slavko/BookMarkRestaurant/"+ r.email, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: "Bearer " + sessionStorage.getItem("token"),
+      Authorization: "Bearer " + sessionStorage.getItem("token")
     }
   })
     .then((p) => {
@@ -53,6 +60,8 @@ function jela(){
     d2.innerHTML="";
     var d= document.getElementById("ovdeSeRadiB");
     d.innerHTML="";
+    var d4= document.getElementById("ovdeSeRadiK");
+    d4.innerHTML="";
     r.crtajJela(d1);
     r.crtajDodatke(d2);
 }
@@ -63,9 +72,64 @@ function komentari(){
     d.innerHTML="";
     var d3= document.getElementById("ovdeSeRadiB");
     d3.innerHTML="";
-    r.crtajKomentari(d);
+    var sve= document.getElementById("ovdeSeRadiK");
+    sve.innerHTML="";
+    sve.style="display:flex;flex-direction:row; flex-wrap:wrap;"
+
+    var d4=document.createElement("div");
+    sve.appendChild(d4);
+    d4.className="col-md-6";
+    d4.style="display:flex; flex-direction:column; flex-wrap:wrap;"
+    var d7= document.createElement("h5");
+    d7.innerHTML="Unesite komentar: "
+    d7.style="margin-right:5px; margin-top:5px"
+    d4.appendChild(d7);
+    var d8= document.createElement("input");
+    d8.type="textarea"
+    d8.id="komentarText"
+    d8.style="height:100px; max-width:500px"
+    d4.appendChild(d8);
+    var pogled = document.createElement("button");
+    pogled.classList.add("btn");
+    pogled.classList.add("btn-danger");
+    pogled.innerHTML = "Dodaj";
+    pogled.style="width:100px; margin-top:5px; margin-bottom:5px;"
+    d4.appendChild(pogled);
+    pogled.addEventListener("click",dodajKomentar);
+    r.crtajKomentari(sve);
+}
+function dodajKomentar(){
+  var komentar=document.createElement("komentarText");
+  if(komentar==null)
+  {
+    alert("Unesite tekst");
+    return;
+  }
+  fetch("https://localhost:7284/Slavko/AddComment/" + r.email, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + sessionStorage.getItem("token"),
+    },
+    body: JSON.stringify({
+      tekst: komentar
+    }),
+  })
+    .then((p) => {
+      if (p.ok) {
+        alert("Uspesno dodavanje komentara");
+        komentari();
+      } else {
+        alert("Ne mozete komentarisati.");
+      }
+    })
+    .catch(() => {
+      alert("Greska sa konekcijom");
+    });
 }
 function rezervisi(){
+    var d4= document.getElementById("ovdeSeRadiK");
+    d4.innerHTML="";
     var d1= document.getElementById("ovdeSeRadiJ");
     d1.innerHTML="";
     var d2= document.getElementById("ovdeSeRadiD");
@@ -115,6 +179,7 @@ function dodajRezervaciju(){
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      Authorization: "Bearer " + sessionStorage.getItem("token"),
     },
     body: JSON.stringify({
       brojMesta: mesta,
