@@ -83,10 +83,10 @@ function jela(){
     naruci.innerHTML="Naruči"
     korpa.appendChild(naruci);
     var di=document.createElement("div");
-    di.id="di";
+    di.id="ocisti";
     korpa.appendChild(di);
-    korpa.addEventListener("click", function () {
-      var korpa = document.getElementById("di");
+    naruci.addEventListener("click", function () {
+      var korpa = document.getElementById("ocisti");
       korpa.innerHTML="";
       var label=document.createElement("h4");
       label.innerHTML="Porudžbina";
@@ -95,12 +95,10 @@ function jela(){
       label=document.createElement("h5");
       label.innerHTML="Unesite napomenu: ";   
       korpa.appendChild(label);
-      label=document.createElement("input");///
+      label=document.createElement("input");
       label.type="textarea"
-      label.ariaRowCount=2;
-      label.cols=25;
+      label.id="Napomena";
       korpa.appendChild(label);
-      //izracunaj cenu
       var potvrdi= document.createElement("button");
       potvrdi.classList="btn btn-danger";
       potvrdi.innerHTML="Naruči"
@@ -108,7 +106,46 @@ function jela(){
       potvrdi.addEventListener("click",posaljiPorudzbinu);
     });
 }
-function posaljiPorudzbinu() {}
+function posaljiPorudzbinu(){
+  var napomena= document.getElementById("Napomena");
+  var e=r.email;
+  var jela=[];
+    r.jelaNar.forEach(el => {
+    jela.push(el.id);
+  });
+  var dodaci=[];
+  r.dodNar.forEach(el => {
+    dodaci.push(el.id);
+  });
+  console.log(dodaci);
+  if(e!=null && jela!=null)
+  {
+  fetch("https://localhost:7284/Slavko/dodajNarudzbinu", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + sessionStorage.getItem("token"),
+        },
+        body: JSON.stringify({
+          napomena: napomena,
+          jelaID: jela,
+          emailRestoran: e,
+          dodaciID: dodaci
+        }),
+      })
+        .then((p) => {
+          if (p.ok) {
+            alert("Uspesno porucivanje.");
+            komentari();
+          } else {
+            alert("Ne mozete trenutno poruciti.");
+          }
+        })
+        .catch(() => {
+          alert("Greska sa konekcijom");
+        });
+  }
+}
 function komentari() {
   var korpa = document.getElementById("Korpa");
   korpa.innerHTML = "";
