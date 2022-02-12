@@ -200,8 +200,9 @@ export class restoran{
         pogled.id=e.id;
         d3.appendChild(pogled);
         pogled.addEventListener("click",function(){
-          var j= document.getElementById("jelaNam");
-          j.innerHTML=j.innerHTML+pogled.id + ",";
+          //var j= document.getElementById("jelaNam");
+          //j.innerHTML=j.innerHTML+pogled.id + ",";
+          parent.
           alert("Dodato u korpu");
           console.log(j.innerHTML);
         });
@@ -291,12 +292,14 @@ export class restoran{
         this.jela=data.jela;
         this.dodatak=data.dodaci;
         this.Osvezi();
+        console.log(this);
+        return this;
         }
       })
       .catch((error) => console.error("Greska", error));
     }
     oceniRestoran(ocena){
-      fetch("https://localhost:7284/Restoran/OceniRestoran/"+ r.email+"/"+ocena, {
+      fetch("https://localhost:7284/Restoran/OceniRestoran/"+ this.email+"/"+ocena, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -307,7 +310,7 @@ export class restoran{
           if (p.ok) {
             alert("Uspesno ocenjivanje");
           } else {
-            alert("Greska kod ocenjivanja");
+            alert("Vec ste ocenili");
           }
         })
         .catch((p) => {

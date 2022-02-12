@@ -1,5 +1,6 @@
 import { restoran} from "./restoran.js";
-var r=new restoran();
+var r=new restoran("ime");
+console.log(r);
 if ( sessionStorage.getItem("token") == null || sessionStorage.getItem("token") == "")  
 {
   alert("Niste prijavljeni");
@@ -23,10 +24,13 @@ else
         d4.addEventListener("click",rezervisi); 
         for(let i=0; i<5; i++)
         {
-          d5[i].addEventListener("click", function(){
-             r.oceniRestoran(d5[i].innerHTML);
-          }); 
+          d5[i].addEventListener("click",oceni);
+          var label=document.getElementById("Vrednost")
+          label.value=d5[i].innerHTML;
         }
+        //var d6 = document.getElementById("Korpa");
+        var d7 = document.getElementById("Pocetna");
+        d7.addEventListener("click",pocetna);  
     }
     else
     {
@@ -34,6 +38,16 @@ else
         sessionStorage.clear();
         location.href = "index.html";
     }
+}
+function oceni(){
+  r.oceniRestoran(document.getElementById("Vrednost").value);
+}
+function pocetna(){
+  let confirmAction = confirm("Ukoliko izadjete sa stranice izgubicete stvari iz korpe.");
+        if (confirmAction) {
+          location.href="index.html";
+          //sessionStorage.setItem("")
+        } 
 }
 function sacuvaj(){
   fetch("https://localhost:7284/Slavko/BookMarkRestaurant/"+ r.email, {
@@ -47,7 +61,7 @@ function sacuvaj(){
       if (p.ok) {
         alert("Uspesno bookmarkovanje");
       } else {
-        alert("Greska kod bookarkovanja");
+        alert("Vec ste bookmarkovali");
       }
     })
     .catch((p) => {
