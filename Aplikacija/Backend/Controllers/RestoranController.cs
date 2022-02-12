@@ -158,7 +158,6 @@ public class RestoranController : ControllerBase
 
         AddKategorija(jelo.Kategorija); // dodajemo kategoriju u kolekciji ako vec ne postoji
 
-
         var query = Query.EQ("Naziv", jelo.Kategorija);
         var p = collection2.Find(query).FirstOrDefault();
         var rest = (from restoran in restoranCollection.AsQueryable<Restoran>()
@@ -265,6 +264,61 @@ public class RestoranController : ControllerBase
                     select restoran).FirstOrDefault();
 
         rest.odobren = true;
+        restoranCollection.Save(rest);
+        return Ok();
+    }
+
+    [HttpPost]
+    [Route("OceniRestoran/{email}/{ocenica}")]
+    public ActionResult OceniRestoran(string email, int ocenica)
+    {
+        MongoClient client = new MongoClient("mongodb+srv://mongo:sifra123@cluster0.ewwnh.mongodb.net/test");
+        MongoServer server = client.GetServer();
+        var database = server.GetDatabase("Dostavi");
+
+        var restoranCollection = database.GetCollection<Restoran>("restoran");
+        var korisnikCollection = database.GetCollection<Korisnik>("korisnik");
+        var ocenaCollection = database.GetCollection<Ocena>("ocena");
+
+        var userEmail = HttpContext.User.Identity.Name;
+
+        var rest = (from restoran in restoranCollection.AsQueryable<Restoran>()
+                    where restoran.Email == email
+                    select restoran).FirstOrDefault();
+
+        var kor = (from korisnik in korisnikCollection.AsQueryable<Korisnik>()
+                    where korisnik.Email == userEmail
+                    select korisnik).FirstOrDefault();
+        
+         var check = (from ocena in ocenaCollection.AsQueryable<Ocena>()
+                     where ocena.OcenaRestoranId.Id == rest.Id
+                     where ocena.OcenaKorisnikId.Id == kor.Id
+                     select ocena).FirstOrDefault();
+
+
+        if (check != null)
+        {
+            return BadRequest("Vec ste ocenili!");
+        }
+
+        Ocena oc = new Ocena();
+        oc.Oceni = ocenica;
+        oc.OcenaRestoranId = new MongoDBRef("restoran", rest.Id);
+        oc.OcenaKorisnikId = new MongoDBRef("korisnik", kor.Id);
+        ocenaCollection.Save(oc);
+
+        var ocene = (from ocena in ocenaCollection.AsQueryable<Ocena>()
+                     where ocena.OcenaRestoranId.Id == rest.Id
+                     select ocena).ToList();
+        int brojac = 0;
+        float prosecnaOc = 0;
+        foreach (var o in ocene)
+        {
+            prosecnaOc += o.Oceni;
+            brojac++;
+        }
+        prosecnaOc /= brojac;
+        rest.ProsecnaOcena = (float)Math.Round(prosecnaOc * 100f) / 100f; 
         restoranCollection.Save(rest);
         return Ok();
     }
