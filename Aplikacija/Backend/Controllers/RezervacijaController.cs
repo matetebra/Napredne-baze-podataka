@@ -12,22 +12,6 @@ namespace Backend.Controllers;
 [Route("[controller]")]
 public class RezervacijaController : ControllerBase
 {
-    [HttpGet]
-    [Route("GetReservations")]
-    public List<Rezervacija> GetReservations()
-    {
-
-        MongoClient client = new MongoClient("mongodb+srv://mongo:sifra123@cluster0.ewwnh.mongodb.net/test");
-        MongoServer server = client.GetServer();
-        var database = server.GetDatabase("Dostavi");
-        var collection = database.GetCollection<Rezervacija>("rezervacija");
-
-        MongoCursor<Rezervacija> rezervacije = collection.FindAll();
-        List<Rezervacija> rez = rezervacije.ToList();
-        return rez;
-    }
-
-
     [HttpPost]
     [Route("AddReservation/{email}")]
     public IActionResult AddReservation([FromBody] RezervacijaDTO rez, string email)
@@ -81,14 +65,16 @@ public class RezervacijaController : ControllerBase
         }
         //proveriti da li ima mesta!!!
         Rezervacija r = new Rezervacija();
+        var testss = new ObjectId();
 
+        r.Id = testss;
         r.BrojMesta = rez.BrojMesta;
         r.Datum = rez.Datum;
         r.Vreme = rez.Vreme;
         r.KorisnikRezervacijaId = new MongoDBRef("korisnik", user.Id);
         r.RestoranRezervacijaId = new MongoDBRef("restoran", restourant.Id);
 
-        rezervacijaCollection.Save(r);
+        rezervacijaCollection.Insert(r);
 
         return Ok("Uspesna rezervacija! ");
     }
