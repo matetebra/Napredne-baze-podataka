@@ -1,5 +1,20 @@
 export class restoran {
-  constructor(naziv, adresa, grad, email, telefon, opis, radnoVreme, vremeDostave, cenaDostave, limitDostave, kapacitet, brSlobodnih, cena, o) {
+  constructor(
+    naziv,
+    adresa,
+    grad,
+    email,
+    telefon,
+    opis,
+    radnoVreme,
+    vremeDostave,
+    cenaDostave,
+    limitDostave,
+    kapacitet,
+    brSlobodnih,
+    cena,
+    o
+  ) {
     this.naziv = naziv;
     this.adresa = adresa;
     this.grad = grad;
@@ -24,7 +39,7 @@ export class restoran {
     this.dodNar = [];
     this.jelapom = [];
     this.dodatakpom = [];
-    this.rezervacijepom = []
+    this.rezervacijepom = [];
   }
   crtajRestoran(host) {
     if (!host) throw new Error("Greska u hostu");
@@ -39,9 +54,9 @@ export class restoran {
     pom.classList.add("card-box-a");
     pom.classList.add("razmak");
     pom.classList.add("row");
-    pom.classList.add("marg")
+    pom.classList.add("marg");
     host.appendChild(pom);
-    host.classList.add("marg")
+    host.classList.add("marg");
 
     // var img = document.createElement("img");
     //img.classList.add(".card-overlay-a-content");
@@ -96,9 +111,9 @@ export class restoran {
     pom.classList.add("card-box-a");
     pom.classList.add("razmak");
     pom.classList.add("row");
-    pom.classList.add("marg")
+    pom.classList.add("marg");
     host.appendChild(pom);
-    host.classList.add("marg")
+    host.classList.add("marg");
 
     const pom1 = document.createElement("div");
     pom1.classList.add("card-overlay");
@@ -137,7 +152,7 @@ export class restoran {
         headers: {
           "Content-Type": "application/json",
           Authorization: "Bearer " + sessionStorage.getItem("token"),
-        }
+        },
       })
         .then((p) => {
           if (p.ok) {
@@ -149,11 +164,10 @@ export class restoran {
         .catch((p) => {
           alert("Greška sa konekcijom.");
         });
-    })
-
+    });
   }
   Osvezi() {
-    var d1 = document.getElementById("adresa").innerHTML = this.adresa;
+    var d1 = (document.getElementById("adresa").innerHTML = this.adresa);
     d1 = document.getElementById("opis").innerHTML = this.opis;
     d1 = document.getElementById("kapacitet").innerHTML = this.kapacitet;
     d1 = document.getElementById("cenaDostave").innerHTML = this.cenaDostave;
@@ -162,13 +176,14 @@ export class restoran {
     d1 = document.getElementById("mail").innerHTML = this.email;
     d1 = document.getElementById("phone").innerHTML = this.telefon;
     d1 = document.getElementById("ime").innerHTML = this.naziv;
-    d1 = document.getElementById("prosecnaOcena").innerHTML = this.prosecnaOcena;
+    d1 = document.getElementById("prosecnaOcena").innerHTML =
+      this.prosecnaOcena;
   }
   crtajJela(host) {
     //<div class="pic"><img src="assets/img/team/team-1.jpg" class="img-fluid" alt=""></div> //za sliku
     if (!host) throw new Error("Greska u hostu");
     for (let i = 0; i < 4; i++) {
-      this.jela.forEach(e => {
+      this.jela.forEach((e) => {
         var d1 = document.createElement("div");
         d1.className = "col-lg-4 member";
         host.appendChild(d1);
@@ -192,7 +207,7 @@ export class restoran {
         d3.appendChild(d6);
         var l = document.createElement("h6");
         l.innerHTML = "";
-        e.nazivNamirnica.forEach(n => {
+        e.nazivNamirnica.forEach((n) => {
           l.innerHTML = l.innerHTML + " " + n;
         });
         d3.appendChild(l);
@@ -213,7 +228,7 @@ export class restoran {
   }
   crtajDodatke(host) {
     if (!host) throw new Error("Greska u hostu");
-    this.dodatak.forEach(e => {
+    this.dodatak.forEach((e) => {
       var d1 = document.createElement("div");
       d1.className = "col-lg-4 member";
       host.appendChild(d1);
@@ -242,12 +257,10 @@ export class restoran {
       });
     });
   }
-  crtajPorudzbine(){
-    
-  }
+  crtajPorudzbine() {}
   crtajKomentari(host) {
     if (!host) throw new Error("Greska u hostu");
-    this.komentari.forEach(e => {
+    this.komentari.forEach((e) => {
       var d1 = document.createElement("div");
       d1.className = "col-lg-12 member";
       host.appendChild(d1);
@@ -266,17 +279,19 @@ export class restoran {
     });
   }
   preuzmiPodatke(emails) {
-    fetch("https://localhost:7284/Slavko/GetAllRestourantInformations/" + emails, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + sessionStorage.getItem("token")
+    fetch(
+      "https://localhost:7284/Slavko/GetAllRestourantInformations/" + emails,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + sessionStorage.getItem("token"),
+        },
       }
-    })
+    )
       .then((response) => response.json())
       .then((data) => {
-        if (data.title == "Unauthorized")
-          alert("Greska.");
+        if (data.title == "Unauthorized") alert("Greska.");
         else {
           this.naziv = data.naziv;
           this.id = data.id;
@@ -303,48 +318,52 @@ export class restoran {
       .catch((error) => console.error("Greska", error));
   }
   preuzmi(emails) {
-    fetch("https://localhost:7284/Slavko/GetAllRestourantInformations/" + emails, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + sessionStorage.getItem("token")
+    fetch(
+      "https://localhost:7284/Slavko/GetAllRestourantInformations/" + emails,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + sessionStorage.getItem("token"),
+        },
       }
-    })
-      
-      .then((data) => {
-        
-          this.naziv = data.naziv;
-          this.id = data.id;
-          this.adresa = data.adresa;
-          this.grad = data.grad;
-          this.email = data.email;
-          this.telefon = data.telefon;
-          this.opis = data.opis;
-          this.radnoVrem = data.radnoVreme;
-          this.vremeDostave = data.vremeDostave;
-          this.cenaDostave = data.cenaDostave;
-          this.limitDostave = data.limitDostave;
-          this.kapacitet = data.kapacitet;
-          this.brSlobodnih = data.slobodnaMesta;
-          this.komentari = data.komentari;
-          this.kategorije = data.kategorije;
-          this.prosecnaOcena = data.prosecnaOcena;
-          this.jela = data.jela;
-          this.dodatak = data.dodaci;
-          this.Osvezi();
-          return this;
-        
-      })
-    
+    ).then((data) => {
+      this.naziv = data.naziv;
+      this.id = data.id;
+      this.adresa = data.adresa;
+      this.grad = data.grad;
+      this.email = data.email;
+      this.telefon = data.telefon;
+      this.opis = data.opis;
+      this.radnoVrem = data.radnoVreme;
+      this.vremeDostave = data.vremeDostave;
+      this.cenaDostave = data.cenaDostave;
+      this.limitDostave = data.limitDostave;
+      this.kapacitet = data.kapacitet;
+      this.brSlobodnih = data.slobodnaMesta;
+      this.komentari = data.komentari;
+      this.kategorije = data.kategorije;
+      this.prosecnaOcena = data.prosecnaOcena;
+      this.jela = data.jela;
+      this.dodatak = data.dodaci;
+      this.Osvezi();
+      return this;
+    });
   }
   oceniRestoran(ocena) {
-    fetch("https://localhost:7284/Restoran/OceniRestoran/" + this.email + "/" + ocena, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + sessionStorage.getItem("token")
+    fetch(
+      "https://localhost:7284/Restoran/OceniRestoran/" +
+        this.email +
+        "/" +
+        ocena,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + sessionStorage.getItem("token"),
+        },
       }
-    })
+    )
       .then((p) => {
         if (p.ok) {
           alert("Uspesno ocenjivanje");
@@ -440,17 +459,14 @@ export class restoran {
     label1.style = " margin: 5px";
     d6.appendChild(label1);
 
-
     var dugme = document.createElement("button");
     host.appendChild(dugme);
-    dugme.innerHTML = "Dodaj"
+    dugme.innerHTML = "Dodaj";
     dugme.style = " margin: 5px";
     dugme.classList = "btn btn-danger";
 
-
-
     //var namir=nam.split(",")
-    dugme.addEventListener('click', function () {
+    dugme.addEventListener("click", function () {
       var naz = document.getElementById("naziv").value;
       var kat = document.getElementById("kategorija").value;
       var gram = document.getElementById("gramaza").value;
@@ -459,14 +475,14 @@ export class restoran {
       var cen = document.getElementById("cena").value;
       var nam = document.getElementById("namirnice").value;
       var namir = nam.split(",");
-      console.log(naz)
-      console.log(kat)
-      console.log(gram)
-      console.log(op)
-      console.log(sl)
-      console.log(cen)
-      console.log(nam)
-      console.log(namir)
+      console.log(naz);
+      console.log(kat);
+      console.log(gram);
+      console.log(op);
+      console.log(sl);
+      console.log(cen);
+      console.log(nam);
+      console.log(namir);
       fetch("https://localhost:7284/Restoran/AddMeal", {
         method: "POST",
         headers: {
@@ -480,8 +496,7 @@ export class restoran {
           opis: op,
           slika: sl,
           cena: cen,
-          nazivNamirnica: namir
-
+          nazivNamirnica: namir,
         }),
       })
         .then((p) => {
@@ -489,7 +504,7 @@ export class restoran {
             alert("Uspesno dodavanje jela");
             komentari();
           } else {
-            alert("Ne mozete komentarisati.");
+            alert("Vec ste ocenili");
           }
         })
         .catch(() => {
@@ -497,72 +512,68 @@ export class restoran {
         });
       //}
     });
-
-
   }
   crtajObrisiJelo(host) {
-
-
     fetch("https://localhost:7284/Restoran/GetMeals", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
         Authorization: "Bearer " + sessionStorage.getItem("token"),
       },
-    })
-      .then((p) => {
-        p.json().then((data) => {
-          data.forEach((element) => {
-            var j = new jelo();
-            j.naziv = element.naziv;
-            j.kategorija = element.kategorija;
-            j.gramaza = element.gramaza;
-            j.opis = element.opis;
-            j.slika = element.slika;
-            j.cena = element.cena;
-            j.namirnice.forEach(nam => {
-              j.dodajNam(nam);
-            })
-            this.jelapom.push(j);
-            console.log(this.jelapom);
+    }).then((p) => {
+      p.json().then((data) => {
+        data.forEach((element) => {
+          var j = new jelo();
+          j.naziv = element.naziv;
+          j.kategorija = element.kategorija;
+          j.gramaza = element.gramaza;
+          j.opis = element.opis;
+          j.slika = element.slika;
+          j.cena = element.cena;
+          j.namirnice.forEach((nam) => {
+            j.dodajNam(nam);
           });
-          this.crtajsvaJela(host);
+          this.jelapom.push(j);
+          console.log(this.jelapom);
         });
+        this.crtajsvaJela(host);
       });
-
+    });
   }
   crtajObrisiDodatatk(host) {
+<<<<<<< HEAD
 
 
     fetch("https://localhost:7284/Restoran/VratiDodatke", {
+=======
+    fetch("https://localhost:7284/Restoran/GetDodatatk", {
+>>>>>>> 35f486363bf004efcd729b502a33ee0c3df5daae
       method: "GET",
       headers: {
         "Content-Type": "application/json",
         Authorization: "Bearer " + sessionStorage.getItem("token"),
       },
-    })
-      .then((p) => {
-        p.json().then((data) => {
-          data.forEach((element) => {
-            var j = new dodatak();
-            j.naziv = element.naziv;
-            j.cena = element.cena;
-            this.dodatakpom.push(j);
-          });
-          this.crtajsveDodatke(host);
+    }).then((p) => {
+      p.json().then((data) => {
+        data.forEach((element) => {
+          var j = new dodatak();
+          j.naziv = element.naziv;
+          j.cena = element.cena;
+          this.dodatakpom.push(j);
         });
+        this.crtajsveDodatke(host);
       });
-
+    });
   }
   crtajsveDodatke(host) {
-    this.dodatakpom.forEach(j => {
+    this.dodatakpom.forEach((j) => {
       j.crtajDodatak(host);
-    })
+    });
   }
   crtajsvaJela(host) {
-    this.jelapom.forEach(j => {
+    this.jelapom.forEach((j) => {
       j.crtajJelo(host);
-    })
+    });
   }
   crtajDodajDodatak(host) {
     var d = document.createElement("div");
@@ -590,14 +601,12 @@ export class restoran {
 
     var dugme = document.createElement("button");
     host.appendChild(dugme);
-    dugme.innerHTML = "Dodaj"
+    dugme.innerHTML = "Dodaj";
     dugme.style = " margin: 5px";
     dugme.classList = "btn btn-danger";
 
-
-
     //var namir=nam.split(",")
-    dugme.addEventListener('click', function () {
+    dugme.addEventListener("click", function () {
       var naz = document.getElementById("naziv").value;
       var cen = document.getElementById("cena").value;
       fetch("https://localhost:7284/Restoran/AddDodatak", {
@@ -609,7 +618,6 @@ export class restoran {
         body: JSON.stringify({
           naziv: naz,
           cena: cen,
-
         }),
       })
         .then((p) => {
@@ -633,27 +641,25 @@ export class restoran {
         "Content-Type": "application/json",
         Authorization: "Bearer " + sessionStorage.getItem("token"),
       },
-    })
-      .then((p) => {
-        p.json().then((data) => {
-          data.forEach((element) => {
-            var j = new rezervacija();
-            j.id = element.IDRezervacije;
-            j.email = element.EmailKorisnika;
-            j.telefon = element.TelefonKorisnika;
-            j.vreme = element.Vreme;
-            j.brojMesta = element.brojMesta;
-            this.rezervacijepom.push(j);
-          });
-          this.crtajsveRezervacije(host);
+    }).then((p) => {
+      p.json().then((data) => {
+        data.forEach((element) => {
+          var j = new rezervacija();
+          j.id = element.IDRezervacije;
+          j.email = element.EmailKorisnika;
+          j.telefon = element.TelefonKorisnika;
+          j.vreme = element.Vreme;
+          j.brojMesta = element.brojMesta;
+          this.rezervacijepom.push(j);
         });
+        this.crtajsveRezervacije(host);
       });
-
+    });
   }
   crtajsveRezervacije(host) {
-    this.rezervacijepom.forEach(j => {
+    this.rezervacijepom.forEach((j) => {
       j.crtajRezervaciju(host);
-    })
+    });
   }
 }
 export class jelo {
@@ -664,8 +670,7 @@ export class jelo {
     this.opis = opis;
     this.slika = slika;
     this.cena - cena;
-    this.namirnice = []
-
+    this.namirnice = [];
   }
   dodajNam(n) {
     this.namirnice.push(n);
@@ -681,11 +686,11 @@ export class jelo {
 
     var dugme = document.createElement("button");
     d.appendChild(dugme);
-    dugme.innerHTML = "Obrisi jelo"
+    dugme.innerHTML = "Obrisi jelo";
     dugme.id = this.naziv;
     dugme.style = " margin: 5px";
     dugme.classList = "btn btn-danger";
-    dugme.addEventListener('click', function () {
+    dugme.addEventListener("click", function () {
       fetch("https://localhost:7284/Restoran/DeleteJelo/" + this.naziv, {
         method: "DELETE",
         headers: {
@@ -697,7 +702,6 @@ export class jelo {
         .then((p) => {
           if (p.ok) {
             alert("Jelo je uspesno obrisan");
-
           } else {
             alert("Greska kod brisanja");
           }
@@ -706,14 +710,12 @@ export class jelo {
           alert("Greška sa konekcijom.");
         });
     });
-
   }
 }
 export class dodatak {
   constructor(naziv, cena) {
     this.naziv = naziv;
     this.cena - cena;
-
   }
   crtajDodatak(host) {
     var d = document.createElement("div");
@@ -730,13 +732,18 @@ export class dodatak {
 
     var dugme = document.createElement("button");
     d.appendChild(dugme);
-    dugme.innerHTML = "Obrisi jelo"
+    dugme.innerHTML = "Obrisi jelo";
     dugme.id = this.naziv;
     dugme.style = " margin: 5px";
     dugme.classList = "btn btn-danger";
+<<<<<<< HEAD
     dugme.addEventListener('click', function () {
 
       fetch("https://localhost:7284/Restoran/obrisiDodatak/" + this.naziv, {
+=======
+    dugme.addEventListener("click", function () {
+      fetch("https://localhost:7284/Restoran/DeleteDodatak/" + this.naziv, {
+>>>>>>> 35f486363bf004efcd729b502a33ee0c3df5daae
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -747,7 +754,6 @@ export class dodatak {
         .then((p) => {
           if (p.ok) {
             alert("Jelo je uspesno obrisan");
-
           } else {
             alert("Greska kod brisanja");
           }
@@ -785,12 +791,11 @@ export class rezervacija {
 
     var dugme = document.createElement("button");
     d.appendChild(dugme);
-    dugme.innerHTML = "Obrisi rezervaciju"
+    dugme.innerHTML = "Obrisi rezervaciju";
     dugme.id = this.naziv;
     dugme.style = " margin: 5px";
     dugme.classList = "btn btn-danger";
-    dugme.addEventListener('click', function () {
-
+    dugme.addEventListener("click", function () {
       fetch("https://localhost:7284/Slavko/obrisiRezervaciju/" + this.id, {
         method: "DELETE",
         headers: {
@@ -802,7 +807,6 @@ export class rezervacija {
         .then((p) => {
           if (p.ok) {
             alert("Jelo je uspesno obrisan");
-
           } else {
             alert("Greska kod brisanja");
           }
@@ -813,7 +817,6 @@ export class rezervacija {
     });
   }
 }
-
 
 export class porudzbina {
   constructor(id, email, brojMesta, vreme, telefon) {
@@ -842,12 +845,11 @@ export class porudzbina {
 
     var dugme = document.createElement("button");
     d.appendChild(dugme);
-    dugme.innerHTML = "Obrisi rezervaciju"
+    dugme.innerHTML = "Obrisi rezervaciju";
     dugme.id = this.naziv;
     dugme.style = " margin: 5px";
     dugme.classList = "btn btn-danger";
-    dugme.addEventListener('click', function () {
-
+    dugme.addEventListener("click", function () {
       fetch("https://localhost:7284/Slavko/obrisiRezervaciju/" + this.id, {
         method: "DELETE",
         headers: {
@@ -859,7 +861,6 @@ export class porudzbina {
         .then((p) => {
           if (p.ok) {
             alert("Jelo je uspesno obrisan");
-
           } else {
             alert("Greska kod brisanja");
           }
