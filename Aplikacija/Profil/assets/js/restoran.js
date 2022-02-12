@@ -147,7 +147,6 @@ export class restoran {
     pom.appendChild(pogled);
     pogled.id = this.email;
     pogled.addEventListener("click", function () {
-      console.log(pogled.id);
       fetch("https://localhost:7284/Restoran/OdobriRestoran/" + pogled.id, {
         method: "PUT",
         headers: {
@@ -183,7 +182,6 @@ export class restoran {
   crtajJela(host) {
     //<div class="pic"><img src="assets/img/team/team-1.jpg" class="img-fluid" alt=""></div> //za sliku
     if (!host) throw new Error("Greska u hostu");
-    for (let i = 0; i < 4; i++) {
       this.jela.forEach((e) => {
         var d1 = document.createElement("div");
         d1.className = "col-lg-4 member";
@@ -222,10 +220,10 @@ export class restoran {
           var j = document.getElementById("jelaNam");
           j.innerHTML = j.innerHTML + pogled.id + ",";
           alert("Dodato u korpu");
-          console.log(j.innerHTML);
+          var korpa = document.getElementById("ocisti");
+          korpa.innerHTML="";
         });
       });
-    }
   }
   crtajDodatke(host) {
     if (!host) throw new Error("Greska u hostu");
@@ -260,9 +258,146 @@ export class restoran {
   }
   crtajPorudzbine(host) {
     if (!host) throw new Error("Greska u hostu");
-    const pom = document.createElement("div");
     this.dodajNamirniceIDodatke();
+    var count=0;
+    var bool;
+    var brisibrisi;
+    var nacrtanoJelo=[]
+    var nacrtaniDodatak=[]
+    this.jelaNar.forEach(e => {
+      nacrtanoJelo.forEach(b => {
+         if(b.id=e.id)
+            bool=true;
+       });
+       if(bool==true)
+          bool=false
+      else{
+       this.jelaNar.forEach(element => {
+          if(element==e)
+             count++;
+       });
+      var di=document.createElement("div");
+      di.id=e.id+"por";
+      host.appendChild(di);
+      var naziv=document.createElement("h5");
+      naziv.innerHTML=e.naziv;
+      di.appendChild(naziv);
+      var kol=document.createElement("h6");
+      kol.innerHTML="Kolicina:";
+      var kol=document.createElement("h6");
+      kol.value=count;
+      kol.innerHTML=count;
+      kol.id="kol"+e.id;
+      di.appendChild(kol);
+      const dug=document.createElement("button");
+      dug.innerHTML="-";
+      dug.classList="btn btn-danger";
+      di.appendChild(dug);
+      dug.addEventListener("click", function () {
+        var minus=document.getElementById("kol"+e.id);
+         minus.value=minus.value-1;
+         minus.innerHTML=minus.value;
+         if(minus.innerHTML==0)
+         {
+            var bris=document.getElementById(e.id+"por");
+            bris.innerHTML="";
+         }
+          if(this.jelaNar!=null)
+          {
+           for( var i = 0; i < this.jelaNar.length; i++){ 
+            if (this.jelaNar[i].id==e.id || brisibrisi==false)
+             { 
+               brisibrisi=true;
+               this.jelaNar.splice(i, 1); 
+            }
+          }}
+           brisibrisi=false;
+            var count=0;
+      this.jelaNar.forEach(element => {
+       count=count + element.cena;
+    });
+      this.dodNar.forEach(element => {
+      count=count + element.cena;
+   });
+      var label= document.getElementById("KonacnaCena");
+      label.innerHTML="Konacna cena je: " +count +" dinara.";
+      });
+      di.appendChild(dug);
+      nacrtanoJelo.push(e);
+      count=0;
+    }
+    });
+    this.dodNar.forEach(e => {
+      nacrtaniDodatak.forEach(b => {
+        if(b.id=e.id)
+           bool=true;
+      });
+      if(bool==true)
+         bool=false
+     else{
+      this.dodNar.forEach(element => {
+         if(element==e)
+            count++;
+      });
+     var di2=document.createElement("div");
+     di2.id=e.id+"por";
+     host.appendChild(di2);
+     var naziv=document.createElement("h5");
+     naziv.innerHTML=e.naziv;
+     di2.appendChild(naziv);
+     var kol=document.createElement("h6");
+     kol.innerHTML="Kolicina:";
+     var kol=document.createElement("h6");
+     kol.value=count;
+     kol.innerHTML=count;
+     kol.id="kol2"+e.id;
+     di2.appendChild(kol);
+     var d=document.createElement("button");
+     d.innerHTML="-";
+     d.classList="btn btn-danger";
+     di2.appendChild(d);
+     d.addEventListener("click", function () {
+        var minus=document.getElementById("kol2"+e.id);
+        minus.value=minus.value-1;
+        minus.innerHTML=minus.value;
+        if(minus.innerHTML==0)
+        {
+           var bris=document.getElementById(e.id+"por");
+           bris.innerHTML="";
+        }
+        
+        var count=0;
+        this.jelaNar.forEach(element => {
+         count=count + element.cena;
+      });
+        this.dodNar.forEach(element => {
+        count=count + element.cena;
+     });
+        var label= document.getElementById("KonacnaCena");
+        label.innerHTML="Konacna cena je: " +count +" dinara.";
+     });
+     nacrtaniDodatak.push(e);
+     count=0;
+    }
+   });
+   var label= document.createElement("h4");
+   label.innerHTML="Konacna cena je: " +count +" dinara.";
+   label.id="KonacnaCena"
+   host.appendChild(label);
+   this.izracunajCenu(host);
   }
+  izracunajCenu(){
+      var count=0;
+      this.jelaNar.forEach(element => {
+       count=count + element.cena;
+    });
+      this.dodNar.forEach(element => {
+      count=count + element.cena;
+   });
+      var label= document.getElementById("KonacnaCena");
+      label.innerHTML="Konacna cena je: " +count +" dinara.";
+  }
+<<<<<<< HEAD
   dodajNamirniceIDodatke() {
     var labJ = document.getElementById("jelaNam").value;
     var labD = document.getElementById("dodNam").value;
@@ -271,6 +406,25 @@ export class restoran {
     var labDod = labD.split(",");
     console.log(labJ);
     console.log(labDod);
+=======
+  dodajNamirniceIDodatke(){
+    var labJ = document.getElementById("jelaNam").innerHTML;
+    var labD=document.getElementById("dodNam").innerHTML;
+    var labJela=labJ.split(",");
+    var labDod=labD.split(",");
+    this.jela.forEach(element => {
+      labJela.forEach(e=> {
+        if(element.id==e)
+           this.jelaNar.push(element);
+      });
+    });
+    this.dodatak.forEach(element => {
+      labDod.forEach(e=> {
+        if(element.id==e)
+           this.dodNar.push(element);
+      });
+    });
+>>>>>>> 9eb6ea956e3209b8e4657edc20232b4c19afa31f
   }
   crtajKomentari(host) {
     if (!host) throw new Error("Greska u hostu");
