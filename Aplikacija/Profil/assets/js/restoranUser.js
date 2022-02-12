@@ -47,8 +47,11 @@ else
           host.innerHTML="";
           r.brisiRezervaciju(host);
         });
-        var d6=document.getElementById("prihvatiRezervaciju");
-        d6.addEventListener('click',prihvatiR(host));
+        var d6=document.getElementById("prihvatiPorudzbinu");
+        d6.addEventListener('click',function(){
+          host.innerHTML="";
+          r.prihvatiPorudzbinu(host);
+        });
         
         
     }

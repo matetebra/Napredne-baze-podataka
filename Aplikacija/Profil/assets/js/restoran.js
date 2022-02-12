@@ -397,6 +397,7 @@ export class restoran {
     label.style = " margin: 5px";
     d.appendChild(label);
     var input = document.createElement("input");
+
     input.style = " margin: 5px";
     input.id = "naziv";
     d.appendChild(input);
@@ -452,6 +453,7 @@ export class restoran {
     label.style = " margin: 5px";
     d5.appendChild(label);
     var input = document.createElement("input");
+    input.type="number"
     input.style = " margin: 5px";
     input.id = "cena";
     d5.appendChild(input);
@@ -605,6 +607,7 @@ export class restoran {
     label.style = " margin: 5px";
     d1.appendChild(label);
     var input = document.createElement("input");
+    input.type="number"
     input.style = " margin: 5px";
     input.id = "cena";
     d1.appendChild(input);
@@ -632,11 +635,11 @@ export class restoran {
       })
         .then((p) => {
           if (p.ok) {
-            alert("Uspesno dodavanje jela");
+            alert("Uspesno dodavanje dodatka");
             location.reload();
             
           } else {
-            alert("Ne mozete komentarisati.");
+            alert("Ne mozete dodati taj dodatak.");
           }
         })
         .catch(() => {
@@ -673,6 +676,31 @@ export class restoran {
     this.rezervacijepom.forEach((j) => {
       j.crtajRezervaciju(host);
     });
+  }
+  prihvatiPorudzbinu(host)
+  {
+   /* this.rezervacijepom.splice(0, this.rezervacijepom.length);
+    fetch("https://localhost:7284/Slavko/VratiRezervacije", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + sessionStorage.getItem("token"),
+      },
+    }).then((p) => {
+      p.json().then((data) => {
+        data.forEach((element) => {
+          var j = new rezervacija();
+          j.id = element.idRezervacije;
+          j.email = element.emailKorisnika;
+          j.telefon = element.telefonKorisnika;
+          j.vreme = element.vreme;
+          j.brojMesta = element.brojMesta;
+          this.rezervacijepom.push(j);
+          console.log(j)
+        });
+        this.crtajsveRezervacije(host);
+      });
+    });*/
   }
 }
 export class jelo {
@@ -805,7 +833,7 @@ export class rezervacija {
     var dugme = document.createElement("button");
     d.appendChild(dugme);
     dugme.innerHTML = "Obrisi rezervaciju";
-    dugme.id = this.naziv;
+    dugme.id = this.id;
     dugme.style = " margin: 5px";
     dugme.classList = "btn btn-danger";
     dugme.addEventListener("click", function () {
