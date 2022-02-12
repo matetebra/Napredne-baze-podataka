@@ -99,6 +99,30 @@ export class restorani {
       rest.crtajRestoran(host);
     });
   }
+  pretraziPoNazivu() {
+    this.bukmarkovani.splice(0, this.bukmarkovani.length);
+    var kateg = document.getElementById("NazivInput").value;
+    fetch("https://localhost:7284/Restoran/GetRestaurantByName/" + kateg, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + sessionStorage.getItem("token"),
+      },
+    }).then((p) => {
+      p.json().then((data) => {
+        data.forEach((element) => {
+          var r = new restoran();
+          r.naziv = element.naziv;
+          r.adresa = element.adresa;
+          r.email = element.email;
+          r.telefon = element.telefon;
+          this.bukmarkovani.push(r);
+        });
+        this.crtajBukmarkovane();
+      });
+    });
+  }
+
   sortirajPoKategoriji() {
     var kateg = document.getElementById("kategorijaInput").value;
     this.re = [];
