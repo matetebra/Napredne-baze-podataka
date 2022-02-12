@@ -31,6 +31,7 @@ else
     else
     {
         alert("Nemate privilegiju");
+        sessionStorage.clear();
         location.href = "index.html";
     }
 }

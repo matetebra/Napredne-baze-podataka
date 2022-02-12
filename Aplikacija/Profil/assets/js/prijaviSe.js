@@ -11,7 +11,7 @@ function Login(usern, pass){
   })
     .then((response) => response.json())
     .then((data) => {
-      console.log(data);
+      
       if (data.title == "Unauthorized") alert("Lose korisnicko ime ili sifra.");
       else {
         
@@ -21,7 +21,7 @@ function Login(usern, pass){
           return;
         }*/
         sessionStorage.setItem("username", usern);
-        console.log(data);
+       
         sessionStorage.setItem("token", data.token);
         sessionStorage.setItem("role", data.role);
 
@@ -30,7 +30,8 @@ function Login(usern, pass){
             
           location.href = "index.html";
         } else if (data.role == "Restoran"){        
-         location.href = "Restoran.html";
+         
+          location.href = "restoranUser.html";
         }
         else if (data.role == "Admin"){
         
@@ -55,16 +56,18 @@ if (
         Login(
          document.getElementById("usernameLogin").value,
         document.getElementById("passwordLogin").value
+        
        );
     };
   } else if (sessionStorage.getItem("role") == "Korisnik") {
     location.href = "index.html";
   } else if (sessionStorage.getItem("role") == "Restoran") {
-    location.href = "restoran.html";
+    location.href = "restoranUser.html";
+    
   }
     else if (sessionStorage.getItem("role") == "Admin") {
     alert("Vec ste prijavljeni");
-    location.href = "administrator.html";
+    location.href = "admin.html";
   }
   function registerKorisnik() {
     let ime = document.getElementById("imeRegister").value;
