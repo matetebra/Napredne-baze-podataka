@@ -47,13 +47,11 @@ if (
     sessionStorage.getItem("token") == null ||
     sessionStorage.getItem("token") == ""
   ) {
-    //mslm da treba local ?
+ 
     var d = document.getElementById("login");
   
     d.addEventListener("click", Prijavi);
     function Prijavi() {
-        //console.log(document.getElementById("usernameLogin").value)
-    //   Login(
         Login(
          document.getElementById("usernameLogin").value,
         document.getElementById("passwordLogin").value
@@ -68,7 +66,6 @@ if (
     alert("Vec ste prijavljeni");
     location.href = "administrator.html";
   }
-
   function registerKorisnik() {
     let ime = document.getElementById("imeRegister").value;
     let prezime = document.getElementById("prezimeRegister").value;
@@ -102,6 +99,7 @@ if (
       .then((p) => {
         if (p.ok) {
           alert("Korisnik uspesno registrovan");
+          location.href="index.html";
         } else {
           alert("Postoji korisnik sa takvim emailom");
         }

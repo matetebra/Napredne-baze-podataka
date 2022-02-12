@@ -22,7 +22,7 @@ export class restoran{
     crtajRestoran(host){
        
         if (!host) throw new Error("Greska u hostu");
-        const pom = document.createElement("div");
+        var pom = document.createElement("div");
         pom.classList.add("col-md-3");
         pom.classList.add("col-lg-3");
         pom.classList.add("d-md-flex");
@@ -68,9 +68,10 @@ export class restoran{
         var pogled = document.createElement("button");
         pogled.classList.add("btn");
         pogled.classList.add("btn-a");
+        pogled.classList.add("col-md-3");
         pogled.innerHTML = "Pogledaj";
         pogled.id=this.email;
-        pom.appendChild(pogled);
+        host.appendChild(pogled);
         pogled.addEventListener("click",function(){
           sessionStorage.setItem("restoran",pogled.id);
           location.href="restoran.html";
@@ -141,6 +142,7 @@ export class restoran{
                   alert("Greška sa konekcijom.");
                 });
         })
+        
     }
     Osvezi(){
       var d1 = document.getElementById("adresa").innerHTML=this.adresa;
