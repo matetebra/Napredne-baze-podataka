@@ -1,5 +1,5 @@
 export class restoran{
-    constructor(naziv, adresa, grad, email, telefon, opis, radnoVreme, vremeDostave, cenaDostave, limitDostave, kapacitet, brSlobodnih ){
+    constructor(naziv, adresa, grad, email, telefon, opis, radnoVreme, vremeDostave, cenaDostave, limitDostave, kapacitet, brSlobodnih, cena ){
         this.naziv=naziv;
         this.adresa= adresa;
         this.grad= grad;
@@ -12,15 +12,17 @@ export class restoran{
         this.limitDostave= limitDostave;
         this.kapacitet= kapacitet;
         this.brSlobodnih= brSlobodnih;
+        this.cena=cena;
         this.komentari=[];
         this.kategorije=[];
         this.jela=[];
         this.dodatak=[];
         this.id=null;
         this.kontRestoran=null;
+        this.jelaNar=[];
+        this.dodNar=[];
     }
     crtajRestoran(host){
-       
         if (!host) throw new Error("Greska u hostu");
         const pom = document.createElement("div");
         pom.classList.add("col-md-3");
@@ -152,8 +154,81 @@ export class restoran{
       d1 = document.getElementById("mail").innerHTML=this.email;
       d1 = document.getElementById("phone").innerHTML=this.telefon;
     }
-    crtajJela(){
-
+    crtajJela(host){
+      //<div class="pic"><img src="assets/img/team/team-1.jpg" class="img-fluid" alt=""></div> //za sliku
+      if (!host) throw new Error("Greska u hostu");
+      for (let i = 0; i < 4; i++) {
+      this.jela.forEach(e => {
+        var d1= document.createElement("div");
+        d1.className="col-lg-4 member";
+        host.appendChild(d1);
+        var d2= document.createElement("div");
+        d2.classList="d-flex align-items-start";
+        d1.appendChild(d2);
+        var d3= document.createElement("div");
+        d3.className="member-info";
+        d2.appendChild(d3);
+        var d4= document.createElement("h5");
+        d4.innerHTML=e.naziv;
+        d3.appendChild(d4);
+        var d5= document.createElement("h6");
+        d5.innerHTML="Cena: " + e.cena;
+        d3.appendChild(d5);
+        var d6= document.createElement("h6");
+        d6.innerHTML="Gramaza: " + e.gramaza;
+        d3.appendChild(d6);
+        d6= document.createElement("h6");
+        d6.innerHTML=e.opis;
+        d3.appendChild(d6);
+        var l= document.createElement("h6");
+        l.innerHTML="";
+        e.nazivNamirnica.forEach(n => {
+          l.innerHTML=l.innerHTML + " " + n ;
+        });
+        d3.appendChild(l);
+        var pogled = document.createElement("button");
+        pogled.classList.add("btn");
+        pogled.classList.add("btn-danger");
+        pogled.innerHTML = "+";
+        pogled.id=e.id;
+        d3.appendChild(pogled);
+        pogled.addEventListener("click",function(){
+          var j= document.getElementById("jelaNam");
+          j.innerHTML=j.innerHTML+pogled.id + ",";
+          alert("Dodato u korpu");
+          console.log(j.innerHTML);
+        });
+      });}
+    }
+    crtajDodatke(host){
+      if (!host) throw new Error("Greska u hostu");
+      this.dodatak.forEach(e => {
+        var d1= document.createElement("div");
+        d1.className="col-lg-4 member";
+        host.appendChild(d1);
+        var d2= document.createElement("div");
+        d2.classList="d-flex align-items-start";
+        d1.appendChild(d2);
+        var d3= document.createElement("div");
+        d3.className="member-info";
+        d2.appendChild(d3);
+        var d4= document.createElement("h5");
+        d4.innerHTML=e.naziv;
+        d3.appendChild(d4);
+        var d5= document.createElement("h6");
+        d5.innerHTML="Cena: " + e.cena;
+        var pogled = document.createElement("button");
+        pogled.classList.add("btn");
+        pogled.classList.add("btn-danger");
+        pogled.innerHTML = "+";
+        pogled.id=e.id;
+        d3.appendChild(pogled);
+        pogled.addEventListener("click",function(){
+          var j= document.getElementById("dodNam");
+          j.innerHTML=j.innerHTML+pogled.id + ",";
+          alert("Dodato u korpu");
+        });
+      });
     }
     crtajKomentari()
     {
