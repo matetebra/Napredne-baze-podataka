@@ -146,6 +146,59 @@ public class RestoranController : ControllerBase
         }
     }
 
+    [HttpGet]
+    [Route("GetRestaurantByCategory/{category}")]
+    public ActionResult GetRestaurantByCategory(string category)
+    {
+        try 
+        {
+            MongoClient client = new MongoClient("mongodb+srv://mongo:sifra123@cluster0.ewwnh.mongodb.net/test");
+            MongoServer server = client.GetServer();
+            var database = server.GetDatabase("Dostavi");
+
+            var collection = database.GetCollection<Restoran>("restoran");
+            var collectionKorisnik = database.GetCollection<Korisnik>("korisnik");
+            var collectionKategorija = database.GetCollection<Kategorija>("kategorija");
+            var user = HttpContext.User.Identity.Name;
+
+            var kor = (from korisnik in collectionKorisnik.AsQueryable<Korisnik>()
+                        where korisnik.Email == user
+                        select korisnik).FirstOrDefault();
+
+            var kat = (from kategorija in collectionKategorija.AsQueryable<Kategorija>()
+                        where kategorija.Naziv == category
+                        select kategorija).FirstOrDefault();
+
+            var check = (from restoran in collection.AsQueryable<Restoran>()
+                        where restoran.Grad == kor.Grad
+                        select restoran).ToList();
+            
+            List<Object> rn = new List<Object>();
+
+            foreach(var r in check)
+            {
+                foreach (MongoDBRef mdbr in r.KategorijeIdList)
+                {
+                    if (mdbr.Id == kat.Id)
+                    {
+                        var upis = (from restoran in collection.AsQueryable<Restoran>()
+                        where restoran.Grad == kor.Grad
+                        where restoran.Id == r.Id
+                        select new { restoran.Email, restoran.Naziv, restoran.Adresa, restoran.Telefon, restoran.ProsecnaOcena}).FirstOrDefault();
+                        rn.Add(upis!);
+                    }
+                }
+            }
+
+            return Ok(rn);
+        }
+
+        catch (Exception)
+        {
+            return BadRequest("Nema rezultata pretrage");
+        }
+    }
+
     [HttpPost]
     [Route("AddRestaurants")]
     public ActionResult CreateRestaurants([FromBody] Restoran restoran)
@@ -447,4 +500,6 @@ public class RestoranController : ControllerBase
 
         return Ok(rest);
     }
+
+
 }
