@@ -15,7 +15,9 @@ if(sessionStorage.getItem("token")==null || sessionStorage.getItem("token")=="")
 else{ 
     var pom=document.getElementById("odjavi");
     pom.hidden=false;
-    
+    var pom3=document.getElementById("prijava");
+    pom3.hidden=true;
+
     pom.addEventListener("click",function(){
         console.log("odjavi se");
       sessionStorage.clear();

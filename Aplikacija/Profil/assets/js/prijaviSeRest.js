@@ -35,6 +35,7 @@ fetch("https://localhost:7284/Account/registerRestoran", {
       .then((p) => {
         if (p.ok) {
           alert("Restoran uspesno registrovan");
+          location.href="restoran.html";
         } else {
           alert("Postoji student sa takvim emailom");
         }

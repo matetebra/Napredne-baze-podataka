@@ -1,12 +1,14 @@
 import { restoran } from "./restoran.js";
 import { korisnik } from "./korisnik.js";
-
+import { narudzbina } from "./narudzbina.js";
 export class restorani{
     constructor(){
       this.restorani=[];
       this.bukmarkovani=[];
+      this.stareNarudzbine=[];
     }   
-ucitajRestorane(){
+  ucitajRestorane(){
+    this.restorani.splice(0,this.restorani.length);
   fetch("https://localhost:7284/Slavko/GetRestourants", {
             method: "GET",
             headers: {
@@ -14,7 +16,6 @@ ucitajRestorane(){
               Authorization: "Bearer " + sessionStorage.getItem("token"),
             },
           })
-                  
       .then((p) => {
       p.json().then((data) => {
         data.forEach((element) => {
@@ -35,6 +36,7 @@ crtajsveRestorane(){
   this.restorani.forEach((rest)=>{
       rest.crtajRestoran(host)
   });
+
 }
 crtajNeodobrene(){
   const host=document.getElementById("radiSeOvde");
@@ -69,17 +71,16 @@ preuzmiNeodobrene(){
     }
   
   ucitajBukmarkovaneRestorane(){
-    
-    fetch("https://localhost:7284/Slavko/GetRestourants", {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: "Bearer " + sessionStorage.getItem("token"),
-            },
-          })
-                  
-      .then((p) => {
-      p.json().then((data) => {
+this.bukmarkovani.splice(0,this.bukmarkovani.length);
+    fetch("https://localhost:7284/Slavko/GetBookmarked", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + sessionStorage.getItem("token"),
+      },
+    })
+.then((p) => {
+p.json().then((data) => {
         data.forEach((element) => {
           var r = new restoran();
           r.naziv=element.naziv;
@@ -89,15 +90,48 @@ preuzmiNeodobrene(){
           this.bukmarkovani.push(r);
         });
         this.crtajBukmarkovane();
+        
       });
     });
 
   }
 crtajBukmarkovane(){
   const host=document.getElementById("restorani");
-    host.innerHTML=null;
+  host.innerHTML="";
     this.bukmarkovani.forEach((rest)=>{
       rest.crtajRestoran(host)
   });
 }
+ucitajBukmarkovaneRestorane(){
+  this.bukmarkovani.splice(0,this.bukmarkovani.length);
+      fetch("https://localhost:7284/Slavko/PrethodnePorudzbine", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + sessionStorage.getItem("token"),
+        },
+      })
+  .then((p) => {
+  p.json().then((data) => {
+          data.forEach((element) => {
+            var r = new restoran();
+            r.naziv=element.naziv;
+            r.adresa=element.adresa;
+            r.email=element.email;
+            r.telefon=element.telefon;
+            this.bukmarkovani.push(r);
+          });
+          this.crtajBukmarkovane();
+          
+        });
+      });
+  
+    }
+  crtajBukmarkovane(){
+    const host=document.getElementById("restorani");
+    host.innerHTML="";
+      this.bukmarkovani.forEach((rest)=>{
+        rest.crtajRestoran(host)
+    });
+  }
 }
