@@ -283,9 +283,6 @@ public class RestoranController : ControllerBase
             });
         }
         return Ok(jelaToReturn);
-        //MongoCursor<Jela> jelo = collection.FindAll();
-        //List<Jela> jela = jelo.ToList();
-        //return jela;
     }
 
     [HttpGet]
@@ -439,5 +436,106 @@ public class RestoranController : ControllerBase
         return Ok(rest);
     }
 
+    [HttpPost]
+    [Route("AddDodatak")]
+    public ActionResult AddDodatak([FromBody] Dodatak doda)
+    {
+        MongoClient client = new MongoClient("mongodb+srv://mongo:sifra123@cluster0.ewwnh.mongodb.net/test");
+        MongoServer server = client.GetServer();
+        var database = server.GetDatabase("Dostavi");
 
+        var restoranCollection = database.GetCollection<Restoran>("restoran");
+        var dodatakCollection = database.GetCollection<Dodatak>("dodatak");
+
+        var check = (from dodatak in dodatakCollection.AsQueryable<Dodatak>()
+                    where dodatak.Naziv == doda.Naziv
+                    select dodatak).FirstOrDefault();
+
+        if (check != null)
+        {
+            return BadRequest("Vec postoji taj dodatak.");
+        }
+
+        dodatakCollection.Insert(doda);
+
+        var restEmail = HttpContext.User.Identity.Name;
+
+        var rest = (from restoran in restoranCollection.AsQueryable<Restoran>()
+                    where restoran.Email == restEmail
+                    select restoran.Id).FirstOrDefault();
+
+        
+        var upit = Query.EQ("_id", rest);
+        var update = Update.PushWrapped("DodatakIdList", new MongoDBRef("dodatak", doda.Id));
+        restoranCollection.Update(upit, update);
+
+        return Ok("Dodatak uspesno dodat");
+    }
+
+    [HttpDelete]
+    // [Authorize(Roles = "Admin")]
+    [Route("obrisiDodatak/{naziv}")]
+    public IActionResult deleteReservation(string naziv)
+    {
+        MongoClient client = new MongoClient("mongodb+srv://mongo:sifra123@cluster0.ewwnh.mongodb.net/test");
+        MongoServer server = client.GetServer();
+        var database = server.GetDatabase("Dostavi");
+
+        var restoranCollection = database.GetCollection<Restoran>("restoran");
+        var dodatakCollection = database.GetCollection<Dodatak>("dodatak");
+
+        var restEmail = HttpContext.User.Identity.Name;
+
+        var rest = (from restoran in restoranCollection.AsQueryable<Restoran>()
+                    where restoran.Email == restEmail
+                    select restoran).FirstOrDefault();
+
+        var dod = (from dodatak in dodatakCollection.AsQueryable<Dodatak>()
+                    where dodatak.Naziv == naziv
+                    select dodatak.Id).FirstOrDefault();
+
+        var deleteFilter = Query.EQ("Naziv", naziv);
+        dodatakCollection.Remove(deleteFilter);
+
+        var upit = Query.EQ("_id", rest.Id);
+        var update = Update.PullWrapped("DodatakIdList", new MongoDBRef("dodatak", dod));
+        restoranCollection.Update(upit, update);
+
+        return Ok("Uspesno brisanje");
+    }
+
+    [HttpGet]
+    [Route("VratiDodatke")]
+    public ActionResult VratiDodatke()
+    {
+        MongoClient client = new MongoClient("mongodb+srv://mongo:sifra123@cluster0.ewwnh.mongodb.net/test");
+        MongoServer server = client.GetServer();
+        var database = server.GetDatabase("Dostavi");
+
+        var restoranCollection = database.GetCollection<Restoran>("restoran");
+        var restEmail = HttpContext.User.Identity.Name;
+
+        var rest = (from restoran in restoranCollection.AsQueryable<Restoran>()
+                    where restoran.Email == restEmail
+                    select restoran).FirstOrDefault();
+        
+        List<Dodatak> dodatak = new List<Dodatak>();
+
+        foreach (MongoDBRef dodaci in rest.DodatakIdList)
+        {
+            dodatak.Add(database.FetchDBRefAs<Dodatak>(dodaci));
+        }
+        List<object> vratiDodatke = new List<object>();
+
+        foreach (Dodatak d in dodatak)
+        {
+            vratiDodatke.Add(new 
+            {
+                Naziv = d.Naziv,
+                Cena = d.Cena
+            });
+        }
+
+        return Ok(vratiDodatke);
+    }
 }

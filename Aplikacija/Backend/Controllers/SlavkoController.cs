@@ -92,7 +92,7 @@ public class SlavkoController : ControllerBase
             List<object> dodaciToReturn = new List<object>();
             foreach (Dodatak d in sviDodaci)
             {
-                jelaToReturn.Add(new
+                dodaciToReturn.Add(new
                 {
                     Id = d.Id.ToString(),
                     Naziv = d.Naziv,
