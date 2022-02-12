@@ -93,7 +93,7 @@ function jela(){
       var label=document.createElement("h4");
       label.innerHTML="Porudžbina";
       korpa.appendChild(label);
-      r.crtajPorudzbine();
+      r.crtajPorudzbine(korpa);
       label=document.createElement("h5");
       label.innerHTML="Unesite napomenu: ";   
       korpa.appendChild(label);

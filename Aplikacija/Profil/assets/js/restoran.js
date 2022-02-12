@@ -240,8 +240,19 @@ export class restoran {
       });
     });
   }
-  crtajPorudzbine(){
-    
+  crtajPorudzbine(host){
+    if (!host) throw new Error("Greska u hostu");
+    const pom = document.createElement("div");
+    this.dodajNamirniceIDodatke();
+  }
+  dodajNamirniceIDodatke(){
+    var labJ=document.getElementById("jelaNam").value;
+    var labD=document.getElementById("dodNam").value;
+    console.log(labJ);
+    var labJela=labJ.split(",");
+    var labDod=labD.split(",");
+    console.log(labJ);
+    console.log(labDod);
   }
   crtajKomentari(host) {
     if (!host) throw new Error("Greska u hostu");
