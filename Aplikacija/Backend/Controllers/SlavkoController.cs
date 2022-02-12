@@ -359,8 +359,14 @@ public class SlavkoController : ControllerBase
 
 
         porudzbinaCollection.Insert(p);
-        user.PorudzbinaKorisnikIdList.Add(new MongoDBRef("porudzbina", p.Id));
-        usersCollection.Save(user);
+
+        var upit = Query.EQ("_id", user.Id);
+        var update = Update.PushWrapped("PorudzbinaKorisnikIdList", new MongoDBRef("porudzbina", p.Id));
+        usersCollection.Update(upit, update);
+
+
+        // user.PorudzbinaKorisnikIdList.Add(new MongoDBRef("porudzbina", p.Id));
+        // usersCollection.Save(user);
         return Ok();
     }
     [HttpGet]
@@ -473,6 +479,7 @@ public class SlavkoController : ControllerBase
 
             komentarCollection.Insert(comment);
 
+<<<<<<< HEAD
             var upit = Query.EQ("_id", restourant.Id);
             var update = Update.PushWrapped("KomentariIdList", new MongoDBRef("komentar", comment.Id));
             restourantCollection.Update(upit, update);
@@ -483,6 +490,10 @@ public class SlavkoController : ControllerBase
         {
             return BadRequest("Greska");
         }
+=======
+        komentarCollection.Insert(komentar);
+        return Ok();
+>>>>>>> 17386a502a9d6ff9e369deb5e93028de2a4ca5e7
     }
 
     [HttpPost]
@@ -497,6 +508,7 @@ public class SlavkoController : ControllerBase
             var restoranCollection = database.GetCollection<Restoran>("restoran");
             var usersCollection = database.GetCollection<Korisnik>("korisnik");
 
+<<<<<<< HEAD
             var userEmail = HttpContext.User.Identity.Name;
 
             var user = (from korisnik in usersCollection.AsQueryable<Korisnik>()
@@ -536,4 +548,7 @@ public class SlavkoController : ControllerBase
         }
         
     }
+=======
+
+>>>>>>> 17386a502a9d6ff9e369deb5e93028de2a4ca5e7
 }
