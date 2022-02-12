@@ -22,7 +22,8 @@ export class restoran{
         this.kontRestoran=null;
         this.jelaNar=[];
         this.dodNar=[];
-    }
+        this.jelapom=[];
+      }
     crtajRestoran(host){
         if (!host) throw new Error("Greska u hostu");
         
@@ -311,4 +312,359 @@ export class restoran{
           alert("Greška sa konekcijom.");
         });
     }
+    crtajDodajJelo(host){
+      var d=document.createElement("div");
+      host.appendChild(d);
+
+      var label= document.createElement("label");
+      label.innerHTML="Naziv: ";
+      label.style=" margin: 5px";
+      d.appendChild(label);
+      var input= document.createElement("input");
+      input.style=" margin: 5px";
+      input.id="naziv";
+      d.appendChild(input);
+
+      var d1=document.createElement("div");
+      host.appendChild(d1);
+      var label= document.createElement("label");
+      label.innerHTML="Kategorija: ";
+      label.style=" margin: 5px";
+      d1.appendChild(label);
+      var input= document.createElement("input");
+      input.style=" margin: 5px";
+      input.id="kategorija";
+      d1.appendChild(input);
+
+      var d2=document.createElement("div");
+      host.appendChild(d2);
+      var label= document.createElement("label");
+      label.innerHTML="Gramaza: ";
+      label.style=" margin: 5px";
+      d2.appendChild(label);
+      var input= document.createElement("input");
+      input.style=" margin: 5px";
+      input.id="gramaza";
+      d2.appendChild(input);
+
+      var d3=document.createElement("div");
+      host.appendChild(d3);
+      var label= document.createElement("label");
+      label.innerHTML="Opis: ";
+      label.style=" margin: 5px";
+      d3.appendChild(label);
+      var input= document.createElement("input");
+      input.style=" margin: 5px";
+      input.id="opiss";
+      d3.appendChild(input);
+
+      var d4=document.createElement("div");
+      host.appendChild(d4);
+      var label= document.createElement("label");
+      label.innerHTML="Slika: ";
+      label.style=" margin: 5px";
+      d4.appendChild(label);
+      var input= document.createElement("input");
+      input.style=" margin: 5px";
+      input.id="slika";
+      d4.appendChild(input);
+
+      var d5=document.createElement("div");
+      host.appendChild(d5);
+      var label= document.createElement("label");
+      label.innerHTML="Cena: ";
+      label.style=" margin: 5px";
+      d5.appendChild(label);
+      var input= document.createElement("input");
+      input.style=" margin: 5px";
+      input.id="cena";
+      d5.appendChild(input);
+
+      var d6=document.createElement("div");
+      host.appendChild(d6);
+      var label= document.createElement("label");
+      label.innerHTML="Namirnice: ";
+      label.style=" margin: 5px";
+      d6.appendChild(label);
+      var input= document.createElement("input");
+      input.id="namirnice";
+      var d6=document.createElement("div");
+      host.appendChild(d6);
+      d6.appendChild(input);
+      var label1= document.createElement("label");
+      label1.innerHTML="Namirnice odvojiti iskljucivo ',' ";
+      label1.style=" margin: 5px";
+      d6.appendChild(label1);
+      
+
+      var dugme= document.createElement("button");
+      host.appendChild(dugme);
+      dugme.innerHTML="Dodaj"
+      dugme.style=" margin: 5px";
+      dugme.classList="btn btn-danger";
+
+
+      
+      //var namir=nam.split(",")
+      dugme.addEventListener('click',function(){
+        var naz=document.getElementById("naziv").value;
+      var kat=document.getElementById("kategorija").value;
+      var gram=document.getElementById("gramaza").value;
+      var op=document.getElementById("opiss").value;
+      var sl=document.getElementById("slika").value;
+      var cen=document.getElementById("cena").value;
+      var nam=document.getElementById("namirnice").value;
+      var namir=nam.split(",");
+        console.log(naz)
+        console.log(kat)
+        console.log(gram)
+        console.log(op)
+        console.log(sl)
+        console.log(cen)
+        console.log(nam)
+        console.log(namir)
+        fetch("https://localhost:7284/Restoran/AddMeal" ,{
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + sessionStorage.getItem("token"),
+          },
+          body: JSON.stringify({
+            naziv: naz,
+            kategorija: kat,
+            gramaza: gram,
+            opis: op,
+            slika: sl,
+            cena: cen,
+            nazivNamirnica: namir
+              
+          }),
+        })
+          .then((p) => {
+            if (p.ok) {
+              alert("Uspesno dodavanje jela");
+              komentari();
+            } else {
+              alert("Ne mozete komentarisati.");
+            }
+          })
+          .catch(() => {
+            alert("Greska sa konekcijom");
+          });
+      //}
+      });
+
+
+    }
+    crtajObrisiJelo(host){
+
+      
+      fetch("https://localhost:7284/Restoran/GetMeals", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + sessionStorage.getItem("token"),
+        },
+      })
+      .then((p) => {
+      p.json().then((data) => {
+        data.forEach((element) => {
+          var j=new jelo();
+          j.naziv=element.naziv;
+          j.kategorija=element.kategorija;
+          j.gramaza=element.gramaza;
+          j.opis=element.opis;
+          j.slika=element.slika;
+          j.cena=element.cena;
+          j.namirnice.forEach(nam=>{
+            j.dodajNam(nam);
+          })
+          this.jelapom.push(j);
+          console.log(this.jelapom);
+        });
+        this.crtajsvaJela(host);
+      });
+    });
+
+    }
+    crtajsvaJela(host){
+      this.jelapom.forEach(j=>{
+        j.crtajJelo(host);
+      })
+    }
+    crtajDodajDodatak(host){
+      var d=document.createElement("div");
+      host.appendChild(d);
+
+      var label= document.createElement("label");
+      label.innerHTML="Naziv: ";
+      label.style=" margin: 5px";
+      d.appendChild(label);
+      var input= document.createElement("input");
+      input.style=" margin: 5px";
+      input.id="naziv";
+      d.appendChild(input);
+
+      var d1=document.createElement("div");
+      host.appendChild(d1);
+      var label= document.createElement("label");
+      label.innerHTML="Cena: ";
+      label.style=" margin: 5px";
+      d1.appendChild(label);
+      var input= document.createElement("input");
+      input.style=" margin: 5px";
+      input.id="cena";
+      d1.appendChild(input);
+
+      var dugme= document.createElement("button");
+      host.appendChild(dugme);
+      dugme.innerHTML="Dodaj"
+      dugme.style=" margin: 5px";
+      dugme.classList="btn btn-danger";
+
+
+      
+      //var namir=nam.split(",")
+      dugme.addEventListener('click',function(){
+        var naz=document.getElementById("naziv").value;
+      var kat=document.getElementById("kategorija").value;
+      var gram=document.getElementById("gramaza").value;
+      var op=document.getElementById("opiss").value;
+      var sl=document.getElementById("slika").value;
+      var cen=document.getElementById("cena").value;
+      var nam=document.getElementById("namirnice").value;
+      var namir=nam.split(",");
+        fetch("https://localhost:7284/Restoran/AddMeal" ,{
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + sessionStorage.getItem("token"),
+          },
+          body: JSON.stringify({
+            naziv: naz,
+            kategorija: kat,
+            gramaza: gram,
+            opis: op,
+            slika: sl,
+            cena: cen,
+            nazivNamirnica: namir
+              
+          }),
+        })
+          .then((p) => {
+            if (p.ok) {
+              alert("Uspesno dodavanje jela");
+              komentari();
+            } else {
+              alert("Ne mozete komentarisati.");
+            }
+          })
+          .catch(() => {
+            alert("Greska sa konekcijom");
+          });
+      //}
+      });
+    }
+  }
+  export class jelo{
+    constructor(naziv,kategorija,gramaza,opis,slika,cena){
+      this.naziv=naziv;
+      this.kategorija=kategorija;
+      this.gramaza=gramaza;
+      this.opis=opis;
+      this.slika=slika;
+      this.cena-cena;
+      this.namirnice=[]
+
+    }
+    dodajNam(n){
+      this.namirnice.push(n);
+    }
+crtajJelo(host){
+      var d=document.createElement("div");
+      host.appendChild(d);
+
+      var label= document.createElement("label");
+      label.innerHTML=this.naziv;
+      label.style=" margin: 5px";
+      d.appendChild(label);
+
+      var dugme= document.createElement("button");
+      d.appendChild(dugme);
+      dugme.innerHTML="Obrisi jelo"
+      dugme.id=this.naziv;
+      dugme.style=" margin: 5px";
+      dugme.classList="btn btn-danger";
+      dugme.addEventListener('click',function(){
+        fetch("https://localhost:7284/Restoran/DeleteJelo/" + this.naziv, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + sessionStorage.getItem("token"),
+          },
+          body: JSON.stringify({}),
+        })
+          .then((p) => {
+            if (p.ok) {
+              alert("Jelo je uspesno obrisan");
+              
+            } else {
+              alert("Greska kod brisanja");
+            }
+          })
+          .catch((p) => {
+            alert("Greška sa konekcijom.");
+          });
+      });
+        
+}
+}
+export class dodatak{
+  constructor(naziv,cena){
+    this.naziv=naziv;
+    this.cena-cena;
+
+  }
+crtajNamirnicu(host){
+    var d=document.createElement("div");
+    host.appendChild(d);
+
+    var label= document.createElement("label");
+    label.innerHTML=this.naziv;
+    label.style=" margin: 5px";
+    d.appendChild(label);
+    var label= document.createElement("label");
+    label.innerHTML="  "+this.cena;
+    label.style=" margin: 5px";
+    d.appendChild(label);
+
+    var dugme= document.createElement("button");
+    d.appendChild(dugme);
+    dugme.innerHTML="Obrisi jelo"
+    dugme.id=this.naziv;
+    dugme.style=" margin: 5px";
+    dugme.classList="btn btn-danger";
+    dugme.addEventListener('click',function(){
+      fetch("https://localhost:7284/Restoran/DeleteJelo/" + this.naziv, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + sessionStorage.getItem("token"),
+        },
+        body: JSON.stringify({}),
+      })
+        .then((p) => {
+          if (p.ok) {
+            alert("Jelo je uspesno obrisan");
+            
+          } else {
+            alert("Greska kod brisanja");
+          }
+        })
+        .catch((p) => {
+          alert("Greška sa konekcijom.");
+        });
+    });
+      
+}
 }
