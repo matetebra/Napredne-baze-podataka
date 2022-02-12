@@ -506,6 +506,6 @@ public class SlavkoController : ControllerBase
         {
             return BadRequest(exc.Message);
         }
-        
+
     }
 }

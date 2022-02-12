@@ -92,7 +92,6 @@ export class restorani {
     });
   }
   crtajBukmarkovane() {
-    alert("ca");
     const host = document.getElementById("restorani");
     host.innerHTML = "";
     this.bukmarkovani.forEach((rest) => {
