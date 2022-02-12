@@ -24,11 +24,13 @@ export class restoran{
     }
     crtajRestoran(host){
         if (!host) throw new Error("Greska u hostu");
+        
         var pom = document.createElement("div");
         pom.classList.add("col-md-3");
         pom.classList.add("col-lg-3");
         pom.classList.add("d-md-flex");
         pom.classList.add("align-items-md-stretch");
+        pom.classList.add("margine");
         //pom.classList.add("col-sm-6");
         pom.classList.add("card-box-a");
         pom.classList.add("razmak");
@@ -70,7 +72,7 @@ export class restoran{
         var pogled = document.createElement("button");
         pogled.classList.add("btn");
         pogled.classList.add("btn-a");
-        pogled.classList.add("col-md-3");
+        pogled.classList.add("col-md-1");
         pogled.innerHTML = "Pogledaj";
         pogled.id=this.email;
         host.appendChild(pogled);
