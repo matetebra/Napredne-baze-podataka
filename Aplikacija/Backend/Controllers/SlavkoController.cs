@@ -65,6 +65,8 @@ public class SlavkoController : ControllerBase
             var database = server.GetDatabase("Dostavi");
 
             var restaurantsCollection = database.GetCollection<Restoran>("restoran");
+            var userCollection = database.GetCollection<Korisnik>("korisnik");
+
             int localtime = DateTime.Now.Hour;
 
             var exactRestoran = (from restoran in restaurantsCollection.AsQueryable<Restoran>()
@@ -107,6 +109,19 @@ public class SlavkoController : ControllerBase
             {
                 sviKomentari.Add(database.FetchDBRefAs<Komentar>(k));
             }
+            List<object> komentariToReturn = new List<object>();
+            foreach (Komentar k in sviKomentari)
+            {
+                var emailKorisnikaKomentara = (from korisnik in userCollection.AsQueryable()
+                                               where korisnik.Id == k.KorisnikKomentarId
+                                               select korisnik.Email).FirstOrDefault();
+                komentariToReturn.Add(new
+                {
+                    Tekst = k.Tekst,
+                    Email = emailKorisnikaKomentara
+
+                });
+            }
 
             List<Dodatak> sviDodaci = new List<Dodatak>();
             foreach (MongoDBRef k in exactRestoran.DodatakIdList)
@@ -141,7 +156,7 @@ public class SlavkoController : ControllerBase
                 Kapacitet = exactRestoran.Kapacitet,
                 SlobodnaMesta = exactRestoran.SlobodnaMesta,
                 Kategorije = sveKategorije,
-                Komentari = sviKomentari,
+                Komentari = komentariToReturn,
                 Jela = jelaToReturn,
                 Dodaci = dodaciToReturn
             });
@@ -229,7 +244,7 @@ public class SlavkoController : ControllerBase
     [HttpGet]
     [Route("PrethodnePorudzbine")]
     public IActionResult prethodnePorudzbine()//MOZDA NE RADI NE MOGU SAD TRENUTNO DA PROVERIM
-    //DODAJ NEKOME IZ NISA NESTO IZ CEZAR NIS I TESTIRAJ
+                                              //DODAJ NEKOME IZ NISA NESTO IZ CEZAR NIS I TESTIRAJ
     {
         MongoClient client = new MongoClient("mongodb+srv://mongo:sifra123@cluster0.ewwnh.mongodb.net/test");
         MongoServer server = client.GetServer();
@@ -426,6 +441,42 @@ public class SlavkoController : ControllerBase
                             Email = korisnik.Email
                         }).FirstOrDefault();
         return Ok(toReturn);
+    }
+    [HttpPost]
+    [Authorize(Roles = "Korisnik")]
+    [Route("AddComment/{rEmail}")]
+    public IActionResult addCommment([FromBody] KomentarDTO kom, string rEmail)
+    {
+        MongoClient client = new MongoClient("mongodb+srv://mongo:sifra123@cluster0.ewwnh.mongodb.net/test");
+        MongoServer server = client.GetServer();
+        var database = server.GetDatabase("Dostavi");
+
+        var komentarCollection = database.GetCollection<Komentar>("komentar");
+        var userCollection = database.GetCollection<Korisnik>("korisnik");
+        var restourantCollection = database.GetCollection<Restoran>("restoran");
+
+
+        var korisnikID = (from korisnik in userCollection.AsQueryable<Korisnik>()
+                          where korisnik.Email == HttpContext.User.Identity.Name
+                          select korisnik.Id).FirstOrDefault();
+        var restourant = (from restoran in restourantCollection.AsQueryable<Restoran>()
+                          where restoran.Email == rEmail
+                          select restoran).FirstOrDefault();
+
+        Komentar komentar = new Komentar();
+
+        komentar.Tekst = kom.Tekst;
+        komentar.KorisnikKomentarId = korisnikID;
+        komentar.RestoranKomentarId = restourant.Id;
+
+
+        komentarCollection.Insert(komentar);
+
+        restourant.KomentariIdList.Add(new MongoDBRef("komentar", komentar.Id));
+        restourantCollection.Save(restourant);
+
+
+        return Ok();
     }
 
 
