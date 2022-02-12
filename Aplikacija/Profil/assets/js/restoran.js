@@ -240,6 +240,9 @@ export class restoran {
       });
     });
   }
+  crtajPorudzbine(){
+    
+  }
   crtajKomentari(host) {
     if (!host) throw new Error("Greska u hostu");
     this.komentari.forEach(e => {
