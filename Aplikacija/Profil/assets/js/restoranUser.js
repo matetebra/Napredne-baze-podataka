@@ -9,7 +9,7 @@ else
 {
     if(sessionStorage.getItem("role")=="Restoran")
     {
-        r.preuzmi(sessionStorage.getItem("username"));
+        r.preuzmiPodatke(sessionStorage.getItem("username"));
 
         var d=document.getElementById("btnOdjaviSe");
         d.addEventListener("click",function(){
@@ -21,17 +21,32 @@ else
           });
 
         var host=document.getElementById("iscrtavanje");
-        host.innerHTML="";
+        //host.innerHTML="";
         var d1=document.getElementById("dodajJelo");
-        d1.addEventListener('click',dodajJ(host));
+        d1.addEventListener('click',function(){
+          host.innerHTML="";
+          r.crtajDodajJelo(host);
+        });
         var d2=document.getElementById("brisiJelo");
-        d2.addEventListener('click',brisiJ(host));
+        d2.addEventListener('click',function(){
+          host.innerHTML="";
+          r.crtajObrisiJelo(host);
+        });
         var d3=document.getElementById("dodajDodatak");
-        d3.addEventListener('click',dodajD(host));
+        d3.addEventListener('click',function(){
+          host.innerHTML="";
+          r.crtajDodajDodatak(host);
+        });
         var d4=document.getElementById("brisiDodatak");
-        d4.addEventListener('click',brisiD(host));
+        d4.addEventListener('click',function(){
+          host.innerHTML="";
+          r.crtajObrisiDodatak(host);
+        });
         var d5=document.getElementById("brisiRezervaciju");
-        d5.addEventListener('click',brisiR(host));
+        d5.addEventListener('click',function(){
+          host.innerHTML="";
+          r.brisiRezervaciju(host);
+        });
         var d6=document.getElementById("prihvatiRezervaciju");
         d6.addEventListener('click',prihvatiR(host));
         
@@ -46,7 +61,7 @@ else
 }
 function dodajJ(host){
  
-  //r.crtajDodajJelo(host);
+  r.crtajDodajJelo(host);
 }
 function brisiJ(host){
   //r.crtajObrisiJelo(host);

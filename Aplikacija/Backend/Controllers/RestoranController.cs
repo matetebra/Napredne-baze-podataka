@@ -310,10 +310,25 @@ public class RestoranController : ControllerBase
         MongoServer server = client.GetServer();
         var database = server.GetDatabase("Dostavi");
 
-        var collection = database.GetCollection<Jela>("jela");
+        var jelaCollection = database.GetCollection<Jela>("jela");
+        var restoranCollection = database.GetCollection<Restoran>("restoran");
 
-        var query = Query.EQ("Naziv", naziv);
-        collection.Remove(query);
+        var restEmail = HttpContext.User.Identity.Name;
+
+        var rest = (from restoran in restoranCollection.AsQueryable<Restoran>()
+                    where restoran.Email == restEmail
+                    select restoran).FirstOrDefault();
+
+         var jelo = (from jela in jelaCollection.AsQueryable<Jela>()
+                     where jela.Naziv == naziv
+                     select jela.Id).FirstOrDefault();
+
+        var deleteFilter = Query.EQ("Naziv", naziv);
+        jelaCollection.Remove(deleteFilter);
+
+        var upit = Query.EQ("_id", rest.Id);
+        var update = Update.PullWrapped("JelaIdList", new MongoDBRef("jela", jelo));
+        restoranCollection.Update(upit, update);
 
         return Ok();
     }
