@@ -283,9 +283,6 @@ public class RestoranController : ControllerBase
             });
         }
         return Ok(jelaToReturn);
-        //MongoCursor<Jela> jelo = collection.FindAll();
-        //List<Jela> jela = jelo.ToList();
-        //return jela;
     }
 
     [HttpGet]
@@ -437,6 +434,42 @@ public class RestoranController : ControllerBase
                     select new { restoran.Email, restoran.Naziv, restoran.Adresa, restoran.Telefon, restoran.ProsecnaOcena }).ToList();
 
         return Ok(rest);
+    }
+
+    [HttpPost]
+    [Route("AddDodatak")]
+    public ActionResult AddDodatak([FromBody] Dodatak doda)
+    {
+        MongoClient client = new MongoClient("mongodb+srv://mongo:sifra123@cluster0.ewwnh.mongodb.net/test");
+        MongoServer server = client.GetServer();
+        var database = server.GetDatabase("Dostavi");
+
+        var restoranCollection = database.GetCollection<Restoran>("restoran");
+        var dodatakCollection = database.GetCollection<Dodatak>("dodatak");
+
+        var check = (from dodatak in dodatakCollection.AsQueryable<Dodatak>()
+                    where dodatak.Naziv == doda.Naziv
+                    select dodatak).FirstOrDefault();
+
+        if (check != null)
+        {
+            return BadRequest("Vec postoji taj dodatak.");
+        }
+
+        dodatakCollection.Insert(doda);
+
+        var restEmail = HttpContext.User.Identity.Name;
+
+        var rest = (from restoran in restoranCollection.AsQueryable<Restoran>()
+                    where restoran.Email == restEmail
+                    select restoran.Id).FirstOrDefault();
+
+        
+        var upit = Query.EQ("_id", rest);
+        var update = Update.PushWrapped("DodatakIdList", new MongoDBRef("dodatak", doda.Id));
+        restoranCollection.Update(upit, update);
+
+        return Ok("Dodatak uspesno dodat");
     }
 
 
