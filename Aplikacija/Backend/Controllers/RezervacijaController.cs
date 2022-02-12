@@ -80,8 +80,56 @@ public class RezervacijaController : ControllerBase
     }
 
 
+    // [HttpPost]
+    // [Route("BookMarkRestaurant/{email}")]
+    // public IActionResult BookMarkRestaurant(string email)
+    // {
+    //     try
+    //     {
+    //         MongoClient client = new MongoClient("mongodb+srv://mongo:sifra123@cluster0.ewwnh.mongodb.net/test");
+    //         MongoServer server = client.GetServer();
+    //         var database = server.GetDatabase("Dostavi");
+    //         var restoranCollection = database.GetCollection<Restoran>("restoran");
+    //         var usersCollection = database.GetCollection<Korisnik>("korisnik");
 
+    //         var userEmail = HttpContext.User.Identity.Name;
 
+    //         var user = (from korisnik in usersCollection.AsQueryable<Korisnik>()
+    //                     where korisnik.Email == userEmail
+    //                     select korisnik).FirstOrDefault();
 
+    //         var getRestaurantQuery = (from restoran in restoranCollection.AsQueryable<Restoran>()
+    //                                   where restoran.Email == email
+    //                                   select restoran.Id).FirstOrDefault();
+            
+    //         if (getRestaurantQuery.ToString() == "000000000000000000000000")
+    //         {
+    //             return BadRequest("Nepostojeci restoran");
+    //         }
+
+    //         int check = 0;
+    //         foreach (MongoDBRef mdb in user.RestoranKorisnikIdList)
+    //         {
+    //             if (mdb.Id == getRestaurantQuery)
+    //             {
+    //                 check++;
+    //             }
+    //         }
+    //         if (check != 0)
+    //         {
+    //             return BadRequest("Vec ste bookmarkovali taj restoran");
+    //         }
+
+    //         var upit = Query.EQ("_id", user.Id);
+    //         var update = Update.PushWrapped("RestoranKorisnikIdList", new MongoDBRef("restoran", getRestaurantQuery));
+    //         usersCollection.Update(upit, update);
+    //         return Ok("Uspesno bookmarkovanje");
+    //     }
+    //     catch (Exception exc)
+    //     {
+    //         return BadRequest(exc.Message);
+    //     }
+        
+    // }
 
 }

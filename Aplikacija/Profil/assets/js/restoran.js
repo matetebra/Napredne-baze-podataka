@@ -253,7 +253,10 @@ export class restoran{
         d3.className="member-info";
         d2.appendChild(d3);
         var d4= document.createElement("h5");
-        d4.innerHTML=e.korisnik;
+        d4.innerHTML=e.email;
+        d3.appendChild(d4);
+        var d4= document.createElement("h6");
+        d4.innerHTML=e.tekst;
         d3.appendChild(d4);
       });
     }
@@ -312,6 +315,7 @@ export class restoran{
           alert("Greška sa konekcijom.");
         });
     }
+<<<<<<< HEAD
     crtajDodajJelo(host){
       var d=document.createElement("div");
       host.appendChild(d);
@@ -659,12 +663,39 @@ crtajNamirnicu(host){
             
           } else {
             alert("Greska kod brisanja");
+=======
+    posaljiNarudzbinu(listaJela,listaDodatak,email){
+      var napomena= document.getElementById("Napomena").value;
+      fetch("https://localhost:7284/Slavko//Slavko/dodajNarudzbinu", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + sessionStorage.getItem("token")
+        },
+        body: JSON.stringify({
+          napomena: napomena,
+          jelaID :listaJela,
+          emailRestoran: email,
+          dodaciID: listaDodatak
+        })
+      })
+        .then((p) => {
+          if (p.ok) {
+            alert("Uspesno narucivanje");
+          } else {
+            alert("Greska kod narucivanja");
+>>>>>>> aeb69560232de250bd5488ae40adabb6b10c539e
           }
         })
         .catch((p) => {
           alert("Greška sa konekcijom.");
         });
+<<<<<<< HEAD
     });
       
 }
 }
+=======
+    }
+}
+>>>>>>> aeb69560232de250bd5488ae40adabb6b10c539e

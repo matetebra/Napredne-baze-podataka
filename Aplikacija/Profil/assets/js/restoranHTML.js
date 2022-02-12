@@ -1,82 +1,59 @@
 import { restoran } from "./restoran.js";
 import { korisnik } from "./korisnik.js";
 import { restorani } from "./restorani.js";
-var k=new korisnik(); 
-k.ucitajKorisnika();
-var res=new restorani();
+var res = new restorani();
 res.ucitajRestorane();
 
-var dugm=document.getElementById("homebtn");
-dugm.hidden=true;
+var dugm = document.getElementById("homebtn");
+dugm.hidden = true;
 //res.ucitajBukmarkovaneRestorane();
-if(sessionStorage.getItem("token")!=null && sessionStorage.getItem("token")!="")
-{
-    /*var dugme=document.getElementById("omiljeniRes");  
-    dugme.addEventListener('click',bukmarkovani);
-    var dugme1=document.getElementById("sacuvaneNar");  
-    dugme1.addEventListener('click',sacuvani);
+if (
+  sessionStorage.getItem("token") != null &&
+  sessionStorage.getItem("token") != ""
+) {
+  var k = new korisnik();
+  k.ucitajKorisnika();
+}
+document.getElementById("sortingOptionID").options[0].selected = true;
 
-    
-    var sortL=document.getElementById("sortingOptionID");
-    var L=document.getElementById("sortingOptionID").options[0].selected = true; 
-   
-    console.log(sortL);//.options[sortL.selectedIndex].text);
-    var v=sortL.value;
-    sortL.addEventListener('click',sort(v));*/
-    /*sortL.addEventListener('change',function(){
-        console.log("ovde");
-    const host=document.getElementById("restorani");
-    host.innerHTML="";
-    res.sortirajPoNajnizoj();
-    var dugm=document.getElementById("homebtn");
-    dugm.hidden=false;
-    dugm.addEventListener('click',vrati);
-    });*/
-    //var sortH=document.getElementById("sortirajPoNajvecoj")
-    //sortH.addEventListener('click',sortNajv);
-}
-document.getElementById("sortingOptionID").options[0].selected = true; 
+export function sortNajm() {
+  console.log("sdv");
+  const host = document.getElementById("restorani");
+  host.innerHTML = "";
 
+  res.sortirajPoNajnizoj();
+  var dugm = document.getElementById("homebtn");
+  dugm.hidden = false;
+  dugm.addEventListener("click", vrati);
+}
+export function sortNajv() {
+  console.log("sdvsdfsdf");
+  const host = document.getElementById("restorani");
+  host.innerHTML = "";
+  res.sortirajPoNajvisoj();
+  var dugm = document.getElementById("homebtn");
+  dugm.hidden = false;
+  dugm.addEventListener("click", vrati);
+}
+function bukmarkovani() {
+  const host = document.getElementById("restorani");
+  host.innerHTML = "";
+  res.ucitajBukmarkovaneRestorane();
+  var dugm = document.getElementById("homebtn");
+  dugm.hidden = false;
+  dugm.addEventListener("click", vrati);
+}
+function vrati() {
+  const host = document.getElementById("restorani");
+  host.innerHTML = "";
+  res.ucitajRestorane();
+  var dugm = document.getElementById("homebtn");
+  dugm.hidden = true;
+}
+function sacuvani() {
+  const host = document.getElementById("restorani");
+  host.innerHTML = "";
+  res.ucitajPrethodnePorudzbine();
 
-export function sortNajm(){
-    console.log("sdv");
-    const host=document.getElementById("restorani");
-    host.innerHTML="";
-        res.sortirajPoNajnizoj();
-    
-    res.sortirajPoNajnizoj();
-    var dugm=document.getElementById("homebtn");
-    dugm.hidden=false;
-    dugm.addEventListener('click',vrati);
-}
-export function sortNajv(){
-    console.log("sdvsdfsdf");
-    const host=document.getElementById("restorani");
-    host.innerHTML="";
-    res.sortirajPoNajvisoj();
-    var dugm=document.getElementById("homebtn");
-    dugm.hidden=false;
-    dugm.addEventListener('click',vrati);
-}
-function bukmarkovani(){
-    const host=document.getElementById("restorani");
-    host.innerHTML="";
-        res.ucitajBukmarkovaneRestorane();  
-        var dugm=document.getElementById("homebtn");
-        dugm.hidden=false;
-        dugm.addEventListener('click',vrati);
-}
-function vrati(){
-    const host=document.getElementById("restorani");
-    host.innerHTML="";
-        res.ucitajRestorane();  
-        var dugm=document.getElementById("homebtn");
-        dugm.hidden=true;
-}
-function sacuvani(){
-    const host=document.getElementById("restorani");
-    host.innerHTML="";
-        res.ucitajPrethodnePorudzbine();  
-        
-        dugm.addEventListener('click',vrati);
+  dugm.addEventListener("click", vrati);
 }

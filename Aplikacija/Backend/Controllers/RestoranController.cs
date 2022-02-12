@@ -12,39 +12,6 @@ namespace Backend.Controllers;
 [Route("[controller]")]
 public class RestoranController : ControllerBase
 {
-    /*[HttpGet]
-    [Route("GetRestaurants")]
-    public IActionResult GetRestaurants()
-    {
-
-        MongoClient client = new MongoClient("mongodb+srv://mongo:sifra123@cluster0.ewwnh.mongodb.net/test");
-        MongoServer server = client.GetServer();
-        var database = server.GetDatabase("Dostavi");
-        var collection = database.GetCollection<Restoran>("restoran");
-        var kolekcijaJela = database.GetCollection<Jela>("jela");
-
-        List<Jela> svaJela = new List<Jela>();
-
-        MongoCursor<Restoran> restorani = collection.FindAll();
-        foreach (Restoran r in restorani)
-        {
-      /*      foreach (ObjectId jeloID in r.JelaIdList)
-            {
-                var query12 = (from jela in kolekcijaJela.AsQueryable<Jela>()
-                               where jela.Id == jeloID
-                               select jela).FirstOrDefault();
-                svaJela.Add(query12!);
-            }
-        }}
-        return Ok(new
-        {
-            Naziv = "Cezar",
-            Jela = svaJela
-        });
-
-
-        //return Ok(svaJela);
-    }*/
 
     [HttpGet]
     [Route("GetRestaurantByName/{name}")]
@@ -128,6 +95,10 @@ public class RestoranController : ControllerBase
                         rn.Add(upis!);
                     }
                 }
+            }
+            if (rn.Count() == 0)
+            {
+                return BadRequest("Nema rezultata pretrage");
             }
 
             return Ok(rn);
@@ -278,16 +249,43 @@ public class RestoranController : ControllerBase
 
     [HttpGet]
     [Route("GetMeals")]
-    public List<Jela> GetMeals()
+    public ActionResult GetMeals()
     {
         MongoClient client = new MongoClient("mongodb+srv://mongo:sifra123@cluster0.ewwnh.mongodb.net/test");
         MongoServer server = client.GetServer();
         var database = server.GetDatabase("Dostavi");
+        var restoranCollection = database.GetCollection<Restoran>("restoran");
         var collection = database.GetCollection<Jela>("jela");
+        var restName = HttpContext.User.Identity.Name;
 
-        MongoCursor<Jela> jelo = collection.FindAll();
-        List<Jela> jela = jelo.ToList();
-        return jela;
+        var rest = (from restoran in restoranCollection.AsQueryable<Restoran>()
+                    where restoran.Email == restName
+                    select restoran).FirstOrDefault();
+
+        List<Jela> svaJela = new List<Jela>();
+        foreach (MongoDBRef jela in rest.JelaIdList)
+        {
+            svaJela.Add(database.FetchDBRefAs<Jela>(jela));
+        }
+        List<object> jelaToReturn = new List<object>();
+        foreach (Jela j in svaJela)
+        {
+            jelaToReturn.Add(new
+            {
+                Id = j.Id.ToString(),
+                Naziv = j.Naziv,
+                Kategorija = j.Kategorija,
+                Gramaza = j.Gramaza,
+                Cena = j.Cena,
+                Opis = j.Opis,
+                Slika = j.Slika,
+                NazivNamirnica = j.NazivNamirnica
+            });
+        }
+        return Ok(jelaToReturn);
+        //MongoCursor<Jela> jelo = collection.FindAll();
+        //List<Jela> jela = jelo.ToList();
+        //return jela;
     }
 
     [HttpGet]

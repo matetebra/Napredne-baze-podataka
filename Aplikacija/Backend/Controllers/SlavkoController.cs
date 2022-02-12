@@ -15,44 +15,44 @@ namespace Backend.Controllers;
 [BsonIgnoreExtraElements]
 public class SlavkoController : ControllerBase
 {
-    [HttpPost]
-    [Route("BookMarkRestaurant/{email}")]
-    public IActionResult BookMarkRestaurant(string email)
-    {
-        try
-        {
-            MongoClient client = new MongoClient("mongodb+srv://mongo:sifra123@cluster0.ewwnh.mongodb.net/test");
-            MongoServer server = client.GetServer();
-            var database = server.GetDatabase("Dostavi");
-            var restoranCollection = database.GetCollection<Restoran>("restoran");
-            var usersCollection = database.GetCollection<Korisnik>("korisnik");
+    // [HttpPost]
+    // [Route("BookMarkRestaurant/{email}")]
+    // public IActionResult BookMarkRestaurant(string email)
+    // {
+    //     try
+    //     {
+    //         MongoClient client = new MongoClient("mongodb+srv://mongo:sifra123@cluster0.ewwnh.mongodb.net/test");
+    //         MongoServer server = client.GetServer();
+    //         var database = server.GetDatabase("Dostavi");
+    //         var restoranCollection = database.GetCollection<Restoran>("restoran");
+    //         var usersCollection = database.GetCollection<Korisnik>("korisnik");
 
-            var userEmail = HttpContext.User.Identity.Name;
+    //         var userEmail = HttpContext.User.Identity.Name;
 
-            var user = (from korisnik in usersCollection.AsQueryable<Korisnik>()
-                        where korisnik.Email == userEmail
-                        select korisnik).FirstOrDefault();
+    //         var user = (from korisnik in usersCollection.AsQueryable<Korisnik>()
+    //                     where korisnik.Email == userEmail
+    //                     select korisnik).FirstOrDefault();
 
 
 
-            var getRestaurantQuery = (from restoran in restoranCollection.AsQueryable<Restoran>()
-                                      where restoran.Email == email
-                                      select restoran.Id).FirstOrDefault();
+    //         var getRestaurantQuery = (from restoran in restoranCollection.AsQueryable<Restoran>()
+    //                                   where restoran.Email == email
+    //                                   select restoran.Id).FirstOrDefault();
 
-            if (getRestaurantQuery.ToString() == "000000000000000000000000")
-            {
-                return BadRequest("Vec ste bookmarkovali taj restoran");
-            }
+    //         if (getRestaurantQuery.ToString() == "000000000000000000000000")
+    //         {
+    //             return BadRequest("Vec ste bookmarkovali taj restoran");
+    //         }
 
-            user.RestoranKorisnikIdList.Add(new MongoDBRef("restoran", getRestaurantQuery));
-            usersCollection.Save(user);
-        }
-        catch (Exception exc)
-        {
-            return BadRequest(exc.Message);
-        }
-        return Ok("Uspesno bookmarkovanje");
-    }
+    //         user.RestoranKorisnikIdList.Add(new MongoDBRef("restoran", getRestaurantQuery));
+    //         usersCollection.Save(user);
+    //     }
+    //     catch (Exception exc)
+    //     {
+    //         return BadRequest(exc.Message);
+    //     }
+    //     return Ok("Uspesno bookmarkovanje");
+    // }
 
     [HttpGet]
     [Route("GetAllRestourantInformations/{email}")]
@@ -359,8 +359,14 @@ public class SlavkoController : ControllerBase
 
 
         porudzbinaCollection.Insert(p);
-        user.PorudzbinaKorisnikIdList.Add(new MongoDBRef("porudzbina", p.Id));
-        usersCollection.Save(user);
+
+        var upit = Query.EQ("_id", user.Id);
+        var update = Update.PushWrapped("PorudzbinaKorisnikIdList", new MongoDBRef("porudzbina", p.Id));
+        usersCollection.Update(upit, update);
+
+
+        // user.PorudzbinaKorisnikIdList.Add(new MongoDBRef("porudzbina", p.Id));
+        // usersCollection.Save(user);
         return Ok();
     }
     [HttpGet]
@@ -445,39 +451,95 @@ public class SlavkoController : ControllerBase
     [HttpPost]
     [Authorize(Roles = "Korisnik")]
     [Route("AddComment/{rEmail}")]
-    public IActionResult addCommment([FromBody] KomentarDTO kom, string rEmail)
+    public IActionResult AddComment([FromBody] KomentarDTO kom, string rEmail)
     {
-        MongoClient client = new MongoClient("mongodb+srv://mongo:sifra123@cluster0.ewwnh.mongodb.net/test");
-        MongoServer server = client.GetServer();
-        var database = server.GetDatabase("Dostavi");
+        try 
+        {   
+            MongoClient client = new MongoClient("mongodb+srv://mongo:sifra123@cluster0.ewwnh.mongodb.net/test");
+            MongoServer server = client.GetServer();
+            var database = server.GetDatabase("Dostavi");
 
-        var komentarCollection = database.GetCollection<Komentar>("komentar");
-        var userCollection = database.GetCollection<Korisnik>("korisnik");
-        var restourantCollection = database.GetCollection<Restoran>("restoran");
-
-
-        var korisnikID = (from korisnik in userCollection.AsQueryable<Korisnik>()
-                          where korisnik.Email == HttpContext.User.Identity.Name
-                          select korisnik.Id).FirstOrDefault();
-        var restourant = (from restoran in restourantCollection.AsQueryable<Restoran>()
-                          where restoran.Email == rEmail
-                          select restoran).FirstOrDefault();
-
-        Komentar komentar = new Komentar();
-
-        komentar.Tekst = kom.Tekst;
-        komentar.KorisnikKomentarId = korisnikID;
-        komentar.RestoranKomentarId = restourant.Id;
+            var komentarCollection = database.GetCollection<Komentar>("komentar");
+            var userCollection = database.GetCollection<Korisnik>("korisnik");
+            var restourantCollection = database.GetCollection<Restoran>("restoran");
 
 
-        komentarCollection.Insert(komentar);
+            var korisnikID = (from korisnik in userCollection.AsQueryable<Korisnik>()
+                            where korisnik.Email == HttpContext.User.Identity.Name
+                            select korisnik.Id).FirstOrDefault();
+            var restourant = (from restoran in restourantCollection.AsQueryable<Restoran>()
+                            where restoran.Email == rEmail
+                            select restoran).FirstOrDefault();
 
-        restourant.KomentariIdList.Add(new MongoDBRef("komentar", komentar.Id));
-        restourantCollection.Save(restourant);
+            Komentar comment = new Komentar();
 
+            comment.Tekst = kom.Tekst;
+            comment.KorisnikKomentarId = korisnikID;
+            comment.RestoranKomentarId = restourant.Id;
 
-        return Ok();
+            komentarCollection.Insert(comment);
+
+            var upit = Query.EQ("_id", restourant.Id);
+            var update = Update.PushWrapped("KomentariIdList", new MongoDBRef("komentar", comment.Id));
+            restourantCollection.Update(upit, update);
+
+            return Ok("Uspesno dodavanje komentara!");
+        }
+        catch (Exception)
+        {
+            return BadRequest("Greska");
+        }
     }
 
+    [HttpPost]
+    [Route("BookMarkRestaurant/{email}")]
+    public IActionResult BookMarkRestaurant(string email)
+    {
+        try
+        {
+            MongoClient client = new MongoClient("mongodb+srv://mongo:sifra123@cluster0.ewwnh.mongodb.net/test");
+            MongoServer server = client.GetServer();
+            var database = server.GetDatabase("Dostavi");
+            var restoranCollection = database.GetCollection<Restoran>("restoran");
+            var usersCollection = database.GetCollection<Korisnik>("korisnik");
 
+            var userEmail = HttpContext.User.Identity.Name;
+
+            var user = (from korisnik in usersCollection.AsQueryable<Korisnik>()
+                        where korisnik.Email == userEmail
+                        select korisnik).FirstOrDefault();
+
+            var getRestaurantQuery = (from restoran in restoranCollection.AsQueryable<Restoran>()
+                                      where restoran.Email == email
+                                      select restoran.Id).FirstOrDefault();
+            
+            if (getRestaurantQuery.ToString() == "000000000000000000000000")
+            {
+                return BadRequest("Nepostojeci restoran");
+            }
+
+            int check = 0;
+            foreach (MongoDBRef mdb in user.RestoranKorisnikIdList)
+            {
+                if (mdb.Id == getRestaurantQuery)
+                {
+                    check++;
+                }
+            }
+            if (check != 0)
+            {
+                return BadRequest("Vec ste bookmarkovali taj restoran");
+            }
+
+            var upit = Query.EQ("_id", user.Id);
+            var update = Update.PushWrapped("RestoranKorisnikIdList", new MongoDBRef("restoran", getRestaurantQuery));
+            usersCollection.Update(upit, update);
+            return Ok("Uspesno bookmarkovanje");
+        }
+        catch (Exception exc)
+        {
+            return BadRequest(exc.Message);
+        }
+        
+    }
 }
