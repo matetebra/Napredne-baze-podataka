@@ -7,15 +7,15 @@ public class Porudzbina
     public String? Napomena { get; set; }
     public Boolean Dostavljena { get; set; }
     public DateTime Datum { get; set; }
-    public MongoDBRef? KorisnikPorudzbinaId { get; set; }
-    public List<MongoDBRef>? JeloIdList { get; set; }
-    public MongoDBRef? Restoran { get; set; }
-    public List<MongoDBRef>? Dodaci { get; set; }
+    public ObjectId? KorisnikPorudzbinaId { get; set; }
+    public List<ObjectId>? JeloIdList { get; set; }
+    public ObjectId? Restoran { get; set; }
+    public List<ObjectId>? Dodaci { get; set; }
     public int UkupnaCena { get; set; }
     public Porudzbina()
     {
-        JeloIdList = new List<MongoDBRef>();
+        JeloIdList = new List<ObjectId>();
 
-        Dodaci = new List<MongoDBRef>();
+        Dodaci = new List<ObjectId>();
     }
 }
