@@ -129,6 +129,10 @@ public class RestoranController : ControllerBase
                     }
                 }
             }
+            if (rn.Count() == 0)
+            {
+                return BadRequest("Nema rezultata pretrage");
+            }
 
             return Ok(rn);
         }
