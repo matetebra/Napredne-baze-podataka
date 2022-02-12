@@ -447,15 +447,6 @@ public class RestoranController : ControllerBase
         var restoranCollection = database.GetCollection<Restoran>("restoran");
         var dodatakCollection = database.GetCollection<Dodatak>("dodatak");
 
-        var check = (from dodatak in dodatakCollection.AsQueryable<Dodatak>()
-                    where dodatak.Naziv == doda.Naziv
-                    select dodatak).FirstOrDefault();
-
-        if (check != null)
-        {
-            return BadRequest("Vec postoji taj dodatak.");
-        }
-
         dodatakCollection.Insert(doda);
 
         var restEmail = HttpContext.User.Identity.Name;
