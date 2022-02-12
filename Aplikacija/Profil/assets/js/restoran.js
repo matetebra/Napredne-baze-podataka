@@ -579,7 +579,7 @@ export class restoran {
     input.id = "opiss";
     d3.appendChild(input);
 
-    var d4 = document.createElement("div");
+    /*var d4 = document.createElement("div");
     host.appendChild(d4);
     var label = document.createElement("label");
     label.innerHTML = "Slika: ";
@@ -588,7 +588,7 @@ export class restoran {
     var input = document.createElement("input");
     input.style = " margin: 5px";
     input.id = "slika";
-    d4.appendChild(input);
+    d4.appendChild(input);*/
 
     var d5 = document.createElement("div");
     host.appendChild(d5);
