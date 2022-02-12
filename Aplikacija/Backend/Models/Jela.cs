@@ -2,7 +2,7 @@ using MongoDB.Bson;
 
 namespace Backend.Models;
 
-public class Jela 
+public class Jela
 {
     public ObjectId Id { get; set; }
     public String? Naziv { get; set; }
@@ -10,7 +10,8 @@ public class Jela
     public String? Gramaza { get; set; }
     public String? Opis { get; set; }
     public String? Slika { get; set; }
-    public List<string>? NazivNamirnica { get; set; } 
+    public int Cena { get; set; }
+    public List<string>? NazivNamirnica { get; set; }
 
     public Jela()
     {
