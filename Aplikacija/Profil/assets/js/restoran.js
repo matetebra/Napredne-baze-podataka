@@ -288,7 +288,7 @@ export class restoran {
       kol.innerHTML=count;
       kol.id="kol"+e.id;
       di.appendChild(kol);
-      const dug=document.createElement("button");
+      /*const dug=document.createElement("button");
       dug.innerHTML="-";
       dug.classList="btn btn-danger";
       di.appendChild(dug);
@@ -321,7 +321,7 @@ export class restoran {
       var label= document.getElementById("KonacnaCena");
       label.innerHTML="Konacna cena je: " +count +" dinara.";
       });
-      di.appendChild(dug);
+      di.appendChild(dug);*/
       nacrtanoJelo.push(e);
       count=0;
     }
@@ -351,7 +351,7 @@ export class restoran {
      kol.innerHTML=count;
      kol.id="kol2"+e.id;
      di2.appendChild(kol);
-     var d=document.createElement("button");
+     /*var d=document.createElement("button");
      d.innerHTML="-";
      d.classList="btn btn-danger";
      di2.appendChild(d);
@@ -374,7 +374,7 @@ export class restoran {
      });
         var label= document.getElementById("KonacnaCena");
         label.innerHTML="Konacna cena je: " +count +" dinara.";
-     });
+     });*/
      nacrtaniDodatak.push(e);
      count=0;
     }
