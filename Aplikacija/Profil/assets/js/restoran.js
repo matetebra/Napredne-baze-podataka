@@ -23,6 +23,8 @@ export class restoran {
     this.jelaNar = [];
     this.dodNar = [];
     this.jelapom = [];
+    this.dodatakpom = [];
+    this.rezervacijepom = []
   }
   crtajRestoran(host) {
     if (!host) throw new Error("Greska u hostu");
@@ -273,49 +275,84 @@ export class restoran {
         if (data.title == "Unauthorized")
           alert("Greska.");
         else {
-        this.naziv=data.naziv;
-        this.id=data.id;
-        this.adresa= data.adresa;
-        this.grad= data.grad;
-        this.email= data.email;
-        this.telefon= data.telefon;
-        this.opis= data.opis;
-        this.radnoVrem= data.radnoVreme;
-        this.vremeDostave= data.vremeDostave;
-        this.cenaDostave= data.cenaDostave;
-        this.limitDostave= data.limitDostave;
-        this.kapacitet= data.kapacitet;
-        this.brSlobodnih= data.slobodnaMesta;
-        this.komentari=data.komentari;
-        this.kategorije=data.kategorije;
-        this.prosecnaOcena=data.prosecnaOcena;
-        this.jela=data.jela;
-        this.dodatak=data.dodaci;
-        this.Osvezi();
-        return this;
+          this.naziv = data.naziv;
+          this.id = data.id;
+          this.adresa = data.adresa;
+          this.grad = data.grad;
+          this.email = data.email;
+          this.telefon = data.telefon;
+          this.opis = data.opis;
+          this.radnoVrem = data.radnoVreme;
+          this.vremeDostave = data.vremeDostave;
+          this.cenaDostave = data.cenaDostave;
+          this.limitDostave = data.limitDostave;
+          this.kapacitet = data.kapacitet;
+          this.brSlobodnih = data.slobodnaMesta;
+          this.komentari = data.komentari;
+          this.kategorije = data.kategorije;
+          this.prosecnaOcena = data.prosecnaOcena;
+          this.jela = data.jela;
+          this.dodatak = data.dodaci;
+          this.Osvezi();
+          return this;
         }
       })
       .catch((error) => console.error("Greska", error));
-    }
-    oceniRestoran(ocena){
-      fetch("https://localhost:7284/Restoran/OceniRestoran/"+ this.email+"/"+ocena, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + sessionStorage.getItem("token")
+  }
+  preuzmi(emails) {
+    fetch("https://localhost:7284/Slavko/GetAllRestourantInformations/" + emails, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + sessionStorage.getItem("token")
+      }
+    })
+      
+      .then((data) => {
+        
+          this.naziv = data.naziv;
+          this.id = data.id;
+          this.adresa = data.adresa;
+          this.grad = data.grad;
+          this.email = data.email;
+          this.telefon = data.telefon;
+          this.opis = data.opis;
+          this.radnoVrem = data.radnoVreme;
+          this.vremeDostave = data.vremeDostave;
+          this.cenaDostave = data.cenaDostave;
+          this.limitDostave = data.limitDostave;
+          this.kapacitet = data.kapacitet;
+          this.brSlobodnih = data.slobodnaMesta;
+          this.komentari = data.komentari;
+          this.kategorije = data.kategorije;
+          this.prosecnaOcena = data.prosecnaOcena;
+          this.jela = data.jela;
+          this.dodatak = data.dodaci;
+          this.Osvezi();
+          return this;
+        
+      })
+    
+  }
+  oceniRestoran(ocena) {
+    fetch("https://localhost:7284/Restoran/OceniRestoran/" + this.email + "/" + ocena, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + sessionStorage.getItem("token")
+      }
+    })
+      .then((p) => {
+        if (p.ok) {
+          alert("Uspesno ocenjivanje");
+        } else {
+          alert("Vec ste ocenili");
         }
       })
-        .then((p) => {
-          if (p.ok) {
-            alert("Uspesno ocenjivanje");
-          } else {
-            alert("Vec ste ocenili");
-          }
-        })
-        .catch((p) => {
-          alert("Greška sa konekcijom.");
-        });
-    }
+      .catch((p) => {
+        alert("Greška sa konekcijom.");
+      });
+  }
   crtajDodajJelo(host) {
     var d = document.createElement("div");
     host.appendChild(d);
@@ -491,6 +528,34 @@ export class restoran {
       });
 
   }
+  crtajObrisiDodatatk(host) {
+
+
+    fetch("https://localhost:7284/Restoran/GetDodatatk", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + sessionStorage.getItem("token"),
+      },
+    })
+      .then((p) => {
+        p.json().then((data) => {
+          data.forEach((element) => {
+            var j = new dodatak();
+            j.naziv = element.naziv;
+            j.cena = element.cena;
+            this.dodatakpom.push(j);
+          });
+          this.crtajsveDodatke(host);
+        });
+      });
+
+  }
+  crtajsveDodatke(host) {
+    this.dodatakpom.forEach(j => {
+      j.crtajDodatak(host);
+    })
+  }
   crtajsvaJela(host) {
     this.jelapom.forEach(j => {
       j.crtajJelo(host);
@@ -531,14 +596,8 @@ export class restoran {
     //var namir=nam.split(",")
     dugme.addEventListener('click', function () {
       var naz = document.getElementById("naziv").value;
-      var kat = document.getElementById("kategorija").value;
-      var gram = document.getElementById("gramaza").value;
-      var op = document.getElementById("opiss").value;
-      var sl = document.getElementById("slika").value;
       var cen = document.getElementById("cena").value;
-      var nam = document.getElementById("namirnice").value;
-      var namir = nam.split(",");
-      fetch("https://localhost:7284/Restoran/AddMeal", {
+      fetch("https://localhost:7284/Restoran/AddDodatak", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -546,12 +605,7 @@ export class restoran {
         },
         body: JSON.stringify({
           naziv: naz,
-          kategorija: kat,
-          gramaza: gram,
-          opis: op,
-          slika: sl,
           cena: cen,
-          nazivNamirnica: namir
 
         }),
       })
@@ -568,6 +622,35 @@ export class restoran {
         });
       //}
     });
+  }
+  brisiRezervaciju(host) {
+    fetch("https://localhost:7284/Slavko/VratiRezervacije", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + sessionStorage.getItem("token"),
+      },
+    })
+      .then((p) => {
+        p.json().then((data) => {
+          data.forEach((element) => {
+            var j = new rezervacija();
+            j.id = element.IDRezervacije;
+            j.email = element.EmailKorisnika;
+            j.telefon = element.TelefonKorisnika;
+            j.vreme = element.Vreme;
+            j.brojMesta = element.brojMesta;
+            this.rezervacijepom.push(j);
+          });
+          this.crtajsveRezervacije(host);
+        });
+      });
+
+  }
+  crtajsveRezervacije(host) {
+    this.rezervacijepom.forEach(j => {
+      j.crtajRezervaciju(host);
+    })
   }
 }
 export class jelo {
@@ -629,7 +712,7 @@ export class dodatak {
     this.cena - cena;
 
   }
-  crtajNamirnicu(host) {
+  crtajDodatak(host) {
     var d = document.createElement("div");
     host.appendChild(d);
 
@@ -649,6 +732,138 @@ export class dodatak {
     dugme.style = " margin: 5px";
     dugme.classList = "btn btn-danger";
     dugme.addEventListener('click', function () {
+
+      fetch("https://localhost:7284/Restoran/DeleteDodatak/" + this.naziv, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + sessionStorage.getItem("token"),
+        },
+        body: JSON.stringify({}),
+      })
+        .then((p) => {
+          if (p.ok) {
+            alert("Jelo je uspesno obrisan");
+
+          } else {
+            alert("Greska kod brisanja");
+          }
+        })
+        .catch((p) => {
+          alert("Greška sa konekcijom.");
+        });
+    });
+  }
+}
+export class rezervacija {
+  constructor(id, email, brojMesta, vreme, telefon) {
+    this.id = id;
+    this.email = email;
+    this.brojMesta = brojMesta;
+    this.vreme = vreme;
+    this.telefon = telefon;
+  }
+  crtajRezervaciju() {
+    var d = document.createElement("div");
+    host.appendChild(d);
+
+    var label = document.createElement("label");
+    label.innerHTML = this.email;
+    label.style = " margin: 5px";
+    d.appendChild(label);
+    var label1 = document.createElement("label");
+    label1.innerHTML = "  " + this.telefon;
+    label1.style = " margin: 5px";
+    d.appendChild(label1);
+    var label2 = document.createElement("label");
+    label2.innerHTML = "  " + this.vreme;
+    label2.style = " margin: 5px";
+    d.appendChild(label2);
+
+    var dugme = document.createElement("button");
+    d.appendChild(dugme);
+    dugme.innerHTML = "Obrisi rezervaciju"
+    dugme.id = this.naziv;
+    dugme.style = " margin: 5px";
+    dugme.classList = "btn btn-danger";
+    dugme.addEventListener('click', function () {
+
+      fetch("https://localhost:7284/Slavko/obrisiRezervaciju/" + this.id, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + sessionStorage.getItem("token"),
+        },
+        body: JSON.stringify({}),
+      })
+        .then((p) => {
+          if (p.ok) {
+            alert("Jelo je uspesno obrisan");
+
+          } else {
+            alert("Greska kod brisanja");
+          }
+        })
+        .catch((p) => {
+          alert("Greška sa konekcijom.");
+        });
+    });
+  }
+}
+
+
+export class porudzbina {
+  constructor(id, email, brojMesta, vreme, telefon) {
+    this.id = id;
+    this.email = email;
+    this.brojMesta = brojMesta;
+    this.vreme = vreme;
+    this.telefon = telefon;
+  }
+  crtajPorudzbinu() {
+    var d = document.createElement("div");
+    host.appendChild(d);
+
+    var label = document.createElement("label");
+    label.innerHTML = this.email;
+    label.style = " margin: 5px";
+    d.appendChild(label);
+    var label1 = document.createElement("label");
+    label1.innerHTML = "  " + this.telefon;
+    label1.style = " margin: 5px";
+    d.appendChild(label1);
+    var label2 = document.createElement("label");
+    label2.innerHTML = "  " + this.vreme;
+    label2.style = " margin: 5px";
+    d.appendChild(label2);
+
+    var dugme = document.createElement("button");
+    d.appendChild(dugme);
+    dugme.innerHTML = "Obrisi rezervaciju"
+    dugme.id = this.naziv;
+    dugme.style = " margin: 5px";
+    dugme.classList = "btn btn-danger";
+    dugme.addEventListener('click', function () {
+
+      fetch("https://localhost:7284/Slavko/obrisiRezervaciju/" + this.id, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + sessionStorage.getItem("token"),
+        },
+        body: JSON.stringify({}),
+      })
+        .then((p) => {
+          if (p.ok) {
+            alert("Jelo je uspesno obrisan");
+
+          } else {
+            alert("Greska kod brisanja");
+          }
+        })
+        .catch((p) => {
+          alert("Greška sa konekcijom.");
+        });
     });
   }
 }

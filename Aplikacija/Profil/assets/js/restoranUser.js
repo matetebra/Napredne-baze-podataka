@@ -9,7 +9,7 @@ else
 {
     if(sessionStorage.getItem("role")=="Restoran")
     {
-        r.preuzmiPodatke(sessionStorage.getItem("username"));
+        r.preuzmi(sessionStorage.getItem("username"));
 
         var d=document.getElementById("btnOdjaviSe");
         d.addEventListener("click",function(){
@@ -48,17 +48,17 @@ function dodajJ(host){
  
   //r.crtajDodajJelo(host);
 }
-function brisiJ(){
+function brisiJ(host){
   //r.crtajObrisiJelo(host);
 }
-function dodajD(){
-  r.crtajDodajDodatak(host);
+function dodajD(host){
+ // r.crtajDodajDodatak(host);
 }
-function brisiD(){
- 
+function brisiD(host){
+  //r.crtajBrisiDodatak(host);
 }
-function brisiR(){
-  
+function brisiR(host){
+  //r.brisiRezervaciju(host);
 }
 function prihvatiR(){
   
