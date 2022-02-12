@@ -546,6 +546,7 @@ public class SlavkoController : ControllerBase
                             where porudzbina.Dostavljena == false
                             select new
                             {
+                                ID = porudzbina.Id.ToString(),
                                 Napomena = porudzbina.Napomena,
                                 Datum = porudzbina.Datum,
                                 Korisnik = porudzbina.KorisnikPorudzbinaId.ToString(),
@@ -577,6 +578,7 @@ public class SlavkoController : ControllerBase
 
             toReturn.Add(new
             {
+                ID = t.ID,
                 Napomena = t.Napomena,
                 Datum = t.Datum,
                 Email = (from korisnik in userCollection.AsQueryable<Korisnik>()
@@ -587,5 +589,31 @@ public class SlavkoController : ControllerBase
             });
         }
         return Ok(toReturn);
+    }
+    [HttpPut]
+    [Route("isporuciPorudzbinu/{porudzbinas}")]
+    public IActionResult isporuci(string porudzbinas)
+    {
+        MongoClient client = new MongoClient("mongodb+srv://mongo:sifra123@cluster0.ewwnh.mongodb.net/test");
+        MongoServer server = client.GetServer();
+
+        var database = server.GetDatabase("Dostavi");
+
+        var porudzbinaCollection = database.GetCollection<Porudzbina>("porudzbina");
+        var restoranCollection = database.GetCollection<Restoran>("restoran");
+
+        var rest = (from restoran in restoranCollection.AsQueryable<Restoran>()
+                    where restoran.Email == HttpContext.User.Identity.Name
+                    select restoran.Id).FirstOrDefault();
+
+        var pr = (from porudzbina in porudzbinaCollection.AsQueryable<Porudzbina>()
+                  where porudzbina.Id == MongoDB.Bson.ObjectId.Parse(porudzbinas)
+                  where porudzbina.Restoran == rest
+                  select porudzbina).FirstOrDefault();
+
+        pr.Dostavljena = true;
+        porudzbinaCollection.Save(pr);
+
+        return Ok();
     }
 }
