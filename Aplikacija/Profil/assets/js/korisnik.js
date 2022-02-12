@@ -28,5 +28,32 @@ export class korisnik{
         inf.appendChild(br);
 
     }
+    ucitajKorisnika(){
+        this.ime="";
+        this.prezime="";
+        this.email="";
+        this.grad="";
+        this.telefon="";
+      fetch("https://localhost:7284/Slavko/GetRestourants", {
+                method: "GET",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: "Bearer " + sessionStorage.getItem("token"),
+                },
+              })
+          .then((p) => {
+          p.json().then((data) => {
+            data.forEach((element) => {
+              this.ime=element.ime;
+              this.prezime=element.prezime;
+              this.email=element.email;
+              this.grad=element.grad;
+              this.telefon=element.telefon;
+              
+            });
+            this.crtajInformacije();
+          });
+        });
+      } 
 
 }

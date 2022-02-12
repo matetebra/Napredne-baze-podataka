@@ -102,8 +102,8 @@ crtajBukmarkovane(){
       rest.crtajRestoran(host)
   });
 }
-ucitajBukmarkovaneRestorane(){
-  this.bukmarkovani.splice(0,this.bukmarkovani.length);
+ucitajPrethodnePorudzbine(){
+  this.stareNarudzbine.splice(0,this.bukmarkovani.length);
       fetch("https://localhost:7284/Slavko/PrethodnePorudzbine", {
         method: "GET",
         headers: {
@@ -112,26 +112,31 @@ ucitajBukmarkovaneRestorane(){
         },
       })
   .then((p) => {
-  p.json().then((data) => {
+  p.json().then((data) => {console.log(data)
           data.forEach((element) => {
-            var r = new restoran();
-            r.naziv=element.naziv;
-            r.adresa=element.adresa;
-            r.email=element.email;
-            r.telefon=element.telefon;
-            this.bukmarkovani.push(r);
+            var r = new narudzbina();
+        
+            element.jela.forEach(el=>{
+              r.dodajJelo(el.naziv);
+            })
+          element.dodaci.forEach((el) => {
+            r.dodajDodaci(el.naziv);
           });
-          this.crtajBukmarkovane();
+            r.naziv=element.naziv;
+            r.cena=element.cena;
+            this.stareNarudzbine.push(r);
+          });
           
+          this.crtajPorudzbine();
         });
       });
   
     }
-  crtajBukmarkovane(){
+  crtajPorudzbine(){
     const host=document.getElementById("restorani");
     host.innerHTML="";
-      this.bukmarkovani.forEach((rest)=>{
-        rest.crtajRestoran(host)
+      this.stareNarudzbine.forEach((rest)=>{
+        rest.crtajNarudzbinu(host);
     });
   }
 }

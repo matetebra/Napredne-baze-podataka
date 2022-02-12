@@ -112,6 +112,16 @@ public class SlavkoController : ControllerBase
             {
                 sviDodaci.Add(database.FetchDBRefAs<Dodatak>(k));
             }
+            List<object> dodaciToReturn = new List<object>();
+            foreach (Dodatak d in sviDodaci)
+            {
+                jelaToReturn.Add(new
+                {
+                    Id = d.Id.ToString(),
+                    Naziv = d.Naziv,
+                    Cena = d.Cena
+                });
+            }
             return Ok(new
             {
                 Id = exactRestoran.Id.ToString(),
@@ -132,7 +142,7 @@ public class SlavkoController : ControllerBase
                 Kategorije = sveKategorije,
                 Komentari = sviKomentari,
                 Jela = jelaToReturn,
-                Dodaci = sviDodaci
+                Dodaci = dodaciToReturn
             });
         }
         catch (Exception exc)
@@ -244,6 +254,8 @@ public class SlavkoController : ControllerBase
 
         foreach (Porudzbina p in porudzbinas)
         {
+            dodaci.Clear();
+            jelo.Clear();
             foreach (MongoDBRef r in p.JeloIdList)
             {
                 jelo.Add(database.FetchDBRefAs<Jela>(r));
@@ -259,14 +271,12 @@ public class SlavkoController : ControllerBase
                 Naziv = database.FetchDBRefAs<Restoran>(p.Restoran).Naziv,
                 Cena = p.UkupnaCena
             });
-            dodaci.Clear();
-            jelo.Clear();
         }
         return Ok(toReturn);
     }
     [HttpPost]
-    [Route("dodajNarudzbinu/{restoranMail}")]
-    public IActionResult dodajNarudzbinu([FromBody] PorudzbinaDTO porudzba, string restoranMail)
+    [Route("dodajNarudzbinu")]
+    public IActionResult dodajNarudzbinu([FromBody] PorudzbinaDTO porudzba)
     {
         MongoClient client = new MongoClient("mongodb+srv://mongo:sifra123@cluster0.ewwnh.mongodb.net/test");
         MongoServer server = client.GetServer();
@@ -278,9 +288,10 @@ public class SlavkoController : ControllerBase
         var jelaCollection = database.GetCollection<Jela>("jela");
         var dodaciCollection = database.GetCollection<Dodatak>("dodatak");
         var restoranCollection = database.GetCollection<Restoran>("restoran");
+        var porudzbinaCollection = database.GetCollection<Porudzbina>("porudzbina");
 
         var restoran1 = (from restoran in restoranCollection.AsQueryable<Restoran>()
-                         where restoran.Email == restoranMail
+                         where restoran.Email == porudzba.EmailRestoran
                          select restoran).FirstOrDefault();
 
         var user = (from korisnik in usersCollection.AsQueryable<Korisnik>()
@@ -295,7 +306,7 @@ public class SlavkoController : ControllerBase
                               select jela).FirstOrDefault()!);
         }
         List<Dodatak> dodaci = new List<Dodatak>();
-        if (porudzba.DodaciID!.Count() != 0)
+        if (porudzba.DodaciID != null)
         {
             foreach (String s in porudzba.DodaciID)
             {
@@ -311,13 +322,16 @@ public class SlavkoController : ControllerBase
         p.Dostavljena = false;
         p.KorisnikPorudzbinaId = new MongoDBRef("korisnik", user.Id);
         p.Restoran = new MongoDBRef("restoran", restoran1.Id);
+
         int cena = 0;
         foreach (Jela j in narucenaJela)
         {
             cena += j.Cena;
-            p.JeloIdList.Add(new MongoDBRef("jelo", j.Id));
+            p.JeloIdList.Add(new MongoDBRef("jela", j.Id));
+
+
         }
-        if (porudzba.DodaciID!.Count() != 0)
+        if (porudzba.DodaciID! != null)
         {
             foreach (Dodatak j in dodaci)
             {
@@ -328,20 +342,28 @@ public class SlavkoController : ControllerBase
         p.UkupnaCena = cena;
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+        porudzbinaCollection.Insert(p);
+        user.PorudzbinaKorisnikIdList.Add(new MongoDBRef("porudzbina", p.Id));
+        usersCollection.Save(user);
         return Ok();
     }
+    [HttpGet]
+    [Route("VratiRezervacije")]//reseni bugovi zavrsiti sutra mrtvu funkciju sa mrtvim mongodbref
+    //napraviti fucnkiju gde vraca info korisnika kao sto su email telefon ime prezime grad adresa
+    public IActionResult returnReservation()
+    {
+        MongoClient client = new MongoClient("mongodb+srv://mongo:sifra123@cluster0.ewwnh.mongodb.net/test");
+        MongoServer server = client.GetServer();
+        var database = server.GetDatabase("Dostavi");
 
+
+        var rezervacijaCollection = database.GetCollection<Rezervacija>("rezervacija");
+
+
+        var rez = (from rezervacija in rezervacijaCollection.AsQueryable<Rezervacija>()
+                   select rezervacija).ToList();
+
+
+        return Ok(rez);
+    }
 }

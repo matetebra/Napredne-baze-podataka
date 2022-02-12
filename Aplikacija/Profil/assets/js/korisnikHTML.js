@@ -1,8 +1,10 @@
 import { korisnik } from "./korisnik.js";
 
-var k=new korisnik();
+ var inf=document.getElementById("informacije");
+        inf.innerHTML="";
 if(sessionStorage.getItem("token")==null || sessionStorage.getItem("token")=="")
 {
+   
     var pom=document.getElementById("omiljeniRes");
     pom.hidden=true;
     var pom1=document.getElementById("odjavi");
@@ -13,13 +15,15 @@ if(sessionStorage.getItem("token")==null || sessionStorage.getItem("token")=="")
     pom3.hidden=true;
 }
 else{ 
+    
     var pom=document.getElementById("odjavi");
     pom.hidden=false;
     var pom3=document.getElementById("prijava");
     pom3.hidden=true;
 
     pom.addEventListener("click",function(){
-        console.log("odjavi se");
+        var inf=document.getElementById("informacije");
+        inf.innerHTML="";
       sessionStorage.clear();
       location.href ="index.html"
       });

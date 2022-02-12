@@ -1127,3 +1127,21 @@ section {
   margin-left: 1rm;
   margin-right: 1rm;
 }
+.dgme{
+  background-color:#000000 ;
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+.margine{
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  margin-left: 2rem;
+  margin-right: 2rem;
+}

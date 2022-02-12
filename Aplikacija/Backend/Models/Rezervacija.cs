@@ -10,6 +10,9 @@ public class Rezervacija
     public String? BrojMesta { get; set; }
     public String? Vreme { get; set; }
     public DateTime Datum { get; set; }
-    public MongoDBRef? KorisnikRezervacijaId { get; set; }
-    public MongoDBRef? RestoranRezervacijaId { get; set; }
+    public ObjectId? KorisnikRezervacijaId { get; set; }
+    public ObjectId? RestoranRezervacijaId { get; set; }
+    public Rezervacija()
+    {
+    }
 }

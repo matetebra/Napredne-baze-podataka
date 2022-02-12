@@ -12,4 +12,10 @@ public class Porudzbina
     public MongoDBRef? Restoran { get; set; }
     public List<MongoDBRef>? Dodaci { get; set; }
     public int UkupnaCena { get; set; }
+    public Porudzbina()
+    {
+        JeloIdList = new List<MongoDBRef>();
+
+        Dodaci = new List<MongoDBRef>();
+    }
 }
