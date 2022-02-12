@@ -534,7 +534,7 @@ export class restoran {
   crtajObrisiDodatatk(host) {
 
 
-    fetch("https://localhost:7284/Restoran/GetDodatatk", {
+    fetch("https://localhost:7284/Restoran/VratiDodatke", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -736,7 +736,7 @@ export class dodatak {
     dugme.classList = "btn btn-danger";
     dugme.addEventListener('click', function () {
 
-      fetch("https://localhost:7284/Restoran/DeleteDodatak/" + this.naziv, {
+      fetch("https://localhost:7284/Restoran/obrisiDodatak/" + this.naziv, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
