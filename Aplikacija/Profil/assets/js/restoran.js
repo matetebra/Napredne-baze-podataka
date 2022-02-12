@@ -541,13 +541,7 @@ export class restoran {
     });
   }
   crtajObrisiDodatatk(host) {
-<<<<<<< HEAD
-
-
-    fetch("https://localhost:7284/Restoran/VratiDodatke", {
-=======
     fetch("https://localhost:7284/Restoran/GetDodatatk", {
->>>>>>> 35f486363bf004efcd729b502a33ee0c3df5daae
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -736,14 +730,8 @@ export class dodatak {
     dugme.id = this.naziv;
     dugme.style = " margin: 5px";
     dugme.classList = "btn btn-danger";
-<<<<<<< HEAD
-    dugme.addEventListener('click', function () {
-
-      fetch("https://localhost:7284/Restoran/obrisiDodatak/" + this.naziv, {
-=======
     dugme.addEventListener("click", function () {
       fetch("https://localhost:7284/Restoran/DeleteDodatak/" + this.naziv, {
->>>>>>> 35f486363bf004efcd729b502a33ee0c3df5daae
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
