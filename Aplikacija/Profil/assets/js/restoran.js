@@ -200,9 +200,16 @@ export class restoran {
         pogled.innerHTML = "+";
         pogled.id = e.id;
         d3.appendChild(pogled);
+<<<<<<< HEAD
+        pogled.addEventListener("click",function(){
+          //var j= document.getElementById("jelaNam");
+          //j.innerHTML=j.innerHTML+pogled.id + ",";
+          parent.
+=======
         pogled.addEventListener("click", function () {
           var j = document.getElementById("jelaNam");
           j.innerHTML = j.innerHTML + pogled.id + ",";
+>>>>>>> 16ba0a29236ef7901bbf4b697067bb227736f8cb
           alert("Dodato u korpu");
           console.log(j.innerHTML);
         });
@@ -273,6 +280,35 @@ export class restoran {
         if (data.title == "Unauthorized")
           alert("Greska.");
         else {
+<<<<<<< HEAD
+        this.naziv=data.naziv;
+        this.id=data.id;
+        this.adresa= data.adresa;
+        this.grad= data.grad;
+        this.email= data.email;
+        this.telefon= data.telefon;
+        this.opis= data.opis;
+        this.radnoVrem= data.radnoVreme;
+        this.vremeDostave= data.vremeDostave;
+        this.cenaDostave= data.cenaDostave;
+        this.limitDostave= data.limitDostave;
+        this.kapacitet= data.kapacitet;
+        this.brSlobodnih= data.slobodnaMesta;
+        this.komentari=data.komentari;
+        this.kategorije=data.kategorije;
+        this.prosecnaOcena=data.prosecnaOcena;
+        this.jela=data.jela;
+        this.dodatak=data.dodaci;
+        this.Osvezi();
+        console.log(this);
+        return this;
+        }
+      })
+      .catch((error) => console.error("Greska", error));
+    }
+    oceniRestoran(ocena){
+      fetch("https://localhost:7284/Restoran/OceniRestoran/"+ this.email+"/"+ocena, {
+=======
           this.naziv = data.naziv;
           this.id = data.id;
           this.adresa = data.adresa;
@@ -427,6 +463,7 @@ export class restoran {
       console.log(nam)
       console.log(namir)
       fetch("https://localhost:7284/Restoran/AddMeal", {
+>>>>>>> 16ba0a29236ef7901bbf4b697067bb227736f8cb
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -448,7 +485,11 @@ export class restoran {
             alert("Uspesno dodavanje jela");
             komentari();
           } else {
+<<<<<<< HEAD
+            alert("Vec ste ocenili");
+=======
             alert("Ne mozete komentarisati.");
+>>>>>>> 16ba0a29236ef7901bbf4b697067bb227736f8cb
           }
         })
         .catch(() => {
