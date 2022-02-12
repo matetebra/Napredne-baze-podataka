@@ -21,6 +21,13 @@ if(sessionStorage.getItem("token")==null || sessionStorage.getItem("token")=="")
     pom6.hidden=true;
     var pom7=document.getElementById("kategorijalbl");
     pom7.hidden=true;
+    
+    var pom8=document.getElementById("poNazivuLbl");
+    pom8.hidden=true;
+    var pom10=document.getElementById("NazivInput");
+    pom10.hidden=true;
+    var pom9=document.getElementById("pretraziPoNazivu");
+    pom9.hidden=true;
 }
 else{ 
       //var sort=document.getElementById("sortingOptionID").style.visibility="revert"
