@@ -323,9 +323,6 @@ public class SlavkoController : ControllerBase
         p.KorisnikPorudzbinaId = new MongoDBRef("korisnik", user.Id);
         p.Restoran = new MongoDBRef("restoran", restoran1.Id);
 
-        List<MongoDBRef> testiram = new List<MongoDBRef>();
-
-
         int cena = 0;
         foreach (Jela j in narucenaJela)
         {
@@ -351,21 +348,16 @@ public class SlavkoController : ControllerBase
         return Ok();
     }
     [HttpGet]
-    [Route("VratiRezervacije")]
+    [Route("VratiRezervacije")]//reseni bugovi zavrsiti sutra mrtvu funkciju sa mrtvim mongodbref
+    //napraviti fucnkiju gde vraca info korisnika kao sto su email telefon ime prezime grad adresa
     public IActionResult returnReservation()
     {
         MongoClient client = new MongoClient("mongodb+srv://mongo:sifra123@cluster0.ewwnh.mongodb.net/test");
         MongoServer server = client.GetServer();
         var database = server.GetDatabase("Dostavi");
 
-        // var email = HttpContext.User.Identity.Name;
 
-        // var usersCollection = database.GetCollection<Korisnik>("restoran");
         var rezervacijaCollection = database.GetCollection<Rezervacija>("rezervacija");
-
-        // var restorance = (from restoran in usersCollection.AsQueryable<Restoran>()
-        //                   where restoran.Email == email
-        //                   select restoran).FirstOrDefault();
 
 
         var rez = (from rezervacija in rezervacijaCollection.AsQueryable<Rezervacija>()

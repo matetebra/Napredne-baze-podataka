@@ -40,9 +40,9 @@ public class RezervacijaController : ControllerBase
         var rezervacijaCollection = database.GetCollection<Rezervacija>("rezervacija");
 
         var provera = (from rezervacija in rezervacijaCollection.AsQueryable<Rezervacija>()
-                       where rezervacija.KorisnikRezervacijaId.Id == user.Id
+                       where rezervacija.KorisnikRezervacijaId == user.Id
                        where rezervacija.Datum == rez.Datum
-                       where rezervacija.RestoranRezervacijaId.Id == restourant.Id
+                       where rezervacija.RestoranRezervacijaId == restourant.Id
                        select rezervacija).FirstOrDefault();
 
         if (provera != null)
@@ -71,8 +71,8 @@ public class RezervacijaController : ControllerBase
         r.BrojMesta = rez.BrojMesta;
         r.Datum = rez.Datum;
         r.Vreme = rez.Vreme;
-        r.KorisnikRezervacijaId = new MongoDBRef("korisnik", user.Id);
-        r.RestoranRezervacijaId = new MongoDBRef("restoran", restourant.Id);
+        r.KorisnikRezervacijaId = user.Id;
+        r.RestoranRezervacijaId = restourant.Id;
 
         rezervacijaCollection.Insert(r);
 
