@@ -15,45 +15,6 @@ namespace Backend.Controllers;
 [BsonIgnoreExtraElements]
 public class SlavkoController : ControllerBase
 {
-    // [HttpPost]
-    // [Route("BookMarkRestaurant/{email}")]
-    // public IActionResult BookMarkRestaurant(string email)
-    // {
-    //     try
-    //     {
-    //         MongoClient client = new MongoClient("mongodb+srv://mongo:sifra123@cluster0.ewwnh.mongodb.net/test");
-    //         MongoServer server = client.GetServer();
-    //         var database = server.GetDatabase("Dostavi");
-    //         var restoranCollection = database.GetCollection<Restoran>("restoran");
-    //         var usersCollection = database.GetCollection<Korisnik>("korisnik");
-
-    //         var userEmail = HttpContext.User.Identity.Name;
-
-    //         var user = (from korisnik in usersCollection.AsQueryable<Korisnik>()
-    //                     where korisnik.Email == userEmail
-    //                     select korisnik).FirstOrDefault();
-
-
-
-    //         var getRestaurantQuery = (from restoran in restoranCollection.AsQueryable<Restoran>()
-    //                                   where restoran.Email == email
-    //                                   select restoran.Id).FirstOrDefault();
-
-    //         if (getRestaurantQuery.ToString() == "000000000000000000000000")
-    //         {
-    //             return BadRequest("Vec ste bookmarkovali taj restoran");
-    //         }
-
-    //         user.RestoranKorisnikIdList.Add(new MongoDBRef("restoran", getRestaurantQuery));
-    //         usersCollection.Save(user);
-    //     }
-    //     catch (Exception exc)
-    //     {
-    //         return BadRequest(exc.Message);
-    //     }
-    //     return Ok("Uspesno bookmarkovanje");
-    // }
-
     [HttpGet]
     [Route("GetAllRestourantInformations/{email}")]
     public IActionResult getAllRestourantInformations(string email)
@@ -239,7 +200,12 @@ public class SlavkoController : ControllerBase
         {
             sviRestorani.Add(database.FetchDBRefAs<Restoran>(r));
         }
-        return Ok(sviRestorani);
+        List<object> toReturn = new List<object>();
+        foreach (Restoran r in sviRestorani)
+        {
+            toReturn.Add(new { Naziv = r.Naziv, Adresa = r.Adresa, Email = r.Email, Telefon = r.Telefon });
+        }
+        return Ok(toReturn);
     }
     [HttpGet]
     [Route("PrethodnePorudzbine")]
@@ -453,8 +419,8 @@ public class SlavkoController : ControllerBase
     [Route("AddComment/{rEmail}")]
     public IActionResult AddComment([FromBody] KomentarDTO kom, string rEmail)
     {
-        try 
-        {   
+        try
+        {
             MongoClient client = new MongoClient("mongodb+srv://mongo:sifra123@cluster0.ewwnh.mongodb.net/test");
             MongoServer server = client.GetServer();
             var database = server.GetDatabase("Dostavi");
@@ -465,11 +431,11 @@ public class SlavkoController : ControllerBase
 
 
             var korisnikID = (from korisnik in userCollection.AsQueryable<Korisnik>()
-                            where korisnik.Email == HttpContext.User.Identity.Name
-                            select korisnik.Id).FirstOrDefault();
+                              where korisnik.Email == HttpContext.User.Identity.Name
+                              select korisnik.Id).FirstOrDefault();
             var restourant = (from restoran in restourantCollection.AsQueryable<Restoran>()
-                            where restoran.Email == rEmail
-                            select restoran).FirstOrDefault();
+                              where restoran.Email == rEmail
+                              select restoran).FirstOrDefault();
 
             Komentar comment = new Komentar();
 
@@ -479,7 +445,6 @@ public class SlavkoController : ControllerBase
 
             komentarCollection.Insert(comment);
 
-<<<<<<< HEAD
             var upit = Query.EQ("_id", restourant.Id);
             var update = Update.PushWrapped("KomentariIdList", new MongoDBRef("komentar", comment.Id));
             restourantCollection.Update(upit, update);
@@ -490,10 +455,6 @@ public class SlavkoController : ControllerBase
         {
             return BadRequest("Greska");
         }
-=======
-        komentarCollection.Insert(komentar);
-        return Ok();
->>>>>>> 17386a502a9d6ff9e369deb5e93028de2a4ca5e7
     }
 
     [HttpPost]
@@ -508,7 +469,6 @@ public class SlavkoController : ControllerBase
             var restoranCollection = database.GetCollection<Restoran>("restoran");
             var usersCollection = database.GetCollection<Korisnik>("korisnik");
 
-<<<<<<< HEAD
             var userEmail = HttpContext.User.Identity.Name;
 
             var user = (from korisnik in usersCollection.AsQueryable<Korisnik>()
@@ -518,7 +478,7 @@ public class SlavkoController : ControllerBase
             var getRestaurantQuery = (from restoran in restoranCollection.AsQueryable<Restoran>()
                                       where restoran.Email == email
                                       select restoran.Id).FirstOrDefault();
-            
+
             if (getRestaurantQuery.ToString() == "000000000000000000000000")
             {
                 return BadRequest("Nepostojeci restoran");
@@ -546,9 +506,6 @@ public class SlavkoController : ControllerBase
         {
             return BadRequest(exc.Message);
         }
-        
-    }
-=======
 
->>>>>>> 17386a502a9d6ff9e369deb5e93028de2a4ca5e7
+    }
 }
