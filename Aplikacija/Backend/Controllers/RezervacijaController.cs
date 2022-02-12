@@ -101,7 +101,7 @@ public class RezervacijaController : ControllerBase
     //         var getRestaurantQuery = (from restoran in restoranCollection.AsQueryable<Restoran>()
     //                                   where restoran.Email == email
     //                                   select restoran.Id).FirstOrDefault();
-            
+
     //         if (getRestaurantQuery.ToString() == "000000000000000000000000")
     //         {
     //             return BadRequest("Nepostojeci restoran");
@@ -129,7 +129,7 @@ public class RezervacijaController : ControllerBase
     //     {
     //         return BadRequest(exc.Message);
     //     }
-        
+
     // }
 
 }

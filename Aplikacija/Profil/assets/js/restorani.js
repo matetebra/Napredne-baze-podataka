@@ -6,6 +6,7 @@ export class restorani {
     this.restorani = [];
     this.bukmarkovani = [];
     this.stareNarudzbine = [];
+    this.re = [];
   }
   ucitajRestorane() {
     this.restorani.splice(0, this.restorani.length);
@@ -98,6 +99,38 @@ export class restorani {
       rest.crtajRestoran(host);
     });
   }
+  sortirajPoKategoriji() {
+    var kateg = document.getElementById("kategorijaInput").value;
+    this.re = [];
+    fetch("https://localhost:7284/Restoran/GetRestaurantByCategory/" + kateg, {
+      //hardcoded for now
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + sessionStorage.getItem("token"),
+      },
+    }).then((p) => {
+      p.json().then((data) => {
+        data.forEach((element) => {
+          var r = new restoran();
+          r.naziv = element.naziv;
+          r.adresa = element.adresa;
+          r.email = element.email;
+          r.telefon = element.telefon;
+          this.re.push(r);
+        });
+        this.crtajPoKategoriji();
+      });
+    });
+  }
+  crtajPoKategoriji() {
+    const host = document.getElementById("restorani");
+    host.innerHTML = "";
+    this.re.forEach((rest) => {
+      rest.crtajRestoran(host);
+    });
+  }
+
   ucitajPrethodnePorudzbine() {
     this.stareNarudzbine.splice(0, this.bukmarkovani.length);
     fetch("https://localhost:7284/Slavko/PrethodnePorudzbine", {
