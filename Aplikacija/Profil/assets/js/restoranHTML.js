@@ -13,6 +13,13 @@ if (
 ) {
   var k = new korisnik();
   k.ucitajKorisnika();
+  var dugme = document.getElementById("omiljeniRes");
+
+  dugme.addEventListener("click", bukmarkovani);
+
+  var dugme1 = document.getElementById("sacuvaneNar");
+
+  dugme1.addEventListener("click", sacuvani);
 }
 document.getElementById("sortingOptionID").options[0].selected = true;
 
