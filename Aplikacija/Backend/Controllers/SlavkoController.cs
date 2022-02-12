@@ -359,8 +359,14 @@ public class SlavkoController : ControllerBase
 
 
         porudzbinaCollection.Insert(p);
-        user.PorudzbinaKorisnikIdList.Add(new MongoDBRef("porudzbina", p.Id));
-        usersCollection.Save(user);
+
+        var upit = Query.EQ("_id", user.Id);
+        var update = Update.PushWrapped("PorudzbinaKorisnikIdList", new MongoDBRef("porudzbina", p.Id));
+        usersCollection.Update(upit, update);
+
+
+        // user.PorudzbinaKorisnikIdList.Add(new MongoDBRef("porudzbina", p.Id));
+        // usersCollection.Save(user);
         return Ok();
     }
     [HttpGet]
@@ -471,12 +477,9 @@ public class SlavkoController : ControllerBase
 
 
         komentarCollection.Insert(komentar);
-
-
-
-
         return Ok();
     }
+
 
 
 }
