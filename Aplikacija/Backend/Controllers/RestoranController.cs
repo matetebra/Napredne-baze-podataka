@@ -50,99 +50,39 @@ public class RestoranController : ControllerBase
     [Route("GetRestaurantByName/{name}")]
     public ActionResult GetRestaurantByName(string name)
     {
-        try 
+        MongoClient client = new MongoClient("mongodb+srv://mongo:sifra123@cluster0.ewwnh.mongodb.net/test");
+        MongoServer server = client.GetServer();
+        var database = server.GetDatabase("Dostavi");
+
+        var restaurantsCollection = database.GetCollection<Restoran>("restoran");
+
+        int localtime = DateTime.Now.Hour;
+
+        if (HttpContext.User.Identity.Name == null)
         {
-            MongoClient client = new MongoClient("mongodb+srv://mongo:sifra123@cluster0.ewwnh.mongodb.net/test");
-            MongoServer server = client.GetServer();
-            var database = server.GetDatabase("Dostavi");
-
-            var collection = database.GetCollection<Restoran>("restoran");
-            var collectionKorisnik = database.GetCollection<Korisnik>("korisnik");
-            var user = HttpContext.User.Identity.Name;
-
-            var kor = (from korisnik in collectionKorisnik.AsQueryable<Korisnik>()
-                                where korisnik.Email == user
-                                select korisnik).FirstOrDefault();
-            
-            var exactRestoran = (from restoran in collection.AsQueryable<Restoran>()
-                                where restoran.Grad == kor.Grad
-                                where restoran.Naziv == name
-                                select restoran).FirstOrDefault();
-
-            List<Jela> svaJela = new List<Jela>();
-                foreach (MongoDBRef jela in exactRestoran.JelaIdList)
-                {
-                    svaJela.Add(database.FetchDBRefAs<Jela>(jela));
-                }
-                List<object> jelaToReturn = new List<object>();
-                foreach (Jela j in svaJela)
-                {
-                    jelaToReturn.Add(new
-                    {
-                        Id = j.Id.ToString(),
-                        Naziv = j.Naziv,
-                        Kategorija = j.Kategorija,
-                        Gramaza = j.Gramaza,
-                        Cena = j.Cena,
-                        Opis = j.Opis,
-                        Slika = j.Slika,
-                        NazivNamirnica = j.NazivNamirnica
-                    });
-                }
-
-                List<Kategorija> sveKategorije = new List<Kategorija>();
-                foreach (MongoDBRef k in exactRestoran.KategorijeIdList)
-                {
-                    sveKategorije.Add(database.FetchDBRefAs<Kategorija>(k));
-                }
-
-                List<Komentar> sviKomentari = new List<Komentar>();
-                foreach (MongoDBRef k in exactRestoran.KomentariIdList)
-                {
-                    sviKomentari.Add(database.FetchDBRefAs<Komentar>(k));
-                }
-
-                List<Dodatak> sviDodaci = new List<Dodatak>();
-                foreach (MongoDBRef k in exactRestoran.DodatakIdList)
-                {
-                    sviDodaci.Add(database.FetchDBRefAs<Dodatak>(k));
-                }
-                List<object> dodaciToReturn = new List<object>();
-                foreach (Dodatak d in sviDodaci)
-                {
-                    jelaToReturn.Add(new
-                    {
-                        Id = d.Id.ToString(),
-                        Naziv = d.Naziv,
-                        Cena = d.Cena
-                    });
-                }
-                return Ok(new
-                {
-                    Id = exactRestoran.Id.ToString(),
-                    Email = exactRestoran.Email,
-                    Naziv = exactRestoran.Naziv,
-                    Adresa = exactRestoran.Adresa,
-                    Grad = exactRestoran.Grad,
-                    Telefon = exactRestoran.Telefon,
-                    Opis = exactRestoran.Opis,
-                    PocetakRV = exactRestoran.pocetakRV,
-                    KrajRv = exactRestoran.krajRV,
-                    ProsecnaOcena = exactRestoran.ProsecnaOcena,
-                    VremeDostave = exactRestoran.VremeDostave,
-                    CenaDostave = exactRestoran.CenaDostave,
-                    LimitDostave = exactRestoran.LimitDostave,
-                    Kapacitet = exactRestoran.Kapacitet,
-                    SlobodnaMesta = exactRestoran.SlobodnaMesta,
-                    Kategorije = sveKategorije,
-                    Komentari = sviKomentari,
-                    Jela = jelaToReturn,
-                    Dodaci = dodaciToReturn
-                });
+            var allRestaunats = (from restoran in restaurantsCollection.FindAll().SetLimit(12).AsQueryable<Restoran>()
+                                 where restoran.pocetakRV < localtime
+                                 where restoran.krajRV > localtime
+                                 where restoran.Naziv.ToLower().Contains(name.ToLower())
+                                 where restoran.odobren == true
+                                 select new { restoran.Email, restoran.Naziv, restoran.Adresa, restoran.Telefon }).ToList();
+            return Ok(allRestaunats);
         }
-        catch (Exception)
+        else
         {
-            return BadRequest("Nema rezultata pretrage");
+            var usersCollection = database.GetCollection<Korisnik>("korisnik");
+
+            var userGrad = (from korisnik in usersCollection.AsQueryable<Korisnik>()
+                            where korisnik.Email == HttpContext.User.Identity.Name
+                            select korisnik.Grad).FirstOrDefault();
+            var allRestaunats = (from restoran in restaurantsCollection.AsQueryable<Restoran>()
+                                 where restoran.Grad == userGrad
+                                 where restoran.pocetakRV < localtime
+                                 where restoran.krajRV > localtime
+                                 where restoran.Naziv.ToLower().Contains(name.ToLower())
+                                 where restoran.odobren == true
+                                 select new { restoran.Email, restoran.Naziv, restoran.Adresa, restoran.Telefon }).ToList();
+            return Ok(allRestaunats);
         }
     }
 
@@ -368,10 +308,10 @@ public class RestoranController : ControllerBase
                     select restoran).FirstOrDefault();
 
         var kor = (from korisnik in korisnikCollection.AsQueryable<Korisnik>()
-                    where korisnik.Email == userEmail
-                    select korisnik).FirstOrDefault();
-        
-         var check = (from ocena in ocenaCollection.AsQueryable<Ocena>()
+                   where korisnik.Email == userEmail
+                   select korisnik).FirstOrDefault();
+
+        var check = (from ocena in ocenaCollection.AsQueryable<Ocena>()
                      where ocena.OcenaRestoranId.Id == rest.Id
                      where ocena.OcenaKorisnikId.Id == kor.Id
                      select ocena).FirstOrDefault();
@@ -392,8 +332,8 @@ public class RestoranController : ControllerBase
                      where ocena.OcenaRestoranId.Id == rest.Id
                      select ocena).ToList();
 
-        float novaProsecnaOcena = (rest.ProsecnaOcena * (ocene.Count()-1) + ocenica) / ocene.Count();
-        rest.ProsecnaOcena = (float)Math.Round(novaProsecnaOcena * 100f) / 100f; 
+        float novaProsecnaOcena = (rest.ProsecnaOcena * (ocene.Count() - 1) + ocenica) / ocene.Count();
+        rest.ProsecnaOcena = (float)Math.Round(novaProsecnaOcena * 100f) / 100f;
         restoranCollection.Save(rest);
         return Ok("Uspesno ste ocenili");
     }
@@ -412,13 +352,13 @@ public class RestoranController : ControllerBase
         var userEmail = HttpContext.User.Identity.Name;
 
         var kor = (from korisnik in korisnikCollection.AsQueryable<Korisnik>()
-                    where korisnik.Email == userEmail
-                    select korisnik).FirstOrDefault();
+                   where korisnik.Email == userEmail
+                   select korisnik).FirstOrDefault();
 
         var rest = (from restoran in restoranCollection.AsQueryable<Restoran>()
                     where restoran.Grad == kor.Grad
                     orderby restoran.ProsecnaOcena descending
-                    select new { restoran.Email, restoran.Naziv, restoran.Adresa, restoran.Telefon, restoran.ProsecnaOcena}).ToList();
+                    select new { restoran.Email, restoran.Naziv, restoran.Adresa, restoran.Telefon, restoran.ProsecnaOcena }).ToList();
         rest.Reverse();
         return Ok(rest);
     }
@@ -437,13 +377,13 @@ public class RestoranController : ControllerBase
         var userEmail = HttpContext.User.Identity.Name;
 
         var kor = (from korisnik in korisnikCollection.AsQueryable<Korisnik>()
-                    where korisnik.Email == userEmail
-                    select korisnik).FirstOrDefault();
+                   where korisnik.Email == userEmail
+                   select korisnik).FirstOrDefault();
 
         var rest = (from restoran in restoranCollection.AsQueryable<Restoran>()
                     where restoran.Grad == kor.Grad
                     orderby restoran.ProsecnaOcena descending
-                    select new { restoran.Email, restoran.Naziv, restoran.Adresa, restoran.Telefon, restoran.ProsecnaOcena}).ToList();
+                    select new { restoran.Email, restoran.Naziv, restoran.Adresa, restoran.Telefon, restoran.ProsecnaOcena }).ToList();
 
         return Ok(rest);
     }

@@ -406,6 +406,27 @@ public class SlavkoController : ControllerBase
 
         return Ok();
     }
+    [HttpGet]
+    [Route("getUserInformaiton")]
+    public IActionResult getUserInformation()
+    {
+        MongoClient client = new MongoClient("mongodb+srv://mongo:sifra123@cluster0.ewwnh.mongodb.net/test");
+        MongoServer server = client.GetServer();
+        var database = server.GetDatabase("Dostavi");
+
+        var korisnikCollection = database.GetCollection<Korisnik>("korisnik");
+
+        var toReturn = (from korisnik in korisnikCollection.AsQueryable<Korisnik>()
+                        where korisnik.Email == HttpContext.User.Identity.Name
+                        select new
+                        {
+                            Ime = korisnik.Ime,
+                            Prezime = korisnik.Prezime,
+                            Telefon = korisnik.Telefon,
+                            Email = korisnik.Email
+                        }).FirstOrDefault();
+        return Ok(toReturn);
+    }
 
 
 }
