@@ -508,4 +508,38 @@ public class SlavkoController : ControllerBase
         }
 
     }
+    [HttpGet]
+    [Route("vratiNeisporucene")]
+    public IActionResult getNeisporucene()
+    {
+        MongoClient client = new MongoClient("mongodb+srv://mongo:sifra123@cluster0.ewwnh.mongodb.net/test");
+        MongoServer server = client.GetServer();
+        var database = server.GetDatabase("Dostavi");
+
+        var porudzbineCollection = database.GetCollection<Porudzbina>("porudzbina");
+        var restoranCollection = database.GetCollection<Restoran>("restoran");
+
+        var email = HttpContext.User.Identity.Name;
+
+        var restoran1 = (from restoran in restoranCollection.AsQueryable<Restoran>()
+                         where restoran.Email == email
+                         select restoran.Id).FirstOrDefault();
+
+        var neisporucene = (from porudzbina in porudzbineCollection.AsQueryable<Porudzbina>()
+                            where porudzbina.Restoran == new MongoDBRef("restoran", restoran1)
+                            where porudzbina.Dostavljena == false
+                            select new
+                            {
+                                Napomena = porudzbina.Napomena,
+                                Datum = porudzbina.Datum,
+                                Korisnik = porudzbina.KorisnikPorudzbinaId.Id.ToString(),
+                            }).ToList();
+
+
+
+
+
+
+        return Ok(neisporucene);
+    }
 }
