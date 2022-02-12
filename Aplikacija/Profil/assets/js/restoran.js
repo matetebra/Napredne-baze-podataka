@@ -277,7 +277,6 @@ export class restoran {
        });
       var di=document.createElement("div");
       di.id=e.id+"por";
-      console.log(di.id);
       host.appendChild(di);
       var naziv=document.createElement("h5");
       naziv.innerHTML=e.naziv;
