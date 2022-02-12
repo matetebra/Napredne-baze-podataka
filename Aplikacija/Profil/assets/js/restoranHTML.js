@@ -23,6 +23,9 @@ if (
 
   var dugme3 = document.getElementById("SortirajPoKategoriji");
   dugme3.addEventListener("click", PoKategoriji);
+
+  var dugme4 = document.getElementById("pretraziPoNazivu");
+  dugme4.addEventListener("click", poNazivu);
 }
 document.getElementById("sortingOptionID").options[0].selected = true;
 
@@ -49,6 +52,14 @@ function PoKategoriji() {
   const host = document.getElementById("restorani");
   host.innerHTML = "";
   res.sortirajPoKategoriji();
+  var dugm = document.getElementById("homebtn");
+  dugm.hidden = false;
+  dugm.addEventListener("click", vrati);
+}
+function poNazivu() {
+  const host = document.getElementById("restorani");
+  host.innerHTML = "";
+  res.pretraziPoNazivu();
   var dugm = document.getElementById("homebtn");
   dugm.hidden = false;
   dugm.addEventListener("click", vrati);

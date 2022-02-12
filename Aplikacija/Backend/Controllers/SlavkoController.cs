@@ -219,6 +219,9 @@ public class SlavkoController : ControllerBase
         var email = HttpContext.User.Identity.Name;
 
         var usersCollection = database.GetCollection<Korisnik>("korisnik");
+        var jeloCollection = database.GetCollection<Jela>("jela");
+        var dodatakCollection = database.GetCollection<Dodatak>("dodatak");
+        var restoranCollection = database.GetCollection<Restoran>("restoran");
 
         var porudzbine = (from korisnik in usersCollection.AsQueryable<Korisnik>()
                           where korisnik.Email == email
@@ -238,19 +241,29 @@ public class SlavkoController : ControllerBase
         {
             dodaci.Clear();
             jelo.Clear();
-            foreach (MongoDBRef r in p.JeloIdList)
+            foreach (ObjectId r in p.JeloIdList)
             {
-                jelo.Add(database.FetchDBRefAs<Jela>(r));
+                // jelo.Add(database.FetchDBRefAs<Jela>(r));
+                jelo.Add((from jela in jeloCollection.AsQueryable<Jela>()
+                          where jela.Id == r
+                          select jela).FirstOrDefault()!);
             }
-            foreach (MongoDBRef r in p.Dodaci)
+            foreach (ObjectId r in p.Dodaci)
             {
-                dodaci.Add(database.FetchDBRefAs<Dodatak>(r));
+                // dodaci.Add(database.FetchDBRefAs<Dodatak>(r));
+                dodaci.Add((from dodatak in jeloCollection.AsQueryable<Dodatak>()
+                            where dodatak.Id == r
+                            select dodatak).FirstOrDefault()!);
+
             }
             toReturn.Add(new
             {
                 Jela = jelo,
                 Dodaci = dodaci,
-                Naziv = database.FetchDBRefAs<Restoran>(p.Restoran).Naziv,
+                // Naziv = database.FetchDBRefAs<Restoran>(p.Restoran).Naziv,
+                Naziv = (from restoran in restoranCollection.AsQueryable<Restoran>()
+                         where restoran.Id == p.Restoran
+                         select restoran.Naziv).FirstOrDefault(),
                 Cena = p.UkupnaCena
             });
         }
@@ -302,14 +315,14 @@ public class SlavkoController : ControllerBase
         p.Datum = DateTime.Now.Date;
         p.Napomena = porudzba.Napomena;
         p.Dostavljena = false;
-        p.KorisnikPorudzbinaId = new MongoDBRef("korisnik", user.Id);
-        p.Restoran = new MongoDBRef("restoran", restoran1.Id);
+        p.KorisnikPorudzbinaId = user.Id;
+        p.Restoran = restoran1.Id;
 
         int cena = 0;
         foreach (Jela j in narucenaJela)
         {
             cena += j.Cena;
-            p.JeloIdList.Add(new MongoDBRef("jela", j.Id));
+            p.JeloIdList.Add(j.Id);
 
 
         }
@@ -318,7 +331,7 @@ public class SlavkoController : ControllerBase
             foreach (Dodatak j in dodaci)
             {
                 cena += j.Cena;
-                p.JeloIdList.Add(new MongoDBRef("dodatak", j.Id));
+                p.JeloIdList.Add(j.Id);
             }
         }
         p.UkupnaCena = cena;
@@ -507,5 +520,100 @@ public class SlavkoController : ControllerBase
             return BadRequest(exc.Message);
         }
 
+    }
+    [HttpGet]
+    [Route("vratiNeisporucene")]
+    public IActionResult getNeisporucene()
+    {
+        MongoClient client = new MongoClient("mongodb+srv://mongo:sifra123@cluster0.ewwnh.mongodb.net/test");
+        MongoServer server = client.GetServer();
+        var database = server.GetDatabase("Dostavi");
+
+        var porudzbineCollection = database.GetCollection<Porudzbina>("porudzbina");
+        var restoranCollection = database.GetCollection<Restoran>("restoran");
+        var userCollection = database.GetCollection<Korisnik>("korisnik");
+        var jelaCollection = database.GetCollection<Jela>("jela");
+        var dodaciJelaCollection = database.GetCollection<Dodatak>("dodatak");
+
+        var email = HttpContext.User.Identity.Name;
+
+        var restoran1 = (from restoran in restoranCollection.AsQueryable<Restoran>()
+                         where restoran.Email == email
+                         select restoran.Id).FirstOrDefault();
+
+        var neisporucene = (from porudzbina in porudzbineCollection.AsQueryable<Porudzbina>()
+                            where porudzbina.Restoran == restoran1
+                            where porudzbina.Dostavljena == false
+                            select new
+                            {
+                                ID = porudzbina.Id.ToString(),
+                                Napomena = porudzbina.Napomena,
+                                Datum = porudzbina.Datum,
+                                Korisnik = porudzbina.KorisnikPorudzbinaId.ToString(),
+                                Jela = porudzbina.JeloIdList,
+                                Dodaci = porudzbina.Dodaci
+                            }).ToList();
+
+
+        var toReturn = new List<object>();
+
+        foreach (var t in neisporucene)
+        {
+            var naziviJela = new List<string>();
+            foreach (ObjectId i in t.Jela)
+            {
+
+                naziviJela.Add((from jela in jelaCollection.AsQueryable<Jela>()
+                                where jela.Id == i
+                                select jela.Naziv).FirstOrDefault()!);
+            }
+            var dodaciJela = new List<string>();
+            foreach (ObjectId i in t.Dodaci)
+            {
+
+                dodaciJela.Add((from dodatak in dodaciJelaCollection.AsQueryable<Dodatak>()
+                                where dodatak.Id == i
+                                select dodatak.Naziv).FirstOrDefault()!);
+            }
+
+            toReturn.Add(new
+            {
+                ID = t.ID,
+                Napomena = t.Napomena,
+                Datum = t.Datum,
+                Adresa = (from korisnik in userCollection.AsQueryable<Korisnik>()
+                          where korisnik.Id == MongoDB.Bson.ObjectId.Parse(t.Korisnik)
+                          select korisnik.Adresa).FirstOrDefault(),
+                NaziviJela = naziviJela,
+                DodaciJela = dodaciJela
+            });
+        }
+        return Ok(toReturn);
+    }
+    [HttpPut]
+    [Route("isporuciPorudzbinu/{porudzbinas}")]
+    public IActionResult isporuci(string porudzbinas)
+    {
+        MongoClient client = new MongoClient("mongodb+srv://mongo:sifra123@cluster0.ewwnh.mongodb.net/test");
+        MongoServer server = client.GetServer();
+
+        var database = server.GetDatabase("Dostavi");
+
+        var porudzbinaCollection = database.GetCollection<Porudzbina>("porudzbina");
+        var restoranCollection = database.GetCollection<Restoran>("restoran");
+
+        var rest = (from restoran in restoranCollection.AsQueryable<Restoran>()
+                    where restoran.Email == HttpContext.User.Identity.Name
+                    select restoran.Id).FirstOrDefault();
+
+        var pr = (from porudzbina in porudzbinaCollection.AsQueryable<Porudzbina>()
+                  where porudzbina.Id == MongoDB.Bson.ObjectId.Parse(porudzbinas)
+                  where porudzbina.Restoran == rest
+                  select porudzbina).FirstOrDefault();
+
+        pr.Dostavljena = true;
+        porudzbinaCollection.Save(pr);
+
+        return Ok();
     }
 }

@@ -65,6 +65,7 @@ function sacuvaj() {
       alert("Greška sa konekcijom.");
     });
 }
+<<<<<<< HEAD
 function jela(){
     var d1= document.getElementById("ovdeSeRadiJ");
     d1.innerHTML="";
@@ -105,6 +106,50 @@ function jela(){
       korpa.appendChild(potvrdi);
       potvrdi.addEventListener("click",posaljiPorudzbinu);
     });
+=======
+function jela() {
+  var d1 = document.getElementById("ovdeSeRadiJ");
+  d1.innerHTML = "";
+  d2 = document.getElementById("ovdeSeRadiD");
+  d2.innerHTML = "";
+  var korpa = document.getElementById("Korpa");
+  korpa.innerHTML = "";
+  var d = document.getElementById("ovdeSeRadiB");
+  d.innerHTML = "";
+  var d4 = document.getElementById("ovdeSeRadiK");
+  d4.innerHTML = "";
+  r.crtajJela(d1);
+  r.crtajDodatke(d2);
+  var naruci = document.createElement("button");
+  naruci.classList = "btn btn-danger";
+  naruci.innerHTML = "Naruči";
+  korpa.appendChild(naruci);
+  var di = document.createElement("div");
+  di.id = "di";
+  korpa.appendChild(di);
+  korpa.addEventListener("click", function () {
+    var korpa = document.getElementById("di");
+    korpa.innerHTML = "";
+    var label = document.createElement("h4");
+    label.innerHTML = "Porudžbina";
+    korpa.appendChild(label);
+    r.crtajPorudzbine(korpa);
+    label = document.createElement("h5");
+    label.innerHTML = "Unesite napomenu: ";
+    korpa.appendChild(label);
+    label = document.createElement("input"); ///
+    label.type = "textarea";
+    label.ariaRowCount = 2;
+    label.cols = 25;
+    korpa.appendChild(label);
+    //izracunaj cenu
+    var potvrdi = document.createElement("button");
+    potvrdi.classList = "btn btn-danger";
+    potvrdi.innerHTML = "Naruči";
+    korpa.appendChild(potvrdi);
+    potvrdi.addEventListener("click", posaljiPorudzbinu);
+  });
+>>>>>>> 9069e0a756a68df55c033e2ffebce09d5035910f
 }
 function posaljiPorudzbinu(){
   var napomena= document.getElementById("Napomena");
@@ -254,7 +299,10 @@ function dodajRezervaciju() {
   var mesta = document.getElementById("mestoZakazivanja").value;
   var vreme = document.getElementById("vremeZakazivanja").value;
   var datum = document.getElementById("datumZakazivanja").value;
-  var dat = new Date(Date.UTC(GODINA, MESEC - 1, DAN, 0, 0, 0));
+
+  var test = datum.split("-");
+
+  var dat = new Date(Date.UTC(test[0], test[1] - 1, test[2], 0, 0, 0));
   if (mesta == null || vreme == null || datum == null) {
     alert("Unesite sva polja");
     return;
