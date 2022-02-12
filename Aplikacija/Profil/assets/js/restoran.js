@@ -292,8 +292,7 @@ export class restoran {
     });
   }
   preuzmiPodatke(emails) {
-    fetch(
-      "https://localhost:7284/Slavko/GetAllRestourantInformations/" + emails,
+    fetch("https://localhost:7284/Slavko/GetAllRestourantInformations/" + emails,
       {
         method: "GET",
         headers: {
@@ -391,6 +390,7 @@ export class restoran {
   crtajDodajJelo(host) {
     var d = document.createElement("div");
     host.appendChild(d);
+
 
     var label = document.createElement("label");
     label.innerHTML = "Naziv: ";
@@ -527,6 +527,7 @@ export class restoran {
     });
   }
   crtajObrisiJelo(host) {
+    this.jelapom.splice(0, this.jelapom.length);
     fetch("https://localhost:7284/Restoran/GetMeals", {
       method: "GET",
       headers: {
@@ -553,8 +554,9 @@ export class restoran {
       });
     });
   }
-  crtajObrisiDodatatk(host) {
-    fetch("https://localhost:7284/Restoran/GetDodatatk", {
+  crtajObrisiDodatak(host) {
+    this.dodatakpom.splice(0, this.dodatakpom.length);
+    fetch("https://localhost:7284/Restoran/VratiDodatke", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -642,6 +644,7 @@ export class restoran {
     });
   }
   brisiRezervaciju(host) {
+    this.rezervacijepom.splice(0, this.rezervacijepom.length);
     fetch("https://localhost:7284/Slavko/VratiRezervacije", {
       method: "GET",
       headers: {
@@ -652,12 +655,13 @@ export class restoran {
       p.json().then((data) => {
         data.forEach((element) => {
           var j = new rezervacija();
-          j.id = element.IDRezervacije;
-          j.email = element.EmailKorisnika;
-          j.telefon = element.TelefonKorisnika;
-          j.vreme = element.Vreme;
+          j.id = element.idRezervacije;
+          j.email = element.emailKorisnika;
+          j.telefon = element.telefonKorisnika;
+          j.vreme = element.vreme;
           j.brojMesta = element.brojMesta;
           this.rezervacijepom.push(j);
+          console.log(j)
         });
         this.crtajsveRezervacije(host);
       });
@@ -698,7 +702,7 @@ export class jelo {
     dugme.style = " margin: 5px";
     dugme.classList = "btn btn-danger";
     dugme.addEventListener("click", function () {
-      fetch("https://localhost:7284/Restoran/DeleteJelo/" + this.naziv, {
+      fetch("https://localhost:7284/Restoran/DeleteJelo/" + this.id, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -709,6 +713,8 @@ export class jelo {
         .then((p) => {
           if (p.ok) {
             alert("Jelo je uspesno obrisan");
+            var g=getElementById("informacije");
+            g.innerHTML=""
           } else {
             alert("Greska kod brisanja");
           }
@@ -743,8 +749,9 @@ export class dodatak {
     dugme.id = this.naziv;
     dugme.style = " margin: 5px";
     dugme.classList = "btn btn-danger";
+  
     dugme.addEventListener("click", function () {
-      fetch("https://localhost:7284/Restoran/DeleteDodatak/" + this.naziv, {
+      fetch("https://localhost:7284/Restoran/obrisiDodatak/" + this.id, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -754,7 +761,10 @@ export class dodatak {
       })
         .then((p) => {
           if (p.ok) {
-            alert("Jelo je uspesno obrisan");
+            console.log(this.naziv)
+            alert("Dodatak je uspesno obrisan");
+            var g=getElementById("informacije");
+            g.innerHTML=""
           } else {
             alert("Greska kod brisanja");
           }
@@ -773,7 +783,7 @@ export class rezervacija {
     this.vreme = vreme;
     this.telefon = telefon;
   }
-  crtajRezervaciju() {
+  crtajRezervaciju(host) {
     var d = document.createElement("div");
     host.appendChild(d);
 
@@ -786,7 +796,7 @@ export class rezervacija {
     label1.style = " margin: 5px";
     d.appendChild(label1);
     var label2 = document.createElement("label");
-    label2.innerHTML = "  " + this.vreme;
+    label2.innerHTML = "  " + this.vreme+"h";
     label2.style = " margin: 5px";
     d.appendChild(label2);
 
@@ -861,7 +871,9 @@ export class porudzbina {
       })
         .then((p) => {
           if (p.ok) {
-            alert("Jelo je uspesno obrisan");
+            alert("Porudzbina je uspesno obrisan");
+            var g=getElementById("informacije");
+            g.innerHTML=""
           } else {
             alert("Greska kod brisanja");
           }
