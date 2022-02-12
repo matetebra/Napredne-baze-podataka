@@ -10,6 +10,7 @@ using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
 using MongoDB.Driver.Builders;
 using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Driver.Linq;
 
 namespace Backend.Controllers;
 
@@ -50,6 +51,24 @@ public class AccountController : ControllerBase
             {
                 return BadRequest("Password doesn't match");
             }
+            var restoranCollection = database.GetCollection<Restoran>("restoran");
+
+            var i = (from restoran in restoranCollection.AsQueryable<Restoran>()
+                     where restoran.Email == model.Email
+                     select restoran).FirstOrDefault();
+            if (i != null)
+            {
+                if (i.odobren == false)
+                {
+                    return BadRequest("Nalog jos uvek nije odobren");
+                }
+            }
+
+
+
+
+
+
             var authClaims = new List<Claim>
                             {
                                new Claim(ClaimTypes.Name,model.Email!),

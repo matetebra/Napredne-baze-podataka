@@ -65,63 +65,62 @@ function sacuvaj() {
       alert("Greška sa konekcijom.");
     });
 }
-function jela(){
-    var d1= document.getElementById("ovdeSeRadiJ");
-    d1.innerHTML="";
-    d2= document.getElementById("ovdeSeRadiD");
-    d2.innerHTML="";
-    var korpa = document.getElementById("Korpa");
-    korpa.innerHTML="";
-    var d= document.getElementById("ovdeSeRadiB");
-    d.innerHTML="";
-    var d4= document.getElementById("ovdeSeRadiK");
-    d4.innerHTML="";
-    r.crtajJela(d1);
-    r.crtajDodatke(d2);
-    var naruci= document.createElement("button");
-    naruci.classList="btn btn-danger";
-    naruci.innerHTML="Naruči"
-    korpa.appendChild(naruci);
-    var di=document.createElement("div");
-    di.id="ocisti";
-    korpa.appendChild(di);
-    naruci.addEventListener("click", function () {
-      var korpa = document.getElementById("ocisti");
-      korpa.innerHTML="";
-      var label=document.createElement("h4");
-      label.innerHTML="Porudžbina";
-      korpa.appendChild(label);
-      r.crtajPorudzbine(korpa);
-      label=document.createElement("h5");
-      label.innerHTML="Unesite napomenu: ";   
-      korpa.appendChild(label);
-      label=document.createElement("input");
-      label.type="textarea"
-      label.id="Napomena";
-      korpa.appendChild(label);
-      var potvrdi= document.createElement("button");
-      potvrdi.classList="btn btn-danger";
-      potvrdi.innerHTML="Naruči"
-      korpa.appendChild(potvrdi);
-      potvrdi.addEventListener("click",posaljiPorudzbinu);
-    });
+function jela() {
+  var d1 = document.getElementById("ovdeSeRadiJ");
+  d1.innerHTML = "";
+  d2 = document.getElementById("ovdeSeRadiD");
+  d2.innerHTML = "";
+  var korpa = document.getElementById("Korpa");
+  korpa.innerHTML = "";
+  var d = document.getElementById("ovdeSeRadiB");
+  d.innerHTML = "";
+  var d4 = document.getElementById("ovdeSeRadiK");
+  d4.innerHTML = "";
+  r.crtajJela(d1);
+  r.crtajDodatke(d2);
+  var naruci = document.createElement("button");
+  naruci.classList = "btn btn-danger";
+  naruci.innerHTML = "Naruči";
+  korpa.appendChild(naruci);
+  var di = document.createElement("div");
+  di.id = "ocisti";
+  korpa.appendChild(di);
+  naruci.addEventListener("click", function () {
+    var korpa = document.getElementById("ocisti");
+    korpa.innerHTML = "";
+    var label = document.createElement("h4");
+    label.innerHTML = "Porudžbina";
+    korpa.appendChild(label);
+    r.crtajPorudzbine(korpa);
+    label = document.createElement("h5");
+    label.innerHTML = "Unesite napomenu: ";
+    korpa.appendChild(label);
+    label = document.createElement("input");
+    label.type = "textarea";
+    label.id = "Napomena";
+    korpa.appendChild(label);
+    var potvrdi = document.createElement("button");
+    potvrdi.classList = "btn btn-danger";
+    potvrdi.innerHTML = "Naruči";
+    korpa.appendChild(potvrdi);
+    potvrdi.addEventListener("click", posaljiPorudzbinu);
+  });
 }
-function posaljiPorudzbinu(){
-  var napomena= document.getElementById("Napomena");
-  var e=r.email;
-  var jela=new Array();
-    r.jelaNar.forEach(el => {
+function posaljiPorudzbinu() {
+  var napomena = document.getElementById("Napomena");
+  var e = r.email;
+  var jela = new Array();
+  r.jelaNar.forEach((el) => {
     jela.push(el.id);
   });
-  var dodaci=new Array();
-  r.dodNar.forEach(el => {
+  var dodaci = new Array();
+  r.dodNar.forEach((el) => {
     dodaci.push(el.id);
   });
   console.log(dodaci);
   console.log(jela);
-  if(e!=null && jela!=null)
-  {
-    fetch("https://localhost:7284/Slavko/dodajNarudzbinu" , {
+  if (e != null && jela != null) {
+    fetch("https://localhost:7284/Slavko/dodajNarudzbinu", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -129,11 +128,9 @@ function posaljiPorudzbinu(){
       },
       body: JSON.stringify({
         napomena: napomena,
-        jelaID: [
-                 "62056cd30d2f45c63c35d7f4"
-                ],
-       emailRestoran: "cezar@nis.rs",
-       dodaciID: []
+        jelaID: ["62056cd30d2f45c63c35d7f4"],
+        emailRestoran: "cezar@nis.rs",
+        dodaciID: [],
       }),
     })
       .then((p) => {
@@ -146,7 +143,7 @@ function posaljiPorudzbinu(){
       .catch(() => {
         alert("Greska sa konekcijom");
       });
-    }
+  }
 }
 function komentari() {
   var korpa = document.getElementById("Korpa");

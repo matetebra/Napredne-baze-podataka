@@ -165,6 +165,7 @@ public class SlavkoController : ControllerBase
         }
     }
     [HttpGet]
+    [Authorize(Roles = "Admin")]
     [Route("GetRestourantsNeodobreni")]
     public IActionResult getRestourantsNeodobreni()
     {
@@ -391,7 +392,7 @@ public class SlavkoController : ControllerBase
         return Ok(toReturn);
     }
     [HttpDelete]
-    // [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Restoran")]
     [Route("obrisiRezervaciju/{id}")]
     public IActionResult deleteReservation(string id)
     {
@@ -522,6 +523,7 @@ public class SlavkoController : ControllerBase
 
     }
     [HttpGet]
+    [Authorize(Roles = "Restoran")]
     [Route("vratiNeisporucene")]
     public IActionResult getNeisporucene()
     {
@@ -591,6 +593,7 @@ public class SlavkoController : ControllerBase
         return Ok(toReturn);
     }
     [HttpPut]
+    [Authorize(Roles = "Restoran")]
     [Route("isporuciPorudzbinu/{porudzbinas}")]
     public IActionResult isporuci(string porudzbinas)
     {
